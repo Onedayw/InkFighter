@@ -14,7 +14,7 @@ public class mover : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		transform.Rotate (new Vector3 (0, 0, -45) * Time.deltaTime);
+		transform.Rotate (new Vector3 (0, 0, -450) * Time.deltaTime);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
