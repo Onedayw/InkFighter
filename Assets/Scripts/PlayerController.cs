@@ -15,9 +15,10 @@ public class PlayerController : MonoBehaviour {
 
 	private Rigidbody2D rb2d;
 
-	public int startingDmageTaken = 0;                            // The amount of damage Player taken
-	public int currentDmageTaken;                                   // The current damage Player has taken
-	public Slider healthSlider;                                 // Reference to the UI's health bar.
+	public Image fullHealth;
+	public Image damagedHealth;
+	private float startingHealth = 100;
+	private float currentHealth;
 	private bool takenDamage;
 
 	void Start () {
@@ -25,8 +26,12 @@ public class PlayerController : MonoBehaviour {
 		count = 0;
 		WinText.text = "";
 		TextUpdate ();
-		currentDmageTaken = startingDmageTaken;
 		takenDamage = false;
+		currentHealth = startingHealth;
+	}
+
+	void Update() {
+		updateHealth ();
 	}
 
 	void FixedUpdate () {
@@ -39,10 +44,8 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		rb2d.AddForce (movement * speed);
-		if (healthSlider.value == healthSlider.maxValue) {
+		if (currentHealth == 0) {
 			Destroy (gameObject);
-		} else if (!takenDamage) {
-			healthSlider.value--;
 		}
 
 	}
@@ -53,16 +56,25 @@ public class PlayerController : MonoBehaviour {
 			count++;
 			TextUpdate ();
 		} else if (other.gameObject.CompareTag ("EnemyMover")) {
-			healthSlider.value += 5;
-			takenDamage = true;
+			currentHealth -= 5;
 		}
-		takenDamage = false;
 	}
 
 	void TextUpdate () {
 		CountText.text = "Count: " + count.ToString();
 		if (count >= 12) {
 			WinText.text = "You Win!";
+		}
+	}
+
+	void updateHealth() {
+		if (currentHealth == startingHealth) {
+			fullHealth.enabled = true;
+			damagedHealth.enabled = false;
+		} else {
+			fullHealth.enabled = false;
+			damagedHealth.enabled = true;
+			damagedHealth.transform.localScale = new Vector3 (currentHealth / startingHealth, 1, 1);
 		}
 	}
 
