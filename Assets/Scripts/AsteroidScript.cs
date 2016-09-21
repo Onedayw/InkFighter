@@ -299,7 +299,6 @@ public class AsteroidScript : MonoBehaviour {
 		if (cam == null) {
 			cam = Camera.main;
 		}
-	
 	}
 	
 	// Update is called once per physic timestep
