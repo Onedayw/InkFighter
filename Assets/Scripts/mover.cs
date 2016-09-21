@@ -9,14 +9,15 @@ public class mover : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		rb2d = GetComponent<Rigidbody2D> ();
+		rb2d = GetComponent<Rigidbody2D> (); 
+		target = GameObject.FindGameObjectWithTag ("Player");
+
+		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
+		rb2d.AddTorque (-450);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		transform.Rotate (new Vector3 (0, 0, -450) * Time.deltaTime);
-		Transform targetTransform = target.transform;
-		rb2d.velocity = targetTransform.position * speed;
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {

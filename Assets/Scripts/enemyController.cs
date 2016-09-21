@@ -4,6 +4,7 @@ using System.Collections;
 public class enemyController : MonoBehaviour {
 
 	public GameObject shot;
+	public GameObject target;
 	public Transform shotSpawn;
 	public float shotRate;
 	private float nextShot;
