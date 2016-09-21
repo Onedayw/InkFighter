@@ -75,7 +75,7 @@ public class AsteroidScript : MonoBehaviour {
 		mesh = trail.GetComponent<MeshFilter>().mesh = new Mesh();
 		trail.GetComponent<Renderer>().material = trailMaterial;
 		trail.GetComponent<Renderer>().sortingLayerName = "Player";
-		//trail.GetComponent<Renderer>().sortingOrder = 1;
+		trail.GetComponent<Renderer>().sortingOrder = 0;
 
 		//get and set the polygon collider on this trail.
 		collider = trail.GetComponent<PolygonCollider2D>();
