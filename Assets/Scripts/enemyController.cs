@@ -13,7 +13,7 @@ public class enemyController : MonoBehaviour {
 
 	void Start() 
 	{
-		nextShot = 3;
+		nextShot = 2;
 		rb2d = GetComponent<Rigidbody2D> ();
 		rb2d.velocity = new Vector3 (-2, -2, 0);
 	}
@@ -28,6 +28,11 @@ public class enemyController : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) 
 	{
+
+		if (other.CompareTag ("Player")) {
+			Destroy(gameObject);
+		}
+
 		//Check the provided Collider2D parameter other to see if it is tagged "PickUp", if it is...
 		if (other.gameObject.CompareTag ("Edge") && rb2d.velocity.x < 0) {
 			rb2d.velocity = new Vector3 (2, 2, 0);
