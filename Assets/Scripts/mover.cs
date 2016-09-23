@@ -22,10 +22,13 @@ public class mover : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		GameObject otherObject = other.gameObject;
-		if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge")) {
+		if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge") || otherObject.CompareTag ("Trail")) {
 			Destroy(gameObject);
 		}
+			
 	}
+
+
 
 
 }

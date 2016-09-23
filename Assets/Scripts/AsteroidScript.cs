@@ -72,6 +72,7 @@ public class AsteroidScript : MonoBehaviour {
 	private void Awake() {
 		//create an object and mesh for the trail
 		GameObject trail = new GameObject("Trail", new[] { typeof(MeshRenderer), typeof(MeshFilter), typeof(PolygonCollider2D) } );
+		trail.tag = "Trail";
 		mesh = trail.GetComponent<MeshFilter>().mesh = new Mesh();
 		trail.GetComponent<Renderer>().material = trailMaterial;
 		trail.GetComponent<Renderer>().sortingLayerName = "Player";
@@ -93,17 +94,7 @@ public class AsteroidScript : MonoBehaviour {
 		rightVertices = new LinkedList<Vertex>();
 	}
 	private void Update() {
-		if (!pausing) {
-			//set the mesh and adjust widths if vertices were added or removed
-			if (TryAddVertices() | TryRemoveVertices() ) {
-
-				if (widthStart != widthEnd) {
-					SetVertexWidths();
-				}
-
-				SetMesh();
-			}
-		}
+		
 	}
 
 	//************
@@ -317,7 +308,18 @@ public class AsteroidScript : MonoBehaviour {
         }
     }
 
+	void OnMouseDrag () {
+		if (!pausing) {
+			//set the mesh and adjust widths if vertices were added or removed
+			if (TryAddVertices () | TryRemoveVertices ()) {
 
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
 
+				SetMesh ();
+			}
+		}
+	}
 	
 }
