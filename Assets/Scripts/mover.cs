@@ -25,10 +25,7 @@ public class mover : MonoBehaviour {
 		if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge") || otherObject.CompareTag ("Trail")) {
 			Destroy(gameObject);
 		}
-			
 	}
-
-
 
 
 }

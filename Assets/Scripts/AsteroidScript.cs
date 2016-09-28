@@ -15,7 +15,7 @@ public class AsteroidScript : MonoBehaviour {
 		//************
 
 	public Material trailMaterial;                  //the material of the trail.  Changing this during runtime will have no effect.
-	public float lifeTime = 1.0f;                   //the amount of time in seconds that the trail lasts
+	public float lifeTime = 0.8f;                   //the amount of time in seconds that the trail lasts
 	public float changeTime = 0.5f;                 //time point when the trail begins changing its width (if widthStart != widthEnd)
 	public float widthStart = 1.0f;                 //the starting width of the trail
 	public float widthEnd = 0.3f;                   //the ending width of the trail
@@ -297,6 +297,15 @@ public class AsteroidScript : MonoBehaviour {
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
 		//Vector3 targetPosition= new Vector3(rawPosition.x,  0.0f ,0.0f);
 		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
+		if (!pausing) {
+			//set the mesh and adjust widths if vertices were added or removed
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+		}
 	}
 
 
@@ -304,22 +313,14 @@ public class AsteroidScript : MonoBehaviour {
     {
 		if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("EnemyMover"))
         {
-            other.gameObject.SetActive(false);
+			Destroy (other.gameObject);
         }
     }
 
-	void OnMouseDrag () {
-		if (!pausing) {
-			//set the mesh and adjust widths if vertices were added or removed
-			if (TryAddVertices () | TryRemoveVertices ()) {
 
-				if (widthStart != widthEnd) {
-					SetVertexWidths ();
-				}
 
-				SetMesh ();
-			}
-		}
-	}
+
+
+
 	
 }
