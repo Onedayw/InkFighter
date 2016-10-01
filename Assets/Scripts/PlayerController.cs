@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
 
 	public Image fullHealth;
 	public Image damagedHealth;
-	private float startingHealth = 100;
+	private float startingHealth = 1000;
 	private float currentHealth;
 	private bool takenDamage;
 
