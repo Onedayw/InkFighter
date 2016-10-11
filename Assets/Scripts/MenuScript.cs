@@ -10,4 +10,13 @@ public class MenuScript : MonoBehaviour {
 		SceneManager.LoadScene ("main_g");
 	}
 
+	public void reStartGame()
+	{
+		SceneManager.LoadScene ("main_g");
+	}
+
+	public void backToMenu()
+	{
+		SceneManager.LoadScene ("openning");
+	}
 }

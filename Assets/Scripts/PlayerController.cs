@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
@@ -75,6 +76,9 @@ public class PlayerController : MonoBehaviour {
 			fullHealth.enabled = false;
 			damagedHealth.enabled = true;
 			damagedHealth.transform.localScale = new Vector3 (currentHealth / startingHealth, 1, 1);
+		}
+		if (currentHealth == 0) {
+			SceneManager.LoadScene ("GameOver");
 		}
 	}
 
