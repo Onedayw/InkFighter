@@ -33,6 +33,8 @@ public class AsteroidScript : MonoBehaviour {
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
 	private LinkedList<Vertex> rightVertices;       //the right vertices derived from the center positions
 
+	public GameObject player;
+
 	//************
 	//
 	// Public Methods
@@ -127,6 +129,7 @@ public class AsteroidScript : MonoBehaviour {
 			//add the current position as the most recent center position
 			centerPositions.AddFirst(trans.position);
 			vertsAdded = true;
+
 		}
 
 		return vertsAdded;
@@ -153,7 +156,10 @@ public class AsteroidScript : MonoBehaviour {
 			centerPositions.RemoveLast();
 			vertsRemoved = true;
 		}
-
+		if (vertsRemoved) {
+			PlayerController control =player.GetComponent<PlayerController> ();
+			control.loseHealth ();
+		}
 		return vertsRemoved;
 	}
 	/// <summary>

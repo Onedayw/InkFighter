@@ -82,4 +82,8 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	public void loseHealth(){
+		currentHealth=currentHealth - 1;
+	}
+
 }
