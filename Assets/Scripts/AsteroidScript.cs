@@ -24,16 +24,16 @@ public class AsteroidScript : MonoBehaviour {
 	public bool colliderIsTrigger = true;           //determines if the collider is a trigger.  Changing this during runtime will have no effect.
 	public bool colliderEnabled = true;             //determines if the collider is enabled.  Changing this during runtime will have no effect.
 	public bool pausing = false;                     //determines if the trail is pausing, i.e. neither creating nor destroying vertices
+	public GameObject player;
 
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
+	private float inkRange = 6.0f;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
 	private LinkedList<Vertex> rightVertices;       //the right vertices derived from the center positions
-
-	public GameObject player;
 
 	//************
 	//
@@ -113,7 +113,7 @@ public class AsteroidScript : MonoBehaviour {
 		bool vertsAdded = false;
 
 		//check if the current position is far enough away (> 'vertexDistanceMin') from the most recent position where two vertices were added
-		if ((centerPositions.First.Value - trans.position).sqrMagnitude > vertexDistanceMin * vertexDistanceMin) {
+		if ((centerPositions.First.Value - trans.position).sqrMagnitude > vertexDistanceMin * vertexDistanceMin && isInRange ()) {
 			//calculate the normalized direction from the 1) most recent position of vertex creation to the 2) current position
 			Vector3 dirToCurrentPos = (trans.position - centerPositions.First.Value).normalized; 
 
@@ -258,6 +258,16 @@ public class AsteroidScript : MonoBehaviour {
 
 		if (colliderEnabled) {
 			collider.SetPath(0, colliderPath);
+		}
+	}
+
+
+	private bool isInRange() {
+		Vector3 dist = this.transform.position - player.transform.position;
+		if (dist.magnitude <= inkRange) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 	//************

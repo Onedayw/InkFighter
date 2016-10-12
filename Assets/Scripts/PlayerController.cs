@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour {
 	private float currentHealth;
 	private float damageTakenTime;
 	private float selfHealRepeatTime = 20.0f;
-	private float inkRange = 6.0f;
 
 	void Start () {
 		rb2d = GetComponent<Rigidbody2D>();
@@ -51,8 +50,6 @@ public class PlayerController : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
-		limitInkRange ();
-
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -70,13 +67,6 @@ public class PlayerController : MonoBehaviour {
 		CountText.text = "Count: " + count.ToString();
 		if (count >= 12) {
 			WinText.text = "You Win!";
-		}
-	}
-
-	void limitInkRange () {
-		Vector3 dist = inkpoint.transform.position - this.transform.position;
-		if (dist.magnitude > inkRange) {
-			inkpoint.transform.position = this.transform.position + dist.normalized * inkRange;
 		}
 	}
 
