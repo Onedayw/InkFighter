@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class tutorail : MonoBehaviour {
 	
-	bool mouseOver = false;
 	public Button tutorailButton;
 
 	// Use this for initialization
@@ -18,7 +17,6 @@ public class tutorail : MonoBehaviour {
 	}
 
 	void OnMouseEnter() {
-		mouseOver = true;
 		tutorailButton.image.enabled = false;
 	}
 }

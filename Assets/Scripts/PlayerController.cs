@@ -10,6 +10,10 @@ public class PlayerController : MonoBehaviour {
 	public Text CountText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
+	public GameObject attackRange;
+	public GameObject inkpoint;
+
+	public Slider healthSlider;
 	private Rigidbody2D rb2d;
 	public Image fullHealth;
 	public Image damagedHealth;
@@ -17,18 +21,18 @@ public class PlayerController : MonoBehaviour {
 	private float currentHealth;
 	private float damageTakenTime;
 	private float selfHealRepeatTime = 20.0f;
-	private bool takenDamage;
+	private float inkRange = 6.0f;
 
 	void Start () {
 		rb2d = GetComponent<Rigidbody2D>();
 		count = 0;
 		WinText.text = "";
 		TextUpdate ();
-		takenDamage = false;
 		currentHealth = startingHealth;
 	}
 
 	void Update() {
+		//attackRange.transform.position = this.transform.position;
 		updateHealth ();
 		InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
 	}
@@ -47,6 +51,8 @@ public class PlayerController : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
+		limitInkRange ();
+
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -64,6 +70,13 @@ public class PlayerController : MonoBehaviour {
 		CountText.text = "Count: " + count.ToString();
 		if (count >= 12) {
 			WinText.text = "You Win!";
+		}
+	}
+
+	void limitInkRange () {
+		Vector3 dist = inkpoint.transform.position - this.transform.position;
+		if (dist.magnitude > inkRange) {
+			inkpoint.transform.position = this.transform.position + dist.normalized * inkRange;
 		}
 	}
 
