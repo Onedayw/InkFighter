@@ -6,20 +6,17 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour {
 
 	public float speed;
-
 	public int count;
-
 	public Text CountText;
 	public Text WinText;
-
 	public VitualJoystick moveJoystick;
-
 	private Rigidbody2D rb2d;
-
 	public Image fullHealth;
 	public Image damagedHealth;
 	private float startingHealth = 1000;
 	private float currentHealth;
+	private float damageTakenTime;
+	private float selfHealRepeatTime = 20.0f;
 	private bool takenDamage;
 
 	void Start () {
@@ -33,6 +30,7 @@ public class PlayerController : MonoBehaviour {
 
 	void Update() {
 		updateHealth ();
+		InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
 	}
 
 	void FixedUpdate () {
@@ -58,6 +56,7 @@ public class PlayerController : MonoBehaviour {
 			TextUpdate ();
 		} else if (other.gameObject.CompareTag ("EnemyMover")) {
 			currentHealth -= 5;
+			damageTakenTime = Time.time;
 		}
 	}
 
@@ -83,7 +82,13 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void loseHealth(){
-		currentHealth=currentHealth - 1;
+		currentHealth = currentHealth - 1;
+		damageTakenTime = Time.time;
 	}
 
+	void SelfHealing() {
+		if (currentHealth < startingHealth && Time.time > damageTakenTime + (2.0f)) {
+			currentHealth += 0.25f;
+		}
+	}
 }
