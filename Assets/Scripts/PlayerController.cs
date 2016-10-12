@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour {
 			damagedHealth.enabled = true;
 			damagedHealth.transform.localScale = new Vector3 (currentHealth / startingHealth, 1, 1);
 		}
-		if (currentHealth == 0) {
+		if (currentHealth <= 0.0) {
 			SceneManager.LoadScene ("GameOver");
 		}
 	}
