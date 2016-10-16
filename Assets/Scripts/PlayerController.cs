@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody2D rb2d;
 	public Image fullHealth;
 	public Image damagedHealth;
-	private float startingHealth = 1000;
+	private float startingHealth = 100;
 	private float currentHealth;
 	private float damageTakenTime;
 	private float selfHealRepeatTime = 20.0f;
@@ -53,12 +53,13 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.CompareTag("Enemy")) {
+		/*if (other.gameObject.CompareTag("Enemy")) {
 			//Destroy (other.gameObject);
 			count++;
 			TextUpdate ();
-		} else if (other.gameObject.CompareTag ("EnemyMover")) {
-			currentHealth -= 5;
+		} else*/
+		if (other.gameObject.CompareTag ("EnemyMover")) {
+			loseHealth (5);//todo:losehealth(other.damage)
 			damageTakenTime = Time.time;
 		}
 	}
@@ -84,9 +85,30 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	public void loseHealth(){
-		currentHealth = currentHealth - 1;
-		damageTakenTime = Time.time;
+	public void loseHealth(int damage){
+		if (currentHealth > damage) {
+			currentHealth = currentHealth - damage;
+			damageTakenTime = Time.time;
+		} 
+		else {
+			currentHealth = 0;
+		}
+
+
+	}
+
+	public bool removeHealth(int damage){
+		//for health decreasecaused by drawing & skills
+		//returns true if player has sufficient health, else return false
+		if (currentHealth > damage) {
+			currentHealth = currentHealth - 1;
+			damageTakenTime = Time.time;
+			return true;
+		}
+		else{
+			//todo:health bar blink to indicate insufficient health
+			return false;
+		}
 	}
 
 	void SelfHealing() {

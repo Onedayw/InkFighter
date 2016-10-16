@@ -122,16 +122,24 @@ public class AsteroidScript : MonoBehaviour {
 			Vector3 leftPos = trans.position + (cross * -widthStart * 0.5f);
 			Vector3 rightPos = trans.position + (cross * widthStart * 0.5f);
 
-			//create two new vertices at the calculated positions
-			leftVertices.AddFirst(new Vertex(leftPos, trans.position, (leftPos - trans.position).normalized) );
-			rightVertices.AddFirst(new Vertex(rightPos, trans.position, (rightPos - trans.position).normalized) );
+			//trace can be added, see if player has enough health to add it
+			PlayerController control =player.GetComponent<PlayerController> ();
+			vertsAdded = control.removeHealth (1);
+			if (vertsAdded) {			
+				//create two new vertices at the calculated positions
+				leftVertices.AddFirst(new Vertex(leftPos, trans.position, (leftPos - trans.position).normalized) );
+				rightVertices.AddFirst(new Vertex(rightPos, trans.position, (rightPos - trans.position).normalized) );
 
-			//add the current position as the most recent center position
-			centerPositions.AddFirst(trans.position);
-			vertsAdded = true;
+				//add the current position as the most recent center position
+				centerPositions.AddFirst(trans.position);
+			}
+
+			//vertsAdded = true;
 
 		}
+		//if (vertsAdded) {
 
+		//}
 		return vertsAdded;
 	}
 
@@ -156,10 +164,7 @@ public class AsteroidScript : MonoBehaviour {
 			centerPositions.RemoveLast();
 			vertsRemoved = true;
 		}
-		if (vertsRemoved) {
-			PlayerController control =player.GetComponent<PlayerController> ();
-			control.loseHealth ();
-		}
+
 		return vertsRemoved;
 	}
 	/// <summary>
