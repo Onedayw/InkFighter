@@ -9,12 +9,17 @@ public class CameraFollowing : MonoBehaviour {
 	//boundary: central area size of 0.6 * 0.6
 	private float freeMoveOffsetX = (float)(Screen.width * 0.3);
 	private float freeMoveOffsetY = (float)(Screen.height * 0.3);
+	Camera mycam;
+	public Vector2 margin;
 	public GameObject player;  
+	public BoxCollider2D bounds;
+	private Vector3 _min, _max;
 	private float playerPositionX, playerPositionY, cameraPositionX, cameraPositionY, cameraPositionZ;
 
 	void Start () {
-
-		player = GameObject.FindGameObjectWithTag("Player");
+		_min = bounds.bounds.min;
+		_max = bounds.bounds.max;
+		mycam = GetComponent<Camera> ();
 		freeMoveOffsetX = SceneToWorldSize(freeMoveOffsetX, Camera.main, this.transform.position.z);
 		freeMoveOffsetY = SceneToWorldSize(freeMoveOffsetY, Camera.main, this.transform.position.z);
 	}
@@ -24,27 +29,28 @@ public class CameraFollowing : MonoBehaviour {
 		playerPositionY = player.transform.position.y;
 		cameraPositionX = this.transform.position.x;
 		cameraPositionY = this.transform.position.y;
-		if (playerPositionX > cameraPositionX + freeMoveOffsetX)
-		{
-			transform.position += new Vector3((playerPositionX - cameraPositionX - freeMoveOffsetX), 0);
+
+		if (playerPositionX > cameraPositionX + freeMoveOffsetX) {
+			cameraPositionX += playerPositionX - cameraPositionX - freeMoveOffsetX;
 		}
-		else if(playerPositionX < cameraPositionX - freeMoveOffsetX)
-		{
-			transform.position -= new Vector3((cameraPositionX - freeMoveOffsetX - playerPositionX), 0);
+		else if(playerPositionX < cameraPositionX - freeMoveOffsetX) {
+			cameraPositionX -= cameraPositionX - freeMoveOffsetX - playerPositionX;
 		}
 
-		if (playerPositionY > cameraPositionY + freeMoveOffsetY)
-		{
-			transform.position += new Vector3(0,(playerPositionY - cameraPositionY - freeMoveOffsetY));
+		if (playerPositionY > cameraPositionY + freeMoveOffsetY) {
+			cameraPositionY += playerPositionY - cameraPositionY - freeMoveOffsetY;
 		}
-		else if (playerPositionY < cameraPositionY - freeMoveOffsetY)
-		{
-			transform.position -= new Vector3(0,(cameraPositionY - freeMoveOffsetY - playerPositionY));
+		else if (playerPositionY < cameraPositionY - freeMoveOffsetY) {
+			cameraPositionY -= cameraPositionY - freeMoveOffsetY - playerPositionY;
 		}
+
+		var halfwidth = mycam.orthographicSize * ((float)Screen.width / Screen.height);
+		cameraPositionX = Mathf.Clamp (cameraPositionX, _min.x + halfwidth, _max.x - halfwidth);
+		cameraPositionY = Mathf.Clamp (cameraPositionY, _min.y + mycam.orthographicSize, _max.y - mycam.orthographicSize);
+		transform.position = new Vector3 (cameraPositionX, cameraPositionY, transform.position.z);
 	}
 
-	public float SceneToWorldSize(float size, Camera ca, float Worldz)
-	{
+	public float SceneToWorldSize(float size, Camera ca, float Worldz) {
 		if (ca.orthographic)
 		{
 			float height = Screen.height / 2;

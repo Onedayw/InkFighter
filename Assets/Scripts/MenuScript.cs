@@ -12,11 +12,16 @@ public class MenuScript : MonoBehaviour {
 
 	public void reStartGame()
 	{
+		Debug.Log ("restart");
 		SceneManager.LoadScene ("main_g");
 	}
 
 	public void backToMenu()
 	{
 		SceneManager.LoadScene ("openning");
+	}
+
+	public void doTutorial() {
+		SceneManager.LoadScene ("tutorial");
 	}
 }
