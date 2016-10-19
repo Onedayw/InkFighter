@@ -22,6 +22,6 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void doTutorial() {
-		SceneManager.LoadScene ("tutorial");
+		SceneManager.LoadScene ("tutorial_movement");
 	}
 }
