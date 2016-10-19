@@ -334,7 +334,7 @@ public class AsteroidScript : MonoBehaviour {
     {
 		if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("EnemyMover"))
         {
-			Destroy (other.gameObject);
+			//Destroy (other.gameObject);
         }
     }
 

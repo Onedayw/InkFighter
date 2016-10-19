@@ -8,9 +8,11 @@ public class EnemyManager : MonoBehaviour {
 	public Transform[] spawnPoints;         // An array of the spawn points this enemy can spawn from.
 
 	private int enenyNumer = 0;
+	private ArrayList enemies;
 
 	void Start () 
 	{
+		enemies = new ArrayList ();
 		InvokeRepeating ("Spawn", 0, spawnTime);
 	}
 
@@ -29,5 +31,9 @@ public class EnemyManager : MonoBehaviour {
 			Instantiate (enemy, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
 		}
 
+	}
+
+	public void addEnemyToList(GameObject e) {
+		enemies.Add(e);
 	}
 }
