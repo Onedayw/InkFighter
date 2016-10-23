@@ -26,12 +26,10 @@ public class AsteroidScript : MonoBehaviour {
 	public bool pausing = false;                     //determines if the trail is pausing, i.e. neither creating nor destroying vertices
 	public GameObject player;
 
-
-	private bool flag=true;							//flag 还要不要存在
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 20.0f;
+	private float inkRange = 6.0f;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -100,6 +98,7 @@ public class AsteroidScript : MonoBehaviour {
 		leftVertices = new LinkedList<Vertex>();
 		rightVertices = new LinkedList<Vertex>();
 	}
+
 	private void Update() {
 		
 	}
@@ -270,8 +269,7 @@ public class AsteroidScript : MonoBehaviour {
 			collider.SetPath(0, colliderPath);
 		}
 	}
-
-
+		
 	private bool isInRange() {
 		Vector3 dist = this.transform.position - player.transform.position;
 		if (dist.magnitude <= inkRange) {
@@ -307,7 +305,6 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 
-
 	/// <summary>
 	/// //////////////////////////////////////////
 	/// </summary>
@@ -319,61 +316,60 @@ public class AsteroidScript : MonoBehaviour {
 		player=GameObject.Find ("Player");
 	}
 
-	
-	//iphone version!
-//	void FixedUpdate () {
-//		if (Input.touchCount > 0 && flag) {
-//			for(int i=0;i<2;i++){
-//				if (Input.GetTouch (i).phase == TouchPhase.Moved || Input.GetTouch (i).phase == TouchPhase.Began) {
-//					Vector2 mouse = Input.GetTouch (i).position;//Input.mousePosition;
-//					Vector2 rawPosition = Camera.main.ScreenToWorldPoint (mouse); //Input.GetTouch(0).position
-//					if (mouse.x > 220 || mouse.y > 220) {
-//						GetComponent<Rigidbody2D> ().MovePosition (rawPosition);	
-//						break;
-//					} 
-//				}
-//				if (Input.GetTouch (i).phase == TouchPhase.Ended) {
-//					Vector2 mouse = Input.GetTouch (i).position;
-//					if (mouse.x > 220 || mouse.y > 220) {
-//						flag = false;	
-//						break;
-//					} 
-//				}	
-//			}
-//		}
-//			
-//		if (!pausing) {
-//			//set the mesh and adjust widths if vertices were added or removed
-//			if (TryAddVertices () | TryRemoveVertices ()) {
-//				if (widthStart != widthEnd) {
-//					SetVertexWidths ();
-//				}
-//				SetMesh ();
-//			}
-//		}	
-//		if (flag == false && centerPositions.Count <= 1) {
-//			if (TryAddVertices () | TryRemoveVertices ()) {
-//				if (widthStart != widthEnd) {
-//					SetVertexWidths ();
-//				}
-//				SetMesh ();
-//			}
-//			centerPositions.Clear ();
-//			leftVertices.Clear ();
-//			rightVertices.Clear ();
-//			SetMesh ();
-//
-//			Destroy (gameObject);
-//		}
-//	}
 
+	/*
+	//Iphone version!
+	void FixedUpdate () {
+		if (Input.touchCount > 0 && flag) {
+			for(int i=0;i<2;i++){
+				if (Input.GetTouch (i).phase == TouchPhase.Moved || Input.GetTouch (i).phase == TouchPhase.Began) {
+					Vector2 mouse = Input.GetTouch (i).position;//Input.mousePosition;
+					Vector2 rawPosition = Camera.main.ScreenToWorldPoint (mouse); //Input.GetTouch(0).position
+					if (mouse.x > 220 || mouse.y > 220) {
+						GetComponent<Rigidbody2D> ().MovePosition (rawPosition);	
+						break;
+					} 
+				}
+				if (Input.GetTouch (i).phase == TouchPhase.Ended) {
+					Vector2 mouse = Input.GetTouch (i).position;
+					if (mouse.x > 220 || mouse.y > 220) {
+						flag = false;	
+						break;
+					} 
+				}	
+			}
+		}
+			
+		if (!pausing) {
+			//set the mesh and adjust widths if vertices were added or removed
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+		}	
+		if (flag == false && centerPositions.Count <= 1) {
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+			centerPositions.Clear ();
+			leftVertices.Clear ();
+			rightVertices.Clear ();
+			SetMesh ();
 
+			Destroy (gameObject);
+		}
+	}
+	*/
 
-	
 	// computer version!
 	void FixedUpdate () {   
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
-		//Vector3 targetPosition= new Vector3(rawPosition.x,  0.0f ,0.0f);
+		//Vector3 targetPosition = new Vector3(rawPosition.x, 0.0f ,0.0f);
 		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
 		if (!pausing) {
 			//set the mesh and adjust widths if vertices were added or removed
