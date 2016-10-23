@@ -7,23 +7,21 @@ using UnityEngine.UI;
 public class TutorialParry : MonoBehaviour {
 	public GameObject player;
 	public GameObject Enemy;
-	public GameObject axe;
-	public int count;
-	public Text CountText;
+	public static int parryAXE = 0;
+
 
 	// Use this for initialization
 	void Start () {
-		count = 0;
-
-		TextUpdate ();
 	}
 
 	// Update is called once per frame
-	void Update () {		
+	void Update () {
+		if (parryAXE >= 3) {
+			toNextScene ();	
+		}
 	}
 
-
-	void TextUpdate () {
-		CountText.text = "Count: " + count.ToString();
+	void toNextScene() {
+		SceneManager.LoadScene ("openning");
 	}
 }

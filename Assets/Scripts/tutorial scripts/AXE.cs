@@ -9,9 +9,6 @@ public class AXE : MonoBehaviour {
 	public GameObject target;
 	private Rigidbody2D rb2d;
 	public float speed;
-	bool flag;
-	private float firstTime;
-
 
 	// Use this for initialization
 	void Start () {
@@ -20,14 +17,10 @@ public class AXE : MonoBehaviour {
 
 		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
 		rb2d.AddTorque (-450);
-
-		flag = true;
-		firstTime = 10000f;
 	}
 
 	// Update is called once per frame
-	void Update () {
-		toNextScene ();	
+	void Update () {		
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -37,20 +30,8 @@ public class AXE : MonoBehaviour {
 		}
 
 		if (otherObject.CompareTag ("Trail")) {	
+			TutorialParry.parryAXE++;
 			Destroy(gameObject);
-			if (flag) {
-				firstTime = Time.time;
-				flag = false;
-			}
-			toNextScene ();
 		}
 	}
-
-
-	void toNextScene() {		
-		if (Time.time - firstTime >= 5f) {
-			SceneManager.LoadScene ("openning");
-		}
-	}
-
 }
