@@ -26,10 +26,12 @@ public class AsteroidScript : MonoBehaviour {
 	public bool pausing = false;                     //determines if the trail is pausing, i.e. neither creating nor destroying vertices
 	public GameObject player;
 
+
+	private bool flag=true;							//flag 还要不要存在
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 6.0f;
+	private float inkRange = 20.0f;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -73,6 +75,9 @@ public class AsteroidScript : MonoBehaviour {
 
 	private void Awake() {
 		//create an object and mesh for the trail
+		player=GameObject.Find ("Player");
+		cam = Camera.main;
+
 		GameObject trail = new GameObject("Trail", new[] { typeof(MeshRenderer), typeof(MeshFilter), typeof(PolygonCollider2D) } );
 		trail.tag = "Trail";
 		mesh = trail.GetComponent<MeshFilter>().mesh = new Mesh();
@@ -311,13 +316,32 @@ public class AsteroidScript : MonoBehaviour {
 		if (cam == null) {
 			cam = Camera.main;
 		}
+		player=GameObject.Find ("Player");
 	}
+
 	
 	// Update is called once per physic timestep
 	void FixedUpdate () {
-		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
-		//Vector3 targetPosition= new Vector3(rawPosition.x,  0.0f ,0.0f);
-		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
+		if (Input.touchCount > 0 && flag) {
+			for(int i=0;i<2;i++){
+				if (Input.GetTouch (i).phase == TouchPhase.Moved || Input.GetTouch (i).phase == TouchPhase.Began) {
+					Vector2 mouse = Input.GetTouch (i).position;//Input.mousePosition;
+					Vector2 rawPosition = Camera.main.ScreenToWorldPoint (mouse); //Input.GetTouch(0).position
+					if (mouse.x > 220 || mouse.y > 220) {
+						GetComponent<Rigidbody2D> ().MovePosition (rawPosition);	
+						break;
+					} 
+				}
+				if (Input.GetTouch (i).phase == TouchPhase.Ended) {
+					Vector2 mouse = Input.GetTouch (i).position;
+					if (mouse.x > 220 || mouse.y > 220) {
+						flag = false;	
+						break;
+					} 
+				}	
+			}
+		}
+			
 		if (!pausing) {
 			//set the mesh and adjust widths if vertices were added or removed
 			if (TryAddVertices () | TryRemoveVertices ()) {
@@ -326,22 +350,41 @@ public class AsteroidScript : MonoBehaviour {
 				}
 				SetMesh ();
 			}
+		}	
+		if (flag == false && centerPositions.Count <= 1) {
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+			centerPositions.Clear ();
+			leftVertices.Clear ();
+			rightVertices.Clear ();
+			SetMesh ();
+
+			Destroy (gameObject);
 		}
 	}
 
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-		if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("EnemyMover"))
-        {
-			//Destroy (other.gameObject);
-        }
-    }
 
-
-
-
-
+	
+	// Update is called once per physic timestep
+//	void FixedUpdate () {
+//		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
+//		//Vector3 targetPosition= new Vector3(rawPosition.x,  0.0f ,0.0f);
+//		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
+//		if (!pausing) {
+//			//set the mesh and adjust widths if vertices were added or removed
+//			if (TryAddVertices () | TryRemoveVertices ()) {
+//				if (widthStart != widthEnd) {
+//					SetVertexWidths ();
+//				}
+//				SetMesh ();
+//			}
+//		}
+//	}
 
 	
 }
