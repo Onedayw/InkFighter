@@ -320,61 +320,28 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 	
-	// Update is called once per physic timestep
-	void FixedUpdate () {
-		if (Input.touchCount > 0 && flag) {
-			for(int i=0;i<2;i++){
-				if (Input.GetTouch (i).phase == TouchPhase.Moved || Input.GetTouch (i).phase == TouchPhase.Began) {
-					Vector2 mouse = Input.GetTouch (i).position;//Input.mousePosition;
-					Vector2 rawPosition = Camera.main.ScreenToWorldPoint (mouse); //Input.GetTouch(0).position
-					if (mouse.x > 220 || mouse.y > 220) {
-						GetComponent<Rigidbody2D> ().MovePosition (rawPosition);	
-						break;
-					} 
-				}
-				if (Input.GetTouch (i).phase == TouchPhase.Ended) {
-					Vector2 mouse = Input.GetTouch (i).position;
-					if (mouse.x > 220 || mouse.y > 220) {
-						flag = false;	
-						break;
-					} 
-				}	
-			}
-		}
-			
-		if (!pausing) {
-			//set the mesh and adjust widths if vertices were added or removed
-			if (TryAddVertices () | TryRemoveVertices ()) {
-				if (widthStart != widthEnd) {
-					SetVertexWidths ();
-				}
-				SetMesh ();
-			}
-		}	
-		if (flag == false && centerPositions.Count <= 1) {
-			if (TryAddVertices () | TryRemoveVertices ()) {
-				if (widthStart != widthEnd) {
-					SetVertexWidths ();
-				}
-				SetMesh ();
-			}
-			centerPositions.Clear ();
-			leftVertices.Clear ();
-			rightVertices.Clear ();
-			SetMesh ();
-
-			Destroy (gameObject);
-		}
-	}
-
-
-
-	
-	// Update is called once per physic timestep
+	//iphone version!
 //	void FixedUpdate () {
-//		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
-//		//Vector3 targetPosition= new Vector3(rawPosition.x,  0.0f ,0.0f);
-//		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
+//		if (Input.touchCount > 0 && flag) {
+//			for(int i=0;i<2;i++){
+//				if (Input.GetTouch (i).phase == TouchPhase.Moved || Input.GetTouch (i).phase == TouchPhase.Began) {
+//					Vector2 mouse = Input.GetTouch (i).position;//Input.mousePosition;
+//					Vector2 rawPosition = Camera.main.ScreenToWorldPoint (mouse); //Input.GetTouch(0).position
+//					if (mouse.x > 220 || mouse.y > 220) {
+//						GetComponent<Rigidbody2D> ().MovePosition (rawPosition);	
+//						break;
+//					} 
+//				}
+//				if (Input.GetTouch (i).phase == TouchPhase.Ended) {
+//					Vector2 mouse = Input.GetTouch (i).position;
+//					if (mouse.x > 220 || mouse.y > 220) {
+//						flag = false;	
+//						break;
+//					} 
+//				}	
+//			}
+//		}
+//			
 //		if (!pausing) {
 //			//set the mesh and adjust widths if vertices were added or removed
 //			if (TryAddVertices () | TryRemoveVertices ()) {
@@ -383,8 +350,41 @@ public class AsteroidScript : MonoBehaviour {
 //				}
 //				SetMesh ();
 //			}
+//		}	
+//		if (flag == false && centerPositions.Count <= 1) {
+//			if (TryAddVertices () | TryRemoveVertices ()) {
+//				if (widthStart != widthEnd) {
+//					SetVertexWidths ();
+//				}
+//				SetMesh ();
+//			}
+//			centerPositions.Clear ();
+//			leftVertices.Clear ();
+//			rightVertices.Clear ();
+//			SetMesh ();
+//
+//			Destroy (gameObject);
 //		}
 //	}
+
+
+
+	
+	// computer version!
+	void FixedUpdate () {   
+		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
+		//Vector3 targetPosition= new Vector3(rawPosition.x,  0.0f ,0.0f);
+		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
+		if (!pausing) {
+			//set the mesh and adjust widths if vertices were added or removed
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+		}
+	}
 
 	
 }
