@@ -30,6 +30,10 @@ public class PlayerController : MonoBehaviour {
 		currentHealth = startingHealth;
 	}
 
+	void Update () {
+		pause ();
+	}
+
 	void FixedUpdate () {
 		// Handle player position change
 		float moveHorizontal = Input.GetAxis ("Horizontal");
@@ -43,7 +47,7 @@ public class PlayerController : MonoBehaviour {
 		// Handle health change
 		updateHealth ();
 		InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
-		pause ();
+
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
