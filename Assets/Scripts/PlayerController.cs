@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour {
 	private float currentHealth;
 	private float damageTakenTime;
 	private float selfHealRepeatTime = 20.0f;
-
+    public MenuScript menuScript;
 	void Start () {
 		rb2d = GetComponent<Rigidbody2D>();
 		count = 0;
@@ -29,9 +29,7 @@ public class PlayerController : MonoBehaviour {
 		TextUpdate ();
 		currentHealth = startingHealth;
 	}
-
-	void Update () {
-		pause ();
+    void Update () {
 	}
 
 	void FixedUpdate () {
@@ -107,13 +105,5 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	void pause() {
-		if (Input.GetKeyDown (KeyCode.P)) {
-			if (Time.timeScale == 1) {
-				Time.timeScale = 0;
-			} else {
-				Time.timeScale = 1;
-			}
-		}
-	}
+
 }
