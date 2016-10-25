@@ -3,8 +3,7 @@ using System.Collections;
 
 public class enemyController : MonoBehaviour {
 
-	public GameObject shot;
-	public GameObject target;
+	public Mover shot;
 	public Transform shotSpawn;
 	public float shotRate;
 	private float nextShot;

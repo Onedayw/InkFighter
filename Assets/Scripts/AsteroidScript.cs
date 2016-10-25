@@ -127,7 +127,7 @@ public class AsteroidScript : MonoBehaviour {
 			Vector3 rightPos = trans.position + (cross * widthStart * 0.5f);
 
 			//trace can be added, see if player has enough health to add it
-			PlayerController control =player.GetComponent<PlayerController> ();
+			PlayerController control = player.GetComponent<PlayerController> ();
 			vertsAdded = control.removeHealth (1);
 			if (vertsAdded) {			
 				//create two new vertices at the calculated positions

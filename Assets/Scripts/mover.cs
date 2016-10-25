@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class mover : MonoBehaviour {
+public class Mover : MonoBehaviour {
 
-	public GameObject target;
+	public Transform target;
 	private Rigidbody2D rb2d;
 	public float speed;
 	// Use this for initialization
 	void Start () {
 		rb2d = GetComponent<Rigidbody2D> (); 
-		target = GameObject.FindGameObjectWithTag ("Player");
+		target = GameObject.FindGameObjectWithTag ("Player").transform;
 
-		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
+		rb2d.velocity = (target.position - rb2d.transform.position).normalized * speed;
 		rb2d.AddTorque (-450);
 	}
 	

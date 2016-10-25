@@ -17,18 +17,23 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody2D rb2d;
 	public Image fullHealth;
 	public Image damagedHealth;
-	private float startingHealth = 100;
+	private float startingHealth = 100f;
 	private float currentHealth;
 	private float damageTakenTime;
-	private float selfHealRepeatTime = 20.0f;
+	private float selfHealRepeatTime = 20f;
+	private float attack;
     public MenuScript menuScript;
+
+
 	void Start () {
 		rb2d = GetComponent<Rigidbody2D>();
 		count = 0;
 		WinText.text = "";
 		TextUpdate ();
 		currentHealth = startingHealth;
+		attack = 50;
 	}
+
     void Update () {
 	}
 
@@ -103,6 +108,10 @@ public class PlayerController : MonoBehaviour {
 		if (currentHealth < startingHealth && Time.time > damageTakenTime + (2.0f)) {
 			currentHealth += 0.25f;
 		}
+	}
+
+	public float getAttack() {
+		return attack;
 	}
 
 
