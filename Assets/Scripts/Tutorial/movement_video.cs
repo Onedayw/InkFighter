@@ -20,7 +20,7 @@ public class movement_video : MonoBehaviour {
 	}
 
 	IEnumerator endMovie() {		
-		yield return new WaitForSeconds(5);
+		yield return new WaitForSeconds(5.5f);
 		Destroy (rawImage);
 	}
 }
