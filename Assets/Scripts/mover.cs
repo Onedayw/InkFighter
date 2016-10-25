@@ -3,15 +3,18 @@ using System.Collections;
 
 public class Mover : MonoBehaviour {
 
-	public Transform target;
+	private GameObject target;
+	private PlayerController playerController;
 	private Rigidbody2D rb2d;
-	public float speed;
+	public float speed, attack;
+
 	// Use this for initialization
 	void Start () {
 		rb2d = GetComponent<Rigidbody2D> (); 
-		target = GameObject.FindGameObjectWithTag ("Player").transform;
+		target = GameObject.FindGameObjectWithTag ("Player");
+		playerController = target.GetComponent<PlayerController> ();
 
-		rb2d.velocity = (target.position - rb2d.transform.position).normalized * speed;
+		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
 		rb2d.AddTorque (-450);
 	}
 	
@@ -24,6 +27,13 @@ public class Mover : MonoBehaviour {
 		if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge") || otherObject.CompareTag ("Trail")) {
 			Destroy(gameObject);
 		}
+		if (otherObject.CompareTag ("Player")) {
+			makeDamage (attack);
+		}
+	}
+
+	void makeDamage (float damage) {
+		playerController.loseHealth (damage);
 	}
 
 

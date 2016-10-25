@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour {
 		WinText.text = "";
 		TextUpdate ();
 		currentHealth = startingHealth;
-		attack = 50;
+		attack = 10;
 	}
 
     void Update () {

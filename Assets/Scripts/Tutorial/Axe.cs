@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class Axe : Mover {
 
-
-
 	void OnTriggerEnter2D(Collider2D other) {
 		GameObject otherObject = other.gameObject;
 		if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge")) {

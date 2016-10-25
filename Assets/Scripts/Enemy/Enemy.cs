@@ -2,33 +2,59 @@
 using System.Collections;
 
 public class Enemy : MonoBehaviour {
-	private float health, attack, speed, vision;
-	private AttackBehavior ab;
-	private MoveBehavior mb;
+	private const float hurtTime = 2f;
+
+	public float health, attack, speed, vision;
+	private float damageTakenTime;
+	private bool isHurt, seenTarget;
 
 	private EnemyManager enemyManager;
 	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
 	private GameObject target;                           //Transform to attempt to move toward each turn.
+	private PlayerController playerController;
 
 	// Use this for initialization
 	void Start () {
-		health = 100f;
-		attack = 100f;
-		speed = 100f;
-		vision = 100f;
+		isHurt = false;
 		target = GameObject.FindGameObjectWithTag ("Player");
+		playerController = target.GetComponent<PlayerController> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (isHurt) {
+			if (Time.time > damageTakenTime + hurtTime) {
+				isHurt = false;
+			}
+		}
+	}
+
+	public void debug() {
+		Debug.Log ("I got it!");
+	}
+
+	public bool setSeenTarget() {
+		seenTarget = true;
+		return seenTarget;
+	}
+
+	public bool getSeenTarget() {
+		return seenTarget;
+	}
+
+	public GameObject getTarget() {
+		return target;
 	}
 
 	// Usc this for taking damage
 	public float takeDamage(float damage) {
-		health -= damage;
-		if (health <= 0f) {
-			die ();
+		if (!isHurt) {
+			health -= damage;
+			if (health <= 0f) {
+				die ();
+			}
+			damageTakenTime = Time.time;
+			isHurt = true;
 		}
 		return health;
 	}
@@ -40,18 +66,11 @@ public class Enemy : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) 
 	{
 		if (other.CompareTag ("Trail")) {
-
+			takeDamage (playerController.getAttack ());
 
 		}
 	}
 
-	public void setAttackBehavior(AttackBehavior ab) {
-		this.ab = ab;
-	}
-
-	public void setMoveBehavior(MoveBehavior mb) {
-		this.mb = mb;
-	}
 
 	public void setHealth(float health) {
 		this.health = health;
