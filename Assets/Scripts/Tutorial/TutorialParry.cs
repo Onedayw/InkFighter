@@ -7,11 +7,12 @@ using UnityEngine.UI;
 public class TutorialParry : MonoBehaviour {
 	public GameObject player;
 	public GameObject Enemy;
-	public static int parryAXE = 0;
+	public static int parryAXE;
 
 
 	// Use this for initialization
 	void Start () {
+		parryAXE = 0;
 	}
 
 	// Update is called once per frame
