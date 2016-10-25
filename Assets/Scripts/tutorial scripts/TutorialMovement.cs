@@ -19,7 +19,7 @@ public class TutorialMovement : MonoBehaviour {
 	}
 
 	IEnumerator toNextScene() {		
-		yield return new WaitForSeconds(5);
+		yield return new WaitForSeconds(3);
 		SceneManager.LoadScene ("tutorial_kill");
 	}
 }
