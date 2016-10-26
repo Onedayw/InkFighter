@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody2D rb2d;
 	public Image fullHealth;
 	public Image damagedHealth;
-	private float startingHealth;
+	public float startingHealth;
 	private float currentHealth;
 	private float damageTakenTime;
 	private float selfHealRepeatTime = 20f;
@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour {
 		rb2d = GetComponent<Rigidbody2D>();
 		count = 0;
 		attack = 10f;
-		startingHealth = 100f;
 		currentHealth = startingHealth;
 	}
 
