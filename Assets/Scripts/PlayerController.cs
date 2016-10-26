@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody2D rb2d;
 	public Image fullHealth;
 	public Image damagedHealth;
-	private float startingHealth = 100f;
+	private float startingHealth;
 	private float currentHealth;
 	private float damageTakenTime;
 	private float selfHealRepeatTime = 20f;
@@ -31,7 +31,9 @@ public class PlayerController : MonoBehaviour {
 		WinText.text = "";
 		TextUpdate ();
 		currentHealth = startingHealth;
-		attack = 10;
+		attack = 10f;
+		startingHealth = 100f;
+		currentHealth = startingHealth;
 	}
 
     void Update () {
