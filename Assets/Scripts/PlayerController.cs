@@ -28,9 +28,6 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		rb2d = GetComponent<Rigidbody2D>();
 		count = 0;
-		WinText.text = "";
-		TextUpdate ();
-		currentHealth = startingHealth;
 		attack = 10f;
 		startingHealth = 100f;
 		currentHealth = startingHealth;
