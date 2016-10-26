@@ -23,6 +23,6 @@ public class TutorialParry : MonoBehaviour {
 	}
 
 	void toNextScene() {
-		SceneManager.LoadScene ("openning");
+		SceneManager.LoadScene ("tutorial_finish");
 	}
 }
