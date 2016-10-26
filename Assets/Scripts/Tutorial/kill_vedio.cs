@@ -20,7 +20,7 @@ public class kill_vedio : MonoBehaviour {
 	}
 
 	IEnumerator endMovie() {		
-		yield return new WaitForSeconds(7);
+		yield return new WaitForSeconds(9.2f);
 		Destroy (rawImage);
 	}
 }

@@ -20,7 +20,7 @@ public class parry_vedio : MonoBehaviour {
 	}
 
 	IEnumerator endMovie() {		
-		yield return new WaitForSeconds(4);
+		yield return new WaitForSeconds(3.8f);
 		Destroy (rawImage);
 	}
 }
