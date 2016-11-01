@@ -9,7 +9,7 @@ public class LongRangeAttack : MonoBehaviour {
 	public float shotRate;
 	private float nextShot;
 	private GameObject target;
-
+    public float shotRange;
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +19,7 @@ public class LongRangeAttack : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if ((target.transform.position - this.transform.position).magnitude < vision) {
+		if ((target.transform.position - this.transform.position).magnitude < shotRange) {
 			attack ();
 		}
 	}
@@ -34,7 +34,8 @@ public class LongRangeAttack : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) 
 	{
 		if (other.CompareTag ("Trail")) {
-			Destroy(gameObject);
+            //Destroy(gameObject);
+            Debug.Log("1");
 		}
 	}
 }

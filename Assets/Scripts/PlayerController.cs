@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour {
 
 	public float speed;
-	public int count;
 	public Text CountText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
@@ -20,20 +19,29 @@ public class PlayerController : MonoBehaviour {
 	public float startingHealth;
 	private float currentHealth;
 	private float damageTakenTime;
-	private float selfHealRepeatTime = 20f;
+    private float healingInterval = 1.0f;
+    private const float hurtTime = 0.5f;
+    private float selfHealRepeatTime = 20f;
 	private float attack;
     public MenuScript menuScript;
+    public bool isHurt;
+ 
 
-
-	void Start () {
+    void Start () {
 		rb2d = GetComponent<Rigidbody2D>();
-		count = 0;
+		//count = 0;
 		attack = 10f;
 		currentHealth = startingHealth;
-	}
+        isHurt = false;
+    }
 
     void Update () {
-	}
+        if (isHurt) {
+            if (Time.time > damageTakenTime + hurtTime) {
+                isHurt = false;
+            }
+        }
+    }
 
 	void FixedUpdate () {
 		// Handle player position change
@@ -58,12 +66,12 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	void TextUpdate () {
-		CountText.text = "Count: " + count.ToString();
-		if (count >= 12) {
-			WinText.text = "You Win!";
-		}
-	}
+	//void TextUpdate () {
+	//	CountText.text = "Count: " + count.ToString();
+	//	if (count >= 12) {
+	//		WinText.text = "You Win!";
+	//	}
+	//}
 
 	void updateHealth() {
 		if (currentHealth == startingHealth) {
@@ -78,14 +86,18 @@ public class PlayerController : MonoBehaviour {
 
 	// Health decrease caused by attach from enemies or traps
 	public void loseHealth(float damage){
-		if (currentHealth > damage) {
-			currentHealth -= damage;
-			damageTakenTime = Time.time;
-		} 
-		else {
-			currentHealth = 0.0f;
-			SceneManager.LoadScene ("GameOver");
-		}
+        if (!isHurt) {
+            if (currentHealth > damage) {
+                currentHealth -= damage;
+                damageTakenTime = Time.time;
+                isHurt = true;
+            }
+            else {
+                currentHealth = 0.0f;
+                SceneManager.LoadScene("GameOver");
+            }
+        }
+
 	}
 
 	// Health decrease caused by drawing & skills
@@ -103,7 +115,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void SelfHealing() {
-		if (currentHealth < startingHealth && Time.time > damageTakenTime + (2.0f)) {
+		if (currentHealth < startingHealth && Time.time > damageTakenTime + (healingInterval)) {
 			currentHealth += 0.25f;
 		}
 	}

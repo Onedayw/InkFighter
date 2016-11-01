@@ -7,13 +7,14 @@ using System.Collections;
  */
 public class CameraFollowing : MonoBehaviour {
 	//boundary: central area size of 0.6 * 0.6
-	private float freeMoveOffsetX = (float)(Screen.width * 0.3);
-	private float freeMoveOffsetY = (float)(Screen.height * 0.3);
+	public float freeMoveOffsetX = (float)(Screen.width * 0.2);
+	public float freeMoveOffsetY = (float)(Screen.height * 0.2);
 	Camera mycam;
 	public Vector2 margin;
 	public GameObject player;  
 	public BoxCollider2D bounds;
-	private Vector3 _min, _max;
+    public BoxCollider2D bossBounds;
+    private Vector3 _min, _max;
 	private float playerPositionX, playerPositionY, cameraPositionX, cameraPositionY, cameraPositionZ;
 
 	void Start () {
@@ -22,6 +23,7 @@ public class CameraFollowing : MonoBehaviour {
 		mycam = GetComponent<Camera> ();
 		freeMoveOffsetX = SceneToWorldSize(freeMoveOffsetX, Camera.main, this.transform.position.z);
 		freeMoveOffsetY = SceneToWorldSize(freeMoveOffsetY, Camera.main, this.transform.position.z);
+
 	}
 
 	void LateUpdate () {
@@ -68,4 +70,10 @@ public class CameraFollowing : MonoBehaviour {
 			return (Worldz / px) * size;
 		}
 	}
+    public void ChangetoBossBounds() {
+        _min = bossBounds.bounds.min;
+        _max = bossBounds.bounds.max;
+        Debug.Log("using boss bound");
+        //bossBounds.GetComponent<Collider2D>().enabled;
+    }
 }

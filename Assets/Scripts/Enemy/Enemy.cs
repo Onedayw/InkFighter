@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Enemy : MonoBehaviour {
-	private const float hurtTime = 2f;
+	private const float hurtTime = 0f;
 
 	public float health, attack, speed, vision;
 	private float damageTakenTime;
@@ -60,14 +60,14 @@ public class Enemy : MonoBehaviour {
 	}
 
 	public void die() {
-		Destroy(this);
+		Destroy(this.gameObject);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) 
 	{
 		if (other.CompareTag ("Trail")) {
 			takeDamage (playerController.getAttack ());
-
+            //Debug.Log(playerController.getAttack());
 		}
 	}
 

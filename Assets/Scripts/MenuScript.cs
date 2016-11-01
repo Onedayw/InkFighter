@@ -17,13 +17,13 @@ public class MenuScript : MonoBehaviour {
     public void onStartGame()
 	{
 		Debug.Log ("start");
-		SceneManager.LoadScene ("main_g");
+		SceneManager.LoadScene ("Level 1");
 	}
 
 	public void reStartGame()
 	{
 		Debug.Log ("restart");
-		SceneManager.LoadScene ("main_g");
+		SceneManager.LoadScene ("Level 1");
 	}
 
 	public void backToMenu()
