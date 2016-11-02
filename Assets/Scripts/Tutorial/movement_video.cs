@@ -10,9 +10,10 @@ public class movement_video : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		GetComponent<RawImage> ().texture = movie as MovieTexture;
-		movie.Play ();
-		StartCoroutine(endMovie());
+	//	GetComponent<RawImage> ().texture = movie as MovieTexture;
+	//	movie.Play ();
+	//	StartCoroutine(endMovie());
+		Handheld.PlayFullScreenMovie("Move.mp4");
 	}
 	
 	// Update is called once per frame
