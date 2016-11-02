@@ -10,9 +10,14 @@ public class parry_vedio : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		GetComponent<RawImage> ().texture = movie as MovieTexture;
-		movie.Play ();
-		StartCoroutine(endMovie());
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			Destroy (rawImage);
+			Handheld.PlayFullScreenMovie ("Parry.mp4");
+		} else {
+			GetComponent<RawImage> ().texture = movie as MovieTexture;
+			movie.Play ();
+			StartCoroutine(endMovie());
+		}
 	}
 
 	// Update is called once per frame

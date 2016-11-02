@@ -10,10 +10,14 @@ public class movement_video : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	//	GetComponent<RawImage> ().texture = movie as MovieTexture;
-	//	movie.Play ();
-	//	StartCoroutine(endMovie());
-		Handheld.PlayFullScreenMovie("Move.mp4");
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			Destroy (rawImage);
+			Handheld.PlayFullScreenMovie ("Move.mp4");
+		} else {
+			GetComponent<RawImage> ().texture = movie as MovieTexture;
+			movie.Play ();
+			StartCoroutine(endMovie());
+		}
 	}
 	
 	// Update is called once per frame
