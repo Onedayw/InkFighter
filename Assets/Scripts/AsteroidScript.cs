@@ -29,7 +29,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 10.0f;
+	private float inkRange = 13.0f;
 	private bool flag=true;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
@@ -318,7 +318,7 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 
-	/*
+
 	//Iphone version!
 	void FixedUpdate () {
 		if (Input.touchCount > 0 && flag) {
@@ -365,23 +365,23 @@ public class AsteroidScript : MonoBehaviour {
 			Destroy (gameObject);
 		}
 	}
-	*/
+
 
 	// computer version!
-	void FixedUpdate () {   
-		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
-		//Vector3 targetPosition = new Vector3(rawPosition.x, 0.0f ,0.0f);
-		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
-		if (!pausing) {
-			//set the mesh and adjust widths if vertices were added or removed
-			if (TryAddVertices () | TryRemoveVertices ()) {
-				if (widthStart != widthEnd) {
-					SetVertexWidths ();
-				}
-				SetMesh ();
-			}
-		}
-	}
+//	void FixedUpdate () {   
+//		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
+//		//Vector3 targetPosition = new Vector3(rawPosition.x, 0.0f ,0.0f);
+//		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
+//		if (!pausing) {
+//			//set the mesh and adjust widths if vertices were added or removed
+//			if (TryAddVertices () | TryRemoveVertices ()) {
+//				if (widthStart != widthEnd) {
+//					SetVertexWidths ();
+//				}
+//				SetMesh ();
+//			}
+//		}
+//	}
 
 
 }

@@ -14,7 +14,7 @@ public class EnemyManager : MonoBehaviour {
 	void Start () 
 	{
 		enemies = new ArrayList ();
-		InvokeRepeating ("Spawn", 0, spawnTime);
+	//	InvokeRepeating ("Spawn", 0, spawnTime);
 	}
 
 	void Update () {
