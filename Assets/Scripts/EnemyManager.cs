@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour {
 
@@ -18,6 +19,7 @@ public class EnemyManager : MonoBehaviour {
 
 	void Update () {
 		enenyNumer = GameObject.FindGameObjectsWithTag ("Enemy").Length;
+		if(enenyNumer==0) SceneManager.LoadScene("openning");
 	}
 
 	void Spawn ()

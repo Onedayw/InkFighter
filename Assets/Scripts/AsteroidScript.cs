@@ -29,7 +29,8 @@ public class AsteroidScript : MonoBehaviour {
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 6.0f;
+	private float inkRange = 10.0f;
+	private bool flag=true;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -382,5 +383,5 @@ public class AsteroidScript : MonoBehaviour {
 		}
 	}
 
-	
+
 }
