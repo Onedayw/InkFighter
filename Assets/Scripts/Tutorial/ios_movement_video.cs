@@ -10,7 +10,7 @@ public class ios_movement_video : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Destroy (rawImage);
-		Handheld.PlayFullScreenMovie ("Move.mp4");
+		Handheld.PlayFullScreenMovie ("Move.mp4", Color.black, FullScreenMovieControlMode.Hidden);
 	}
 	
 	// Update is called once per frame

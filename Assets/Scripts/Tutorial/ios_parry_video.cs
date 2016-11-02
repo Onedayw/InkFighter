@@ -10,7 +10,7 @@ public class ios_parry_video : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Destroy (rawImage);
-		Handheld.PlayFullScreenMovie ("Parry.mp4");
+		Handheld.PlayFullScreenMovie ("Parry.mp4", Color.black, FullScreenMovieControlMode.Hidden);
 	}
 
 	// Update is called once per frame
