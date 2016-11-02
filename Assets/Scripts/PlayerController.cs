@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour {
 	private float currentHealth;
 	private float damageTakenTime;
     private float healingInterval = 1.0f;
-    private const float hurtTime = 0.5f;
+    private const float hurtTime = 0.1f;
     private float selfHealRepeatTime = 20f;
 	private float attack;
     public MenuScript menuScript;
@@ -51,10 +51,10 @@ public class PlayerController : MonoBehaviour {
 		if (moveJoystick.InputDirection != Vector3.zero) {
 			movement = moveJoystick.InputDirection;
 		}
-		rb2d.AddForce (movement * speed);
-
-		// Handle health change
-		updateHealth ();
+		//rb2d.AddForce (movement * speed);
+        transform.Translate(movement*speed);
+        // Handle health change
+        updateHealth ();
 		InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
 
 	}
