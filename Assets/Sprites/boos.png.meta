@@ -1,9 +1,10 @@
 fileFormatVersion: 2
-guid: 2ef3716e48ae744478acd40f1f07d982
-timeCreated: 1478017790
+guid: f30655314ad1f4656a40f975076753ac
+timeCreated: 1478804965
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: boos_0
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -48,15 +49,23 @@ TextureImporter:
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
-  buildTargetSettings:
-  - buildTarget: Standalone
-    maxTextureSize: 2048
-    textureFormat: -1
-    compressionQuality: 50
-    allowsAlphaSplitting: 0
+  buildTargetSettings: []
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: boos_0
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 65
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
     outline: []
   spritePackingTag: 
   userData: 

@@ -19,7 +19,7 @@ public class AsteroidScript : MonoBehaviour {
 	public float changeTime = 0.5f;                 //time point when the trail begins changing its width (if widthStart != widthEnd)
 	public float widthStart = 1.0f;                 //the starting width of the trail
 	public float widthEnd = 0.3f;                   //the ending width of the trail
-	public float vertexDistanceMin = 0.10f;         //the minimum distance between the center positions
+	public float vertexDistanceMin = 0.01f;         //the minimum distance between the center positions
 	public Vector3 renderDirection = new Vector3(0, 0, -1); //the direction that the mesh of the trail will be rendered towards
 	public bool colliderIsTrigger = true;           //determines if the collider is a trigger.  Changing this during runtime will have no effect.
 	public bool colliderEnabled = true;             //determines if the collider is enabled.  Changing this during runtime will have no effect.
@@ -29,7 +29,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 13.0f;
+	private float inkRange = 20.0f;
 	private bool flag=true;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
@@ -318,6 +318,7 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 
+<<<<<<< Updated upstream
 
     //Iphone version!
     void FixedUpdate() {
@@ -383,6 +384,72 @@ public class AsteroidScript : MonoBehaviour {
     //        }
     //    }
     //}
+=======
+	/*
+	//Iphone version!
+	void FixedUpdate () {
+		if (Input.touchCount > 0 && flag) {
+			for(int i=0;i<2;i++){
+				if (Input.GetTouch (i).phase == TouchPhase.Moved || Input.GetTouch (i).phase == TouchPhase.Began) {
+					Vector2 mouse = Input.GetTouch (i).position;//Input.mousePosition;
+					Vector2 rawPosition = Camera.main.ScreenToWorldPoint (mouse); //Input.GetTouch(0).position
+					if (mouse.x > 220 || mouse.y > 220) {
+						GetComponent<Rigidbody2D> ().MovePosition (rawPosition);	
+						break;
+					} 
+				}
+				if (Input.GetTouch (i).phase == TouchPhase.Ended) {
+					Vector2 mouse = Input.GetTouch (i).position;
+					if (mouse.x > 220 || mouse.y > 220) {
+						flag = false;	
+						break;
+					} 
+				}	
+			}
+		}
+			
+		if (!pausing) {
+			//set the mesh and adjust widths if vertices were added or removed
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+		}	
+		if (flag == false && centerPositions.Count <= 1) {
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+			centerPositions.Clear ();
+			leftVertices.Clear ();
+			rightVertices.Clear ();
+			SetMesh ();
+
+			Destroy (gameObject);
+		}
+	}
+	*/
+
+	// computer version!
+	void FixedUpdate () {   
+		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
+		//Vector3 targetPosition = new Vector3(rawPosition.x, 0.0f ,0.0f);
+		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
+		if (!pausing) {
+			//set the mesh and adjust widths if vertices were added or removed
+			if (TryAddVertices () | TryRemoveVertices ()) {
+				if (widthStart != widthEnd) {
+					SetVertexWidths ();
+				}
+				SetMesh ();
+			}
+		}
+	}
+>>>>>>> Stashed changes
 
 
 }
