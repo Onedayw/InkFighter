@@ -1,24 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class LongRangeMove : MonoBehaviour {
+public class ShortRangeMove : MonoBehaviour {
 
 	private Enemy thisEnemy;
 	private Rigidbody2D rb2d;
-    private LongRangeAttack l_Attack;
+	private ShortRangeAttack s_Attack;
 
 	// Use this for initialization
 	void Start () {
 		thisEnemy = GetComponent<Enemy> ();
 		thisEnemy.debug ();
-        l_Attack = this.GetComponent<LongRangeAttack>();
+		s_Attack = this.GetComponent<ShortRangeAttack>();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		Vector3 distance = transform.position - thisEnemy.getTarget ().transform.position;
 		if (thisEnemy.getSeenTarget ()) {
-			if (distance.magnitude > l_Attack.shotRange) {
+			if (distance.magnitude > s_Attack.meleeRange) {
 				move ();
 				//Debug.Log ("im moving");
 			}
@@ -31,6 +31,4 @@ public class LongRangeMove : MonoBehaviour {
 		thisEnemy.transform.position = Vector3.MoveTowards (thisEnemy.transform.position, 
 			thisEnemy.getTarget().transform.position, thisEnemy.speed * Time.deltaTime);
 	}
-
-
 }
