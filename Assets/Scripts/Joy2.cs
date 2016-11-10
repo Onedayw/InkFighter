@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class VitualJoystick : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler {
+public class  Joy2: MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler {
 
 	private Image bgImg;
 	private Image joystickImg;
