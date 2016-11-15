@@ -6,6 +6,7 @@ public class LongRangeMove : MonoBehaviour {
 	private Enemy thisEnemy;
 	private Rigidbody2D rb2d;
     private LongRangeAttack l_Attack;
+	private bool faceRight = false;
 
 	// Use this for initialization
 	void Start () {
@@ -20,7 +21,6 @@ public class LongRangeMove : MonoBehaviour {
 		if (thisEnemy.getSeenTarget ()) {
 			if (distance.magnitude > l_Attack.shotRange) {
 				move ();
-				//Debug.Log ("im moving");
 			}
 		} else if (distance.magnitude < thisEnemy.vision) {
 			thisEnemy.setSeenTarget ();
@@ -30,7 +30,25 @@ public class LongRangeMove : MonoBehaviour {
 	public void move () {
 		thisEnemy.transform.position = Vector3.MoveTowards (thisEnemy.transform.position, 
 			thisEnemy.getTarget().transform.position, thisEnemy.speed * Time.deltaTime);
+		faceMovingDirection (thisEnemy.getTarget().transform.position.x - thisEnemy.transform.position.x);
 	}
 
+	void faceMovingDirection(float moveHorizontal) 
+	{
+		if (moveHorizontal > 0 && !faceRight) {
+			Flip ();
+		}
+		else if (moveHorizontal < 0 && faceRight) {
+			Flip ();
+		}
+	}
 
+	void Flip ()
+	{
+		faceRight = !faceRight;
+
+		Vector3 theScale = transform.localScale;
+		theScale.x *= -1;
+		transform.localScale = theScale;
+	}
 }

@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour {
 		} else {
 			fullHealth.enabled = false;
 			damagedHealth.enabled = true;
-			damagedHealth.transform.localScale = new Vector3 ((float)currentHealth / startingHealth, 1, 1);
+			damagedHealth.transform.localScale = new Vector3 ((float) currentHealth / startingHealth, 1, 1);
 		}
 	}
 
