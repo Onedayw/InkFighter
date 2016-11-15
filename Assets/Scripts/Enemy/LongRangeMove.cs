@@ -25,12 +25,12 @@ public class LongRangeMove : MonoBehaviour {
 		} else if (distance.magnitude < thisEnemy.vision) {
 			thisEnemy.setSeenTarget ();
 		}
+		faceMovingDirection (thisEnemy.getTarget().transform.position.x - thisEnemy.transform.position.x);
 	}
 
 	public void move () {
 		thisEnemy.transform.position = Vector3.MoveTowards (thisEnemy.transform.position, 
 			thisEnemy.getTarget().transform.position, thisEnemy.speed * Time.deltaTime);
-		faceMovingDirection (thisEnemy.getTarget().transform.position.x - thisEnemy.transform.position.x);
 	}
 
 	void faceMovingDirection(float moveHorizontal) 
