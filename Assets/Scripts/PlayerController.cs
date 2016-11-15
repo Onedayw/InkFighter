@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour {
 		if (moveJoystick.InputDirection != Vector3.zero) {
 			movement = moveJoystick.InputDirection;
 		}
-		faceMovingDirection (moveHorizontal);
+		faceMovingDirection (movement.x);
 		transform.Translate(movement * speed * Time.deltaTime, Space.World);
 
 		if (isHurt) {
