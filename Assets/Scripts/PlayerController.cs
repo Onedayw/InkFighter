@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour {
 		isHurt = false;
 	}
 
-<<<<<<< HEAD
 	void Update () {
 		if (isHurt) {
 			if (Time.time > damageTakenTime + hurtTime) {
@@ -41,19 +40,6 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 	}
-=======
-    void Update () {
-        if (isHurt) {
-            if (Time.time > damageTakenTime + hurtTime) {
-                isHurt = false;
-            }
-        }
-
-		// Handle health change
-		updateHealth ();
-		SelfHealing();
-    }
->>>>>>> origin/master
 
 	void FixedUpdate () {
 		// Handle player position change
@@ -64,16 +50,11 @@ public class PlayerController : MonoBehaviour {
 			movement = moveJoystick.InputDirection;
 		}
 		//rb2d.AddForce (movement * speed);
-<<<<<<< HEAD
 		transform.Translate(movement * speed / 10);
 		// Handle health change
 		updateHealth ();
 		SelfHealing ();
 		Debug.Log (currentHealth);
-=======
-        transform.Translate(movement*speed);
-		//InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
->>>>>>> origin/master
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
