@@ -9,26 +9,22 @@ public class PlayerController : MonoBehaviour {
 	public Text CountText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
-	public GameObject attackRange;
-	public GameObject inkpoint;
+	//public GameObject attackRange;
+	//public GameObject inkpoint;
 	public MenuScript menuScript;
 	public Slider healthSlider;
 	public Image fullHealth;
 	public Image damagedHealth;
 
-	private Rigidbody2D rb2d;
 	private int currentHealth;
 	private float damageTakenTime;
 	private float healingInterval = 1.0f;
 	private const float hurtTime = 0.1f;
-	private float selfHealRepeatTime = 20f;
 	private bool isHurt;
 	private bool faceRight;
 
 
 	void Start () {
-		rb2d = GetComponent<Rigidbody2D>();
-		//count = 0;
 		attack = 10;
 		currentHealth = startingHealth;
 		isHurt = false;
@@ -51,9 +47,8 @@ public class PlayerController : MonoBehaviour {
 		if (moveJoystick.InputDirection != Vector3.zero) {
 			movement = moveJoystick.InputDirection;
 		}
-			
 		faceMovingDirection (moveHorizontal);
-		transform.Translate(movement * speed / 10, Space.World);
+		transform.Translate(movement * speed * Time.deltaTime, Space.World);
 		//rb2d.AddForce (movement * speed);
 		//transform.Translate(movement * speed / 10);
 		// Handle health change
