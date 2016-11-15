@@ -5,43 +5,41 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
-	public float speed;
+	public int speed, attack, startingHealth;
 	public Text CountText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
 	public GameObject attackRange;
 	public GameObject inkpoint;
-
+	public MenuScript menuScript;
 	public Slider healthSlider;
-	private Rigidbody2D rb2d;
 	public Image fullHealth;
 	public Image damagedHealth;
-	public float startingHealth;
-	private float currentHealth;
-	private float damageTakenTime;
-    private float healingInterval = 1.0f;
-    private const float hurtTime = 0.1f;
-    private float selfHealRepeatTime = 20f;
-	private float attack;
-    public MenuScript menuScript;
-    public bool isHurt;
- 
 
-    void Start () {
+	private Rigidbody2D rb2d;
+	private int currentHealth;
+	private float damageTakenTime;
+	private float healingInterval = 1.0f;
+	private const float hurtTime = 0.1f;
+	private float selfHealRepeatTime = 20f;
+	private bool isHurt;
+
+
+	void Start () {
 		rb2d = GetComponent<Rigidbody2D>();
 		//count = 0;
-		attack = 10f;
+		attack = 10;
 		currentHealth = startingHealth;
-        isHurt = false;
-    }
+		isHurt = false;
+	}
 
-    void Update () {
-        if (isHurt) {
-            if (Time.time > damageTakenTime + hurtTime) {
-                isHurt = false;
-            }
-        }
-    }
+	void Update () {
+		if (isHurt) {
+			if (Time.time > damageTakenTime + hurtTime) {
+				isHurt = false;
+			}
+		}
+	}
 
 	void FixedUpdate () {
 		// Handle player position change
@@ -52,16 +50,16 @@ public class PlayerController : MonoBehaviour {
 			movement = moveJoystick.InputDirection;
 		}
 		//rb2d.AddForce (movement * speed);
-        transform.Translate(movement*speed);
-        // Handle health change
-        updateHealth ();
-		InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
-
+		transform.Translate(movement * speed / 10);
+		// Handle health change
+		updateHealth ();
+		SelfHealing ();
+		Debug.Log (currentHealth);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.CompareTag ("EnemyMover")) {
-			loseHealth (5.0f);//todo:losehealth(other.damage)
+			loseHealth (5);//todo:losehealth(other.damage)
 			damageTakenTime = Time.time;
 		}
 	}
@@ -80,31 +78,31 @@ public class PlayerController : MonoBehaviour {
 		} else {
 			fullHealth.enabled = false;
 			damagedHealth.enabled = true;
-			damagedHealth.transform.localScale = new Vector3 (currentHealth / startingHealth, 1, 1);
+			damagedHealth.transform.localScale = new Vector3 ((float)currentHealth / startingHealth, 1, 1);
 		}
 	}
 
 	// Health decrease caused by attach from enemies or traps
-	public void loseHealth(float damage){
-        if (!isHurt) {
-            if (currentHealth > damage) {
-                currentHealth -= damage;
-                damageTakenTime = Time.time;
-                isHurt = true;
-            }
-            else {
-                currentHealth = 0.0f;
-                SceneManager.LoadScene("GameOver");
-            }
-        }
+	public void loseHealth(int damage){
+		if (!isHurt) {
+			if (currentHealth > damage) {
+				currentHealth -= damage;
+				damageTakenTime = Time.time;
+				isHurt = true;
+			}
+			else {
+				currentHealth = 0;
+				SceneManager.LoadScene("GameOver");
+			}
+		}
 
 	}
 
 	// Health decrease caused by drawing & skills
 	// Returns true if player has sufficient health, else return false
-	public bool removeHealth(float damage){
+	public bool removeHealth(int damage){
 		if (currentHealth > damage) {
-			currentHealth = currentHealth - 1.0f;
+			currentHealth -= 1;
 			damageTakenTime = Time.time;
 			return true;
 		}
@@ -116,11 +114,11 @@ public class PlayerController : MonoBehaviour {
 
 	void SelfHealing() {
 		if (currentHealth < startingHealth && Time.time > damageTakenTime + (healingInterval)) {
-			currentHealth += 0.25f;
+			currentHealth += 1;
 		}
 	}
 
-	public float getAttack() {
+	public int getAttack() {
 		return attack;
 	}
 

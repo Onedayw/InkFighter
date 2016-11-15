@@ -6,7 +6,7 @@ public class Mover : MonoBehaviour {
 	private GameObject target;
 	private PlayerController playerController;
 	private Rigidbody2D rb2d;
-	public float speed, attack;
+	public int speed, attack;
 	public bool rotating;
 
 	// Use this for initialization
@@ -27,7 +27,7 @@ public class Mover : MonoBehaviour {
 			this.transform.rotation = Quaternion.AngleAxis (angel, Vector3.forward);
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 	}
@@ -42,7 +42,7 @@ public class Mover : MonoBehaviour {
 		}
 	}
 
-	void makeDamage (float damage) {
+	void makeDamage (int damage) {
 		playerController.loseHealth (damage);
 	}
 

@@ -4,7 +4,7 @@ using System.Collections;
 public class Enemy : MonoBehaviour {
 	private const float hurtTime = 0f;
 
-	public float health, attack, speed, vision;
+	public int health, attack, speed, vision, money;
 	private float damageTakenTime;
 	private bool isHurt, seenTarget;
 
@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour {
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (isHurt) {
@@ -47,7 +47,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	// Usc this for taking damage
-	public float takeDamage(float damage) {
+	public int takeDamage(int damage) {
 		if (!isHurt) {
 			health -= damage;
 			if (health <= 0f) {
@@ -67,24 +67,7 @@ public class Enemy : MonoBehaviour {
 	{
 		if (other.CompareTag ("Trail")) {
 			takeDamage (playerController.getAttack ());
-            //Debug.Log(playerController.getAttack());
+			//Debug.Log(playerController.getAttack());
 		}
-	}
-
-
-	public void setHealth(float health) {
-		this.health = health;
-	}
-
-	public void setAttack(float attack) {
-		this.attack = attack;
-	}
-
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
-
-	public void setVision(float vision) {
-		this.vision = vision;
 	}
 }
