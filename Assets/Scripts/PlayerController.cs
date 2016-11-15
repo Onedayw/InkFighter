@@ -32,14 +32,6 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
-		if (isHurt) {
-			if (Time.time > damageTakenTime + hurtTime) {
-				isHurt = false;
-			}
-		}
-	}
-
-	void FixedUpdate () {
 		// Handle player position change
 		float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
@@ -49,6 +41,15 @@ public class PlayerController : MonoBehaviour {
 		}
 		faceMovingDirection (moveHorizontal);
 		transform.Translate(movement * speed * Time.deltaTime, Space.World);
+
+		if (isHurt) {
+			if (Time.time > damageTakenTime + hurtTime) {
+				isHurt = false;
+			}
+		}
+	}
+
+	void FixedUpdate () {
 		//rb2d.AddForce (movement * speed);
 		//transform.Translate(movement * speed / 10);
 		// Handle health change
