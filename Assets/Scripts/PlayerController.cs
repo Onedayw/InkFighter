@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
 	private const float hurtTime = 0.1f;
 	private float selfHealRepeatTime = 20f;
 	private bool isHurt;
+	private bool faceRight;
 
 
 	void Start () {
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviour {
 		attack = 10;
 		currentHealth = startingHealth;
 		isHurt = false;
+		faceRight = false;
 	}
 
 	void Update () {
@@ -49,17 +51,19 @@ public class PlayerController : MonoBehaviour {
 		if (moveJoystick.InputDirection != Vector3.zero) {
 			movement = moveJoystick.InputDirection;
 		}
+			
+		faceMovingDirection (moveHorizontal);
+		transform.Translate(movement * speed / 10, Space.World);
 		//rb2d.AddForce (movement * speed);
-		transform.Translate(movement * speed / 10);
+		//transform.Translate(movement * speed / 10);
 		// Handle health change
 		updateHealth ();
 		SelfHealing ();
-		Debug.Log (currentHealth);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.CompareTag ("EnemyMover")) {
-			loseHealth (5);//todo:losehealth(other.damage)
+			loseHealth (5); //todo:losehealth(other.damage)
 			damageTakenTime = Time.time;
 		}
 	}
@@ -122,5 +126,22 @@ public class PlayerController : MonoBehaviour {
 		return attack;
 	}
 
+	void faceMovingDirection(float moveHorizontal) 
+	{
+		if (moveHorizontal > 0 && !faceRight) {
+			Flip ();
+		}
+		else if (moveHorizontal < 0 && faceRight) {
+			Flip ();
+		}
+	}
 
+	void Flip ()
+	{
+		faceRight = !faceRight;
+
+		Vector3 theScale = transform.localScale;
+		theScale.x *= -1;
+		transform.localScale = theScale;
+	}
 }
