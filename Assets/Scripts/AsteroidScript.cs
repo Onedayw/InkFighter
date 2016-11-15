@@ -30,7 +30,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
 	private float inkRange = 20.0f;
-	private bool flag=true;
+	//private bool flag = true;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -366,6 +366,7 @@ public class AsteroidScript : MonoBehaviour {
 		}
 	}
 	*/
+
 
 	// computer version!
 	void FixedUpdate () {   
