@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class AsteroidScript : MonoBehaviour {
 	public Camera cam;
-
-
-
 
 		//************
 		//
@@ -15,11 +13,13 @@ public class AsteroidScript : MonoBehaviour {
 		//************
 
 	public Material trailMaterial;                  //the material of the trail.  Changing this during runtime will have no effect.
-	public float lifeTime = 0.8f;                   //the amount of time in seconds that the trail lasts
-	public float changeTime = 0.5f;                 //time point when the trail begins changing its width (if widthStart != widthEnd)
-	public float widthStart = 1.0f;                 //the starting width of the trail
-	public float widthEnd = 0.3f;                   //the ending width of the trail
-	public float vertexDistanceMin = 0.1f;         //the minimum distance between the center positions
+	private float lifeTime = 0.8f;                   //the amount of time in seconds that the trail lasts
+	private float changeTime = 0.5f;                 //time point when the trail begins changing its width (if widthStart != widthEnd)
+	private float widthStart = 1.0f;                 //the starting width of the trail
+	private float widthEnd = 0.3f;                   //the ending width of the trail
+	private float vertexDistanceMin = 0.1f;         //the minimum distance between the center positions
+	private float patternDetectTime = 0.0f;
+	private float patternDetectInterval = 2.0f;
 	public Vector3 renderDirection = new Vector3(0, 0, -1); //the direction that the mesh of the trail will be rendered towards
 	public bool colliderIsTrigger = true;           //determines if the collider is a trigger.  Changing this during runtime will have no effect.
 	public bool colliderEnabled = true;             //determines if the collider is enabled.  Changing this during runtime will have no effect.
@@ -279,6 +279,41 @@ public class AsteroidScript : MonoBehaviour {
 			return false;
 		}
 	}
+
+	private bool detectCircle () {
+		int size = centerPositions.Count; 
+		double center_x = 0, center_y = 0, error = 0, error_r, radius = 0, diff_x, diff_y, x, y;
+		if (size > 20) {
+			for (LinkedListNode<Vector3> iter = centerPositions.First; iter != null; iter = iter.Next) {
+				x = iter.Value.x;
+				y = iter.Value.y;
+				center_x += x;
+				center_y += y;
+			}
+			center_x /= size;
+			center_y /= size;
+			for (LinkedListNode<Vector3> iter = centerPositions.First; iter != null; iter = iter.Next) {
+				x = iter.Value.x;
+				y = iter.Value.y;
+				diff_x = (x - center_x) * (x - center_x);
+				diff_y = (y - center_y) * (y - center_y);
+				radius += Math.Sqrt (diff_x + diff_y);
+			}
+			radius /= size;
+			for (LinkedListNode<Vector3> iter = centerPositions.First; iter != null; iter = iter.Next) {
+				x = iter.Value.x;
+				y = iter.Value.y;
+				diff_x = (x - center_x) * (x - center_x);
+				diff_y = (y - center_y) * (y - center_y);
+				error_r = Math.Sqrt (diff_x + diff_y);
+				error += (error_r - radius) * (error_r - radius);
+			}
+			error /= size;
+			return error / radius < 0.15;
+		}
+		return false;
+	}
+
 	//************
 	//
 	// Private Classes
@@ -367,6 +402,7 @@ public class AsteroidScript : MonoBehaviour {
 	}
 	*/
 
+	int count = 0;
 
 	// computer version!
 	void FixedUpdate () {   
@@ -380,6 +416,10 @@ public class AsteroidScript : MonoBehaviour {
 					SetVertexWidths ();
 				}
 				SetMesh ();
+				if (Time.time > patternDetectTime + patternDetectInterval && detectCircle ()) {
+					Debug.Log ("circle detected" + count++.ToString());
+					patternDetectTime = Time.time;
+				}
 			}
 		}
 	}
