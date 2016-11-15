@@ -9,12 +9,11 @@ public class PlayerController : MonoBehaviour {
 	public Text CountText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
-	//public GameObject attackRange;
-	//public GameObject inkpoint;
 	public MenuScript menuScript;
 	public Slider healthSlider;
 	public Image fullHealth;
 	public Image damagedHealth;
+	public Image BGflash;
 
 	private int currentHealth;
 	private float damageTakenTime;
@@ -29,6 +28,7 @@ public class PlayerController : MonoBehaviour {
 		currentHealth = startingHealth;
 		isHurt = false;
 		faceRight = false;
+		BGflash.enabled = false;
 	}
 
 	void Update () {
@@ -86,6 +86,7 @@ public class PlayerController : MonoBehaviour {
 	public void loseHealth(int damage){
 		if (!isHurt) {
 			if (currentHealth > damage) {
+				StartCoroutine(BGflashing());
 				currentHealth -= damage;
 				damageTakenTime = Time.time;
 				isHurt = true;
@@ -140,4 +141,11 @@ public class PlayerController : MonoBehaviour {
 		theScale.x *= -1;
 		transform.localScale = theScale;
 	}
+
+	IEnumerator BGflashing() {
+		BGflash.enabled = true;
+		yield return new WaitForSeconds(0.05f);
+		BGflash.enabled = false;
+	}
+
 }
