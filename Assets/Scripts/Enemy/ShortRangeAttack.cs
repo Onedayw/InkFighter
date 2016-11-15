@@ -3,7 +3,6 @@ using System.Collections;
 
 public class ShortRangeAttack : MonoBehaviour {
 
-	public float vision;
 	public float meleeRate;
 	private float nextShot;
 	private GameObject target;

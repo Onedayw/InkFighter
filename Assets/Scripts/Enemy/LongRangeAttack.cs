@@ -4,7 +4,6 @@ using System.Collections;
 public class LongRangeAttack : MonoBehaviour {
 	
 	public Mover mover;
-	public float vision;
 	public Transform shotSpawn;
 	public float shotRate;
 	private float nextShot;
