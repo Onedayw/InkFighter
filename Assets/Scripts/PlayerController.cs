@@ -41,6 +41,10 @@ public class PlayerController : MonoBehaviour {
                 isHurt = false;
             }
         }
+
+		// Handle health change
+		updateHealth ();
+		SelfHealing();
     }
 
 	void FixedUpdate () {
@@ -53,10 +57,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		//rb2d.AddForce (movement * speed);
         transform.Translate(movement*speed);
-        // Handle health change
-        updateHealth ();
-		InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
-
+		//InvokeRepeating ("SelfHealing", 0, selfHealRepeatTime);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -74,7 +75,7 @@ public class PlayerController : MonoBehaviour {
 	//}
 
 	void updateHealth() {
-		if (currentHealth == startingHealth) {
+		if (currentHealth >= startingHealth) {
 			fullHealth.enabled = true;
 			damagedHealth.enabled = false;
 		} else {
@@ -108,7 +109,7 @@ public class PlayerController : MonoBehaviour {
 			damageTakenTime = Time.time;
 			return true;
 		}
-		else{
+		else {
 			//todo:health bar blink to indicate insufficient health
 			return false;
 		}
