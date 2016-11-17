@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
 	private const float hurtTime = 0.1f;
 	private bool isHurt;
 	private bool faceRight;
+	private int money;
 
 
 	void Start () {
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour {
 		isHurt = false;
 		faceRight = false;
 		BGflash.enabled = false;
+		money = 0;
 	}
 
 	void Update () {
@@ -47,14 +49,13 @@ public class PlayerController : MonoBehaviour {
 				isHurt = false;
 			}
 		}
+
+		updateHealth ();
+		SelfHealing ();
 	}
 
 	void FixedUpdate () {
-		//rb2d.AddForce (movement * speed);
-		//transform.Translate(movement * speed / 10);
-		// Handle health change
-		updateHealth ();
-		SelfHealing ();
+
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -111,6 +112,10 @@ public class PlayerController : MonoBehaviour {
 			//todo:health bar blink to indicate insufficient health
 			return false;
 		}
+	}
+
+	public void addMoney(int money) {
+		this.money += money;
 	}
 
 	void SelfHealing() {

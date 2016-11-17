@@ -4,7 +4,8 @@ using System.Collections;
 public class Enemy : MonoBehaviour {
 	private const float hurtTime = 0f;
 
-	public int health, attack, speed, vision, money;
+	public int fullHealth, attack, speed, vision, money;
+	private int health;
 	private float damageTakenTime;
 	private bool isHurt, seenTarget;
 
@@ -12,12 +13,15 @@ public class Enemy : MonoBehaviour {
 	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
 	private GameObject target;                           //Transform to attempt to move toward each turn.
 	private PlayerController playerController;
+	private Color color;
 
 	// Use this for initialization
 	void Start () {
+		health = fullHealth;
 		isHurt = false;
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
+		color = GetComponent<Renderer> ().material.color;
 	}
 
 	// Update is called once per frame
@@ -27,6 +31,7 @@ public class Enemy : MonoBehaviour {
 				isHurt = false;
 			}
 		}
+		color.a = 0.4f;
 	}
 
 	public void debug() {
@@ -61,6 +66,7 @@ public class Enemy : MonoBehaviour {
 
 	public void die() {
 		Destroy(this.gameObject);
+		playerController.addMoney (money);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) 

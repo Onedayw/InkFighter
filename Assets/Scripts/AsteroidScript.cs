@@ -30,7 +30,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
 	private float inkRange = 20.0f;
-	//private bool flag = true;
+	private bool flag = true;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -353,7 +353,8 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 
-	/*
+	int count = 0;
+
 	//Iphone version!
 	void FixedUpdate () {
 		if (Input.touchCount > 0 && flag) {
@@ -383,6 +384,12 @@ public class AsteroidScript : MonoBehaviour {
 					SetVertexWidths ();
 				}
 				SetMesh ();
+
+				if (Time.time > patternDetectTime + patternDetectInterval && detectCircle ()) {
+					Debug.Log ("circle detected" + count++.ToString());
+					patternDetectTime = Time.time;
+				}
+
 			}
 		}	
 		if (flag == false && centerPositions.Count <= 1) {
@@ -400,14 +407,12 @@ public class AsteroidScript : MonoBehaviour {
 			Destroy (gameObject);
 		}
 	}
-	*/
 
-	int count = 0;
 
+	/*
 	// computer version!
 	void FixedUpdate () {   
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
-		//Vector3 targetPosition = new Vector3(rawPosition.x, 0.0f ,0.0f);
 		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
 		if (!pausing) {
 			//set the mesh and adjust widths if vertices were added or removed
@@ -423,6 +428,9 @@ public class AsteroidScript : MonoBehaviour {
 			}
 		}
 	}
+	*/
 
-
+	public void reflect() {
+		
+	}
 }
