@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour {
 
 	public int speed, attack, startingHealth;
-	public Text CountText;
+	public Text MoneyText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
 	public MenuScript menuScript;
@@ -37,10 +37,6 @@ public class PlayerController : MonoBehaviour {
 
 	void Update () {
 		// Handle player position change
-
-
-		updateHealth ();
-		SelfHealing ();
 	}
 
 	void FixedUpdate () {
@@ -61,6 +57,10 @@ public class PlayerController : MonoBehaviour {
 				isHurt = false;
 			}
 		}
+
+		updateHealth ();
+		SelfHealing ();
+		updateMoney ();
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -70,12 +70,12 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	//void TextUpdate () {
-	//	CountText.text = "Count: " + count.ToString();
+	void updateMoney () {
+		MoneyText.text = "Ink: " + money.ToString();
 	//	if (count >= 12) {
 	//		WinText.text = "You Win!";
 	//	}
-	//}
+	}
 
 	void setMoveAnimation(float x, float y) {
 		if (x != 0 || y != 0) {
