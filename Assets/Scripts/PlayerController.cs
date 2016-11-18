@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
 	public Image damagedHealth;
 	public Image BGflash;
 
+	private Animator anim;
 	private int currentHealth;
 	private float damageTakenTime;
 	private float healingInterval = 1.0f;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour {
 
 
 	void Start () {
+		anim = GetComponent <Animator> ();
 		attack = 10;
 		currentHealth = startingHealth;
 		isHurt = false;
@@ -35,12 +37,22 @@ public class PlayerController : MonoBehaviour {
 
 	void Update () {
 		// Handle player position change
+
+
+		updateHealth ();
+		SelfHealing ();
+	}
+
+	void FixedUpdate () {
 		float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
 		Vector3 movement = new Vector3 (moveHorizontal, moveVertical);
 		if (moveJoystick.InputDirection != Vector3.zero) {
 			movement = moveJoystick.InputDirection;
 		}
+
+		setMoveAnimation (movement.x, movement.y);
+
 		faceMovingDirection (movement.x);
 		transform.Translate(movement * speed * Time.deltaTime, Space.World);
 
@@ -49,13 +61,6 @@ public class PlayerController : MonoBehaviour {
 				isHurt = false;
 			}
 		}
-
-		updateHealth ();
-		SelfHealing ();
-	}
-
-	void FixedUpdate () {
-
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -71,6 +76,14 @@ public class PlayerController : MonoBehaviour {
 	//		WinText.text = "You Win!";
 	//	}
 	//}
+
+	void setMoveAnimation(float x, float y) {
+		if (x != 0 || y != 0) {
+			anim.SetBool ("isRunning", true);
+		} else {
+			anim.SetBool ("isRunning", false);
+		}
+	}
 
 	void updateHealth() {
 		if (currentHealth >= startingHealth) {
