@@ -356,6 +356,7 @@ public class AsteroidScript : MonoBehaviour {
 	int count = 0;
 
 	//Iphone version!
+	/*
 	void FixedUpdate () {
 		if (Input.touchCount > 0 && flag) {
 			for(int i=0;i<2;i++){
@@ -407,9 +408,10 @@ public class AsteroidScript : MonoBehaviour {
 			Destroy (gameObject);
 		}
 	}
+	*/
 
 
-	/*
+
 	// computer version!
 	void FixedUpdate () {   
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
@@ -428,7 +430,7 @@ public class AsteroidScript : MonoBehaviour {
 			}
 		}
 	}
-	*/
+
 
 	public void reflect() {
 		

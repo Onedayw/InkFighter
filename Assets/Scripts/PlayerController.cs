@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour {
 
 	public int speed, attack, startingHealth;
-	public Text CountText;
+	public Text MoneyText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
 	public MenuScript menuScript;
@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour {
 
 		updateHealth ();
 		SelfHealing ();
+		updateMoney ();
 	}
 
 	void FixedUpdate () {
@@ -65,12 +66,12 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	//void TextUpdate () {
-	//	CountText.text = "Count: " + count.ToString();
+	void updateMoney () {
+		MoneyText.text = "Ink: " + money.ToString();
 	//	if (count >= 12) {
 	//		WinText.text = "You Win!";
 	//	}
-	//}
+	}
 
 	void updateHealth() {
 		if (currentHealth >= startingHealth) {
