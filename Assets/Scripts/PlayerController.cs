@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
 	private bool isHurt;
 	private bool faceRight;
 	private int money;
+	private GameObject shield;
 
 
 	void Start () {
@@ -33,6 +34,8 @@ public class PlayerController : MonoBehaviour {
 		faceRight = false;
 		BGflash.enabled = false;
 		money = 0;
+		shield = GameObject.FindGameObjectWithTag ("Shield");
+		disableShield ();
 	}
 
 	void Update () {
@@ -154,7 +157,6 @@ public class PlayerController : MonoBehaviour {
 	void Flip ()
 	{
 		faceRight = !faceRight;
-
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
@@ -166,4 +168,17 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 	}
 
+	public void enableShield () {
+		shield.SetActive (true);
+	}
+
+	public IEnumerator enableShield (float shieldTime) {
+		shield.SetActive (true);
+		yield return new WaitForSeconds (shieldTime);
+		disableShield ();
+	}
+
+	public void disableShield () {
+		shield.SetActive (false);
+	}
 }

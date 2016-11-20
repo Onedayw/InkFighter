@@ -15,8 +15,8 @@ public class AsteroidScript : MonoBehaviour {
 	public Material trailMaterial;                  //the material of the trail.  Changing this during runtime will have no effect.
 	private float lifeTime = 0.8f;                   //the amount of time in seconds that the trail lasts
 	private float changeTime = 0.5f;                 //time point when the trail begins changing its width (if widthStart != widthEnd)
-	private float widthStart = 1.0f;                 //the starting width of the trail
-	private float widthEnd = 0.3f;                   //the ending width of the trail
+	private float widthStart = 0.5f;                 //the starting width of the trail
+	private float widthEnd = 0.15f;                   //the ending width of the trail
 	private float vertexDistanceMin = 0.1f;         //the minimum distance between the center positions
 	private float patternDetectTime = 0.0f;
 	private float patternDetectInterval = 2.0f;
@@ -24,13 +24,14 @@ public class AsteroidScript : MonoBehaviour {
 	public bool colliderIsTrigger = true;           //determines if the collider is a trigger.  Changing this during runtime will have no effect.
 	public bool colliderEnabled = true;             //determines if the collider is enabled.  Changing this during runtime will have no effect.
 	public bool pausing = false;                     //determines if the trail is pausing, i.e. neither creating nor destroying vertices
-	public GameObject player;
 
+	private GameObject player;
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
 	private float inkRange = 3.0f;
 	private bool flag = true;
+	private PlayerController playerController;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -314,6 +315,76 @@ public class AsteroidScript : MonoBehaviour {
 		return false;
 	}
 
+	private bool detectLightning () {
+		int size = centerPositions.Count, count = 0;
+		Vector3 ptr = centerPositions.First.Value;
+		LinkedListNode<Vector3> iter, copy = centerPositions.First;
+		if (size > 10) {
+			for (iter = centerPositions.First; iter != null; iter = iter.Next) {
+				if (++count == size / 3) {
+					count = 0;
+					ptr = iter.Value;
+					iter = centerPositions.First;
+					break;
+				}
+			}
+			double range = iter.Value.y - ptr.y;
+			double k = range / (iter.Value.x - ptr.x);
+			//Debug.Log (k);
+			if (k > 3 || k < 0.33) {
+				return false;
+			}
+			double c = ptr.y - k * ptr.x;
+			double diff, error = 0;
+			for (iter = centerPositions.First; iter != null; iter = iter.Next) {
+				if (++count == size / 3) {
+					copy = iter;
+					break;
+				}
+				diff = (iter.Value.y - (k * iter.Value.x + c)) / range;
+				error += diff * diff;
+			}
+			error /= (size / 3);
+			//Debug.Log (error);
+			if (error > 1) 
+				return false;
+
+			for (; iter != null; iter = iter.Next) {
+				if (++count == size / 3) {
+					count = 0;
+					break;
+				}
+			}
+			range = (ptr.y + iter.Value.y) / 2;
+			error = 0;
+			for (iter = copy; iter != null; iter = iter.Next) {
+				if (++count == size / 3) 
+					break;
+				diff = (iter.Value.y - range);
+				error += diff * diff;
+			}
+			error /= (size / 3);
+			Debug.Log (error);
+			if (error > 1)
+				return false;
+
+			range = iter.Value.y - centerPositions.Last.Value.y;
+			k = range / (iter.Value.x - centerPositions.Last.Value.x);
+			if (k > 1.732 || k < 0.577) {
+				return false;
+			}
+			c = centerPositions.Last.Value.y - k * centerPositions.Last.Value.x;
+			error = 0;
+			for (; iter != null; iter = iter.Next) {
+				diff = (iter.Value.y - (k * iter.Value.x + c)) / range;
+				error += diff * diff;
+			}
+			error /= (size / 3);
+			return error < 1;
+		}
+		return false;
+	}
+
 	//************
 	//
 	// Private Classes
@@ -349,11 +420,13 @@ public class AsteroidScript : MonoBehaviour {
 		if (cam == null) {
 			cam = Camera.main;
 		}
-		player=GameObject.Find ("Player");
+		player = GameObject.FindGameObjectWithTag ("Player");
+		playerController = player.GetComponent<PlayerController> ();
 	}
 
 
-	int count = 0;
+	int circleCount = 0;
+	int lightningtCount = 0;
 
 	//Iphone version!
 	/*
@@ -423,16 +496,19 @@ public class AsteroidScript : MonoBehaviour {
 					SetVertexWidths ();
 				}
 				SetMesh ();
-				if (Time.time > patternDetectTime + patternDetectInterval && detectCircle ()) {
-					Debug.Log ("circle detected" + count++.ToString());
-					patternDetectTime = Time.time;
+				if (Time.time > patternDetectTime + patternDetectInterval) {
+					if (detectCircle ()) {
+						Debug.Log ("circle detected" + circleCount++.ToString ());
+						patternDetectTime = Time.time;
+						playerController.enableShield (10);
+					}
+					if (detectLightning ()) {
+						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
+						patternDetectTime = Time.time;
+					}
 				}
 			}
 		}
 	}
-
-
-	public void reflect() {
 		
-	}
 }
