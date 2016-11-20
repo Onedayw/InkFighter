@@ -20,6 +20,7 @@ public class Level1Boss_enter : MonoBehaviour {
             mainCamera = Camera.main;
             camerafollowing = mainCamera.GetComponent<CameraFollowing>();
             Debug.Log("boss!");
+			Destroy(this.GetComponent<BoxCollider2D>());
         }
     }
 	// Update is called once per frame

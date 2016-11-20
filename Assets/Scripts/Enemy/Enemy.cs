@@ -61,7 +61,7 @@ public class Enemy : MonoBehaviour {
 
 	public void updatecolor () {
 		alphaLevel = (float) (0.2 + ((float)health / (float)fullHealth) * 0.5);
-		Debug.Log(alphaLevel);
+		// Debug.Log(alphaLevel);
 		GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, alphaLevel);
 	}
 
