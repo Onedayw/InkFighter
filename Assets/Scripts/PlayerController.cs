@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour {
 	public Image fullHealth;
 	public Image damagedHealth;
 	public Image BGflash;
+	public GameObject circleMover;
 
 	private Animator anim;
 	private int currentHealth;
@@ -23,7 +24,6 @@ public class PlayerController : MonoBehaviour {
 	private bool isHurt;
 	private bool faceRight;
 	private int money;
-	private GameObject shield;
 
 
 	void Start () {
@@ -34,8 +34,6 @@ public class PlayerController : MonoBehaviour {
 		faceRight = false;
 		BGflash.enabled = false;
 		money = 0;
-		shield = GameObject.FindGameObjectWithTag ("Shield");
-		disableShield ();
 	}
 
 	void Update () {
@@ -120,7 +118,7 @@ public class PlayerController : MonoBehaviour {
 	// Returns true if player has sufficient health, else return false
 	public bool removeHealth(int damage){
 		if (currentHealth > damage) {
-			currentHealth -= 1;
+			currentHealth -= damage;
 			damageTakenTime = Time.time;
 			return true;
 		}
@@ -168,17 +166,15 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 	}
 
-	public void enableShield () {
-		shield.SetActive (true);
-	}
-
-	public IEnumerator enableShield (float shieldTime) {
-		shield.SetActive (true);
-		yield return new WaitForSeconds (shieldTime);
-		disableShield ();
-	}
-
-	public void disableShield () {
-		shield.SetActive (false);
+	public void circleSkill () {
+		if (removeHealth (100)) {
+			int v = 10;
+			int[,] dirs = { { 0, v }, { v, v }, { v, 0 }, { v, -v }, { 0, -v }, { -v, -v }, { -v, 0 }, { -v, v } };
+			for (int i = 0; i < 8; i++) {
+				GameObject obj = (GameObject)Instantiate (circleMover, transform.position, transform.rotation);
+				obj.tag = "PlayerMover";
+				obj.GetComponent<Rigidbody2D> ().velocity = new Vector2 (dirs [i, 0], dirs [i, 1]);
+			}
+		}
 	}
 }

@@ -29,7 +29,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 3.0f;
+	private float inkRange = 20.0f;
 	private bool flag = true;
 	private PlayerController playerController;
 
@@ -284,7 +284,7 @@ public class AsteroidScript : MonoBehaviour {
 	private bool detectCircle () {
 		int size = centerPositions.Count; 
 		double center_x = 0, center_y = 0, error = 0, error_r, radius = 0, diff_x, diff_y, x, y;
-		if (size > 20) {
+		if (size > 15) {
 			for (LinkedListNode<Vector3> iter = centerPositions.First; iter != null; iter = iter.Next) {
 				x = iter.Value.x;
 				y = iter.Value.y;
@@ -310,7 +310,7 @@ public class AsteroidScript : MonoBehaviour {
 				error += (error_r - radius) * (error_r - radius);
 			}
 			error /= size;
-			return error / radius < 0.15;
+			return error / radius < 0.30;
 		}
 		return false;
 	}
@@ -500,12 +500,12 @@ public class AsteroidScript : MonoBehaviour {
 					if (detectCircle ()) {
 						Debug.Log ("circle detected" + circleCount++.ToString ());
 						patternDetectTime = Time.time;
-						playerController.enableShield (10);
+						playerController.circleSkill ();
 					}
-					if (detectLightning ()) {
-						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
-						patternDetectTime = Time.time;
-					}
+//					if (detectLightning ()) {
+//						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
+//						patternDetectTime = Time.time;
+//					}
 				}
 			}
 		}
