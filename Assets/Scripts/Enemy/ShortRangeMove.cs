@@ -11,7 +11,6 @@ public class ShortRangeMove : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		thisEnemy = GetComponent<Enemy> ();
-		thisEnemy.debug ();
 		s_Attack = this.GetComponent<ShortRangeAttack>();
 	}
 

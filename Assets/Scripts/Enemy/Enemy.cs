@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour {
 	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
 	private GameObject target;                           //Transform to attempt to move toward each turn.
 	private PlayerController playerController;
-	private Color color;
+	private float alphaLevel;
 
 	// Use this for initialization
 	void Start () {
@@ -21,7 +21,6 @@ public class Enemy : MonoBehaviour {
 		isHurt = false;
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
-		color = GetComponent<Renderer> ().material.color;
 	}
 
 	// Update is called once per frame
@@ -31,11 +30,6 @@ public class Enemy : MonoBehaviour {
 				isHurt = false;
 			}
 		}
-		color.a = 0.4f;
-	}
-
-	public void debug() {
-		Debug.Log ("I got it!");
 	}
 
 	public bool setSeenTarget() {
@@ -55,6 +49,7 @@ public class Enemy : MonoBehaviour {
 	public int takeDamage(int damage) {
 		if (!isHurt) {
 			health -= damage;
+			updatecolor ();
 			if (health <= 0f) {
 				die ();
 			}
@@ -62,6 +57,12 @@ public class Enemy : MonoBehaviour {
 			isHurt = true;
 		}
 		return health;
+	}
+
+	public void updatecolor () {
+		alphaLevel = (float) (0.2 + ((float)health / (float)fullHealth) * 0.5);
+		Debug.Log(alphaLevel);
+		GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, alphaLevel);
 	}
 
 	public void die() {

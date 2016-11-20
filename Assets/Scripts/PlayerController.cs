@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void updateMoney () {
-		MoneyText.text = "Money: " + money.ToString();
+		MoneyText.text = "Ink: " + money.ToString();
 	//	if (count >= 12) {
 	//		WinText.text = "You Win!";
 	//	}
