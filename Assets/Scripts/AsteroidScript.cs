@@ -29,7 +29,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 20.0f;
+	private float inkRange = 3.0f;
 	private bool flag = true;
 	private PlayerController playerController;
 

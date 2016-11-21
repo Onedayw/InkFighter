@@ -8,12 +8,12 @@ public class Enemy : MonoBehaviour {
 	//public int health, attack, speed, vision, money;
 	public bool isInBossArea;
 	public int fullHealth, attack, speed, vision, money;
-	private int health;
+	public int health;
 
 	private float damageTakenTime;
 	private bool isHurt, seenTarget;
 
-	private EnemyManager enemyManager;
+	// private EnemyManager enemyManager;
 	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
 	private GameObject target;                           //Transform to attempt to move toward each turn.
 	private PlayerController playerController;
@@ -56,7 +56,9 @@ public class Enemy : MonoBehaviour {
 	public int takeDamage(int damage) {
 		if (!isHurt) {
 			health -= damage;
-			updatecolor ();
+			if (gameObject.tag == "Enemy") {
+				updatecolor ();
+			}
 			if (health <= 0f) {
 				die ();
 			}

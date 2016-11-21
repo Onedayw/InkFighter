@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Level1Boss_enter : MonoBehaviour {
     public GameObject bossgate;
     public GameObject player;
     public Camera mainCamera;
     public CameraFollowing camerafollowing;
+	public Image BossHealthContainer;
+	public Image BossFullHealth;
+	public Image BossDamagedHealth;
     //private bool enter = false;
     //private float gatex;
 	// Use this for initialization
-	void Start () {
+	void Start () {		
 
     }
 	
@@ -21,6 +25,8 @@ public class Level1Boss_enter : MonoBehaviour {
             camerafollowing = mainCamera.GetComponent<CameraFollowing>();
             Debug.Log("boss!");
 			Destroy(this.GetComponent<BoxCollider2D>());
+			BossHealthContainer.enabled = true;
+			BossDamagedHealth.enabled = true;
         }
     }
 	// Update is called once per frame
