@@ -5,6 +5,7 @@ public class Enemy : MonoBehaviour {
 	private const float hurtTime = 0f;
 
 	public int health, attack, speed, vision, money;
+	public bool isInBossArea;
 	private float damageTakenTime;
 	private bool isHurt, seenTarget;
 
@@ -34,7 +35,10 @@ public class Enemy : MonoBehaviour {
 	}
 
 	public bool setSeenTarget() {
-		seenTarget = true;
+		if (isInBossArea) {
+			seenTarget = playerController.inBossArea;
+		}
+		else seenTarget = true;
 		return seenTarget;
 	}
 

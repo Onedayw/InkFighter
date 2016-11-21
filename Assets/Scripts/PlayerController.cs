@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour {
 	public Image fullHealth;
 	public Image damagedHealth;
 	public Image BGflash;
+	public bool inBossArea;
+	public Collider2D bossArea;
 
 	private int currentHealth;
 	private float damageTakenTime;
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour {
 		isHurt = false;
 		faceRight = false;
 		BGflash.enabled = false;
+		inBossArea = false;
 	}
 
 	void Update () {
@@ -47,6 +50,11 @@ public class PlayerController : MonoBehaviour {
 				isHurt = false;
 			}
 		}
+		//check if player is in boss's area
+		Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
+		inBossArea=bossArea.bounds.Contains(this.transform.position);
+//		Debug.Log (this.transform.position);
+		Debug.Log (inBossArea);
 	}
 
 	void FixedUpdate () {

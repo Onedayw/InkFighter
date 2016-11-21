@@ -19,7 +19,6 @@ public class Level1Boss_enter : MonoBehaviour {
             GameObject bossGate = Instantiate(bossgate) as GameObject;
             mainCamera = Camera.main;
             camerafollowing = mainCamera.GetComponent<CameraFollowing>();
-            Debug.Log("boss!");
         }
     }
 	// Update is called once per frame

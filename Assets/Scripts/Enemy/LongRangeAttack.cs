@@ -18,7 +18,7 @@ public class LongRangeAttack : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if ((target.transform.position - this.transform.position).magnitude < shotRange) {
+		if ((target.transform.position - this.transform.position).magnitude < shotRange && GetComponent<Enemy>().getSeenTarget()) {
 			attack ();
 		}
 	}
