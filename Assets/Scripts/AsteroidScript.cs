@@ -502,10 +502,10 @@ public class AsteroidScript : MonoBehaviour {
 						patternDetectTime = Time.time;
 						playerController.circleSkill ();
 					}
-					if (detectLightning ()) {
-						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
-						patternDetectTime = Time.time;
-					}
+//					if (detectLightning ()) {
+//						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
+//						patternDetectTime = Time.time;
+//					}
 				}
 			}
 		}
