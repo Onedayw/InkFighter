@@ -11,7 +11,6 @@ public class LongRangeMove : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		thisEnemy = GetComponent<Enemy> ();
-		thisEnemy.debug ();
         l_Attack = this.GetComponent<LongRangeAttack>();
 	}
 	

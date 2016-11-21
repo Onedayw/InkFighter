@@ -14,6 +14,7 @@ public class Mover : MonoBehaviour {
 		rb2d = GetComponent<Rigidbody2D> (); 
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
+		this.tag = "EnemyMover";
 
 		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
 		if (rotating) {
@@ -34,11 +35,26 @@ public class Mover : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		GameObject otherObject = other.gameObject;
-		if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge") || otherObject.CompareTag ("Trail")) {
-			Destroy(gameObject);
-		}
-		if (otherObject.CompareTag ("Player")) {
-			makeDamage (attack);
+		if (this.CompareTag ("EnemyMover")) {
+			if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge")) {
+				Destroy(gameObject);
+			}
+			if (otherObject.CompareTag ("Player")) {
+				makeDamage (attack);
+			}
+			if (otherObject.CompareTag ("Trail")) {
+				rb2d.velocity = -(rb2d.velocity);
+				this.tag = "PlayerMover";
+				this.transform.localScale *= -1;
+			}
+		} else if (this.CompareTag ("PlayerMover")) {
+			if (otherObject.CompareTag ("Enemy") || otherObject.CompareTag ("Edge")) {
+				Destroy(gameObject);
+			}
+			if (otherObject.CompareTag ("Enemy")) {
+				Enemy enemy = otherObject.GetComponent<Enemy> ();
+				enemy.takeDamage (attack);
+			}
 		}
 	}
 

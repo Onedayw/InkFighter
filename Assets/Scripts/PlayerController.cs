@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour {
 
 	public int speed, attack, startingHealth;
-	public Text CountText;
+	public Text MoneyText;
 	public Text WinText;
 	public VitualJoystick moveJoystick;
 	public MenuScript menuScript;
@@ -16,32 +16,43 @@ public class PlayerController : MonoBehaviour {
 	public Image BGflash;
 	public bool inBossArea;
 	public Collider2D bossArea;
+	public GameObject circleMover;
 
+	private Animator anim;
 	private int currentHealth;
 	private float damageTakenTime;
 	private float healingInterval = 1.0f;
 	private const float hurtTime = 0.1f;
 	private bool isHurt;
 	private bool faceRight;
+	private int money;
 
 
 	void Start () {
+		anim = GetComponent <Animator> ();
 		attack = 10;
 		currentHealth = startingHealth;
 		isHurt = false;
 		faceRight = false;
 		BGflash.enabled = false;
 		inBossArea = false;
+		money = 0;
 	}
 
 	void Update () {
 		// Handle player position change
+	}
+
+	void FixedUpdate () {
 		float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
 		Vector3 movement = new Vector3 (moveHorizontal, moveVertical);
 		if (moveJoystick.InputDirection != Vector3.zero) {
 			movement = moveJoystick.InputDirection;
 		}
+
+		setMoveAnimation (movement.x, movement.y);
+
 		faceMovingDirection (movement.x);
 		transform.Translate(movement * speed * Time.deltaTime, Space.World);
 
@@ -50,19 +61,15 @@ public class PlayerController : MonoBehaviour {
 				isHurt = false;
 			}
 		}
-		//check if player is in boss's area
-		Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
-		inBossArea=bossArea.bounds.Contains(this.transform.position);
-//		Debug.Log (this.transform.position);
-		Debug.Log (inBossArea);
-	}
 
-	void FixedUpdate () {
-		//rb2d.AddForce (movement * speed);
-		//transform.Translate(movement * speed / 10);
-		// Handle health change
 		updateHealth ();
 		SelfHealing ();
+		updateMoney ();
+	//check if player is in boss's area
+	Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
+	inBossArea=bossArea.bounds.Contains(this.transform.position);
+	//		Debug.Log (this.transform.position);
+	Debug.Log (inBossArea);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -72,12 +79,20 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	//void TextUpdate () {
-	//	CountText.text = "Count: " + count.ToString();
+	void updateMoney () {
+		MoneyText.text = "Ink: " + money.ToString();
 	//	if (count >= 12) {
 	//		WinText.text = "You Win!";
 	//	}
-	//}
+	}
+
+	void setMoveAnimation(float x, float y) {
+		if (x != 0 || y != 0) {
+			anim.SetBool ("isRunning", true);
+		} else {
+			anim.SetBool ("isRunning", false);
+		}
+	}
 
 	void updateHealth() {
 		if (currentHealth >= startingHealth) {
@@ -111,7 +126,7 @@ public class PlayerController : MonoBehaviour {
 	// Returns true if player has sufficient health, else return false
 	public bool removeHealth(int damage){
 		if (currentHealth > damage) {
-			currentHealth -= 1;
+			currentHealth -= damage;
 			damageTakenTime = Time.time;
 			return true;
 		}
@@ -119,6 +134,10 @@ public class PlayerController : MonoBehaviour {
 			//todo:health bar blink to indicate insufficient health
 			return false;
 		}
+	}
+
+	public void addMoney(int money) {
+		this.money += money;
 	}
 
 	void SelfHealing() {
@@ -144,7 +163,6 @@ public class PlayerController : MonoBehaviour {
 	void Flip ()
 	{
 		faceRight = !faceRight;
-
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
@@ -156,4 +174,15 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 	}
 
+	public void circleSkill () {
+		if (removeHealth (100)) {
+			int v = 10;
+			int[,] dirs = { { 0, v }, { v, v }, { v, 0 }, { v, -v }, { 0, -v }, { -v, -v }, { -v, 0 }, { -v, v } };
+			for (int i = 0; i < 8; i++) {
+				GameObject obj = (GameObject)Instantiate (circleMover, transform.position, transform.rotation);
+				obj.tag = "PlayerMover";
+				obj.GetComponent<Rigidbody2D> ().velocity = new Vector2 (dirs [i, 0], dirs [i, 1]);
+			}
+		}
+	}
 }

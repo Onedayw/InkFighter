@@ -31,12 +31,4 @@ public class ShortRangeAttack : MonoBehaviour {
 			playerController.loseHealth (thisEnemy.attack);
 		}
 	}
-
-	void OnTriggerEnter2D(Collider2D other) 
-	{
-		if (other.CompareTag ("Trail")) {
-			//Destroy(gameObject);
-			Debug.Log("1");
-		}
-	}
 }
