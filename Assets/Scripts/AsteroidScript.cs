@@ -284,7 +284,7 @@ public class AsteroidScript : MonoBehaviour {
 	private bool detectCircle () {
 		int size = centerPositions.Count; 
 		double center_x = 0, center_y = 0, error = 0, error_r, radius = 0, diff_x, diff_y, x, y;
-		if (size > 15) {
+		if (size > 20) {
 			for (LinkedListNode<Vector3> iter = centerPositions.First; iter != null; iter = iter.Next) {
 				x = iter.Value.x;
 				y = iter.Value.y;
@@ -310,7 +310,7 @@ public class AsteroidScript : MonoBehaviour {
 				error += (error_r - radius) * (error_r - radius);
 			}
 			error /= size;
-			return error / radius < 0.30;
+			return error / radius < 0.15;
 		}
 		return false;
 	}
@@ -502,10 +502,10 @@ public class AsteroidScript : MonoBehaviour {
 						patternDetectTime = Time.time;
 						playerController.circleSkill ();
 					}
-//					if (detectLightning ()) {
-//						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
-//						patternDetectTime = Time.time;
-//					}
+					if (detectLightning ()) {
+						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
+						patternDetectTime = Time.time;
+					}
 				}
 			}
 		}

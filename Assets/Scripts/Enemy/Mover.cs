@@ -42,11 +42,6 @@ public class Mover : MonoBehaviour {
 			if (otherObject.CompareTag ("Player")) {
 				makeDamage (attack);
 			}
-			if (otherObject.CompareTag ("Shield")) {
-				Vector3 normal = rb2d.transform.position - target.transform.position;
-				rb2d.velocity = Vector2.Reflect (rb2d.velocity, normal);
-				this.tag = "PlayerMover";
-			}
 			if (otherObject.CompareTag ("Trail")) {
 				rb2d.velocity = -(rb2d.velocity);
 				this.tag = "PlayerMover";

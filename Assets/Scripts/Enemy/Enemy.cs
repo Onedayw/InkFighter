@@ -76,5 +76,9 @@ public class Enemy : MonoBehaviour {
 			takeDamage (playerController.getAttack ());
 			//Debug.Log(playerController.getAttack());
 		}
+		if (other.CompareTag ("PlayerMover")) {
+			takeDamage (15);
+			//Debug.Log(playerController.getAttack());
+		}
 	}
 }
