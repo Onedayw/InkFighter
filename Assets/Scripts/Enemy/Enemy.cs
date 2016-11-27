@@ -19,12 +19,15 @@ public class Enemy : MonoBehaviour {
 	private PlayerController playerController;
 	private float alphaLevel;
 
+	private static float enemyDeadTime = 0.4f;
+
 	// Use this for initialization
 	void Start () {
 		health = fullHealth;
 		isHurt = false;
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
+		animator = GetComponent<Animator> ();
 	}
 
 	// Update is called once per frame
@@ -75,7 +78,8 @@ public class Enemy : MonoBehaviour {
 	}
 
 	public void die() {
-		Destroy(this.gameObject);
+		animator.SetBool ("isDead", true);
+		Destroy(this.gameObject, enemyDeadTime);
 		playerController.addMoney (money);
 	}
 

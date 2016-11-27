@@ -8,6 +8,10 @@ public class Mover : MonoBehaviour {
 	private Rigidbody2D rb2d;
 	public int speed, attack;
 	public bool rotating;
+	private Animator anim;
+
+	private static float arrowExplodeDelay = 0.4f;
+
 
 	// Use this for initialization
 	void Start () {
@@ -15,6 +19,7 @@ public class Mover : MonoBehaviour {
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
 		this.tag = "EnemyMover";
+		anim = GetComponent<Animator> ();
 
 		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
 		if (rotating) {
@@ -37,7 +42,9 @@ public class Mover : MonoBehaviour {
 		GameObject otherObject = other.gameObject;
 		if (this.CompareTag ("EnemyMover")) {
 			if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge")) {
-				Destroy(gameObject);
+				rb2d.velocity = new Vector3 (0, 0, 0);
+				anim.SetBool ("exploded", true);
+				Destroy(gameObject, arrowExplodeDelay);
 			}
 			if (otherObject.CompareTag ("Player")) {
 				makeDamage (attack);
