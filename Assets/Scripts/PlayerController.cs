@@ -68,10 +68,10 @@ public class PlayerController : MonoBehaviour {
 		SelfHealing ();
 		updateMoney ();
 	//check if player is in boss's area
-	Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
+	//Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
 	inBossArea=bossArea.bounds.Contains(this.transform.position);
 	//		Debug.Log (this.transform.position);
-	Debug.Log (inBossArea);
+	//Debug.Log (inBossArea);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {

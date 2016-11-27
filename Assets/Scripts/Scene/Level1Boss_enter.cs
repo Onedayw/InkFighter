@@ -10,6 +10,7 @@ public class Level1Boss_enter : MonoBehaviour {
 	public Image BossHealthContainer;
 	public Image BossFullHealth;
 	public Image BossDamagedHealth;
+    private PlayerController playerController;
     //private bool enter = false;
     //private float gatex;
 	// Use this for initialization
@@ -19,6 +20,7 @@ public class Level1Boss_enter : MonoBehaviour {
 	
     void OnTriggerEnter2D(Collider2D other) {
         GameObject otherObject = other.gameObject;
+        playerController = player.GetComponent<PlayerController>();
         if (otherObject.CompareTag("Player")) {
             GameObject bossGate = Instantiate(bossgate) as GameObject;
             mainCamera = Camera.main;
@@ -27,6 +29,7 @@ public class Level1Boss_enter : MonoBehaviour {
 			Destroy(this.GetComponent<BoxCollider2D>());
 			BossHealthContainer.enabled = true;
 			BossDamagedHealth.enabled = true;
+            playerController.inBossArea = true;
         }
     }
 	// Update is called once per frame
