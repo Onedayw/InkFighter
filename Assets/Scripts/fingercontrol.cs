@@ -14,7 +14,6 @@ public class fingercontrol : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (Input.touchCount > 0) {
-            Debug.Log("11111");
 			for (int i = 0; i < Input.touchCount; i++) {
 				if (Input.GetTouch (i).phase == TouchPhase.Began) {
 					Vector2 mouse = Input.GetTouch (i).position;

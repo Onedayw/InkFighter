@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour {
 	private bool isHurt;
 	private bool faceRight;
 	private int money;
+	private int selfHealingRate;
 
 
 	void Start () {
@@ -37,6 +38,7 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 		inBossArea = false;
 		money = 0;
+		selfHealingRate = 1;
 	}
 
 	void Update () {
@@ -140,14 +142,34 @@ public class PlayerController : MonoBehaviour {
 		this.money += money;
 	}
 
+	public void deductMoney(int money) {
+		this.money -= money;
+	}
+
+	public int getMoney() {
+		return this.money;
+	}
+
 	void SelfHealing() {
 		if (currentHealth < startingHealth && Time.time > damageTakenTime + (healingInterval)) {
-			currentHealth += 1;
+			currentHealth += selfHealingRate;
 		}
+	}
+
+	public void boostSelfHealingRate () {
+		selfHealingRate = selfHealingRate * 2;
+	}
+
+	public void boostAttack () {
+		attack = attack * 2;
 	}
 
 	public int getAttack() {
 		return attack;
+	}
+
+	public void boostSpeed () {
+		speed = speed * 2;
 	}
 
 	void faceMovingDirection(float moveHorizontal) 
