@@ -1,37 +1,31 @@
+#define ASTAR_CONSTANT_PENALTY
 using UnityEngine;
 using System.Collections.Generic;
+using Pathfinding;
 using Pathfinding.Serialization;
 
 namespace Pathfinding {
+
 	public delegate void GraphNodeDelegate (GraphNode node);
 	public delegate bool GraphNodeDelegateCancelable (GraphNode node);
 
 	public abstract class GraphNode {
-		/** Internal unique index */
-		private int nodeIndex;
 
-		/** Bitpacked field holding several pieces of data.
-		 * \see Walkable
-		 * \see Area
-		 * \see GraphIndex
-		 * \see Tag
-		 */
+		private int nodeIndex;
 		protected uint flags;
 
-		/** Penalty cost for walking on this node.
-		 * This can be used to make it harder/slower to walk over certain nodes.
-		 *
-		 * A penalty of 1000 (Int3.Precision) corresponds to the cost of walking one world unit.
-		 */
+#if !ASTAR_NO_PENALTY
+		/** Penlty cost for walking on this node. This can be used to make it harder/slower to walk over certain areas. */
 		private uint penalty;
+#endif
 
 		/** Constructor for a graph node. */
 		protected GraphNode (AstarPath astar) {
-			if (!System.Object.ReferenceEquals(astar, null)) {
+			if (!System.Object.ReferenceEquals (astar, null)) {
 				this.nodeIndex = astar.GetNewNodeIndex();
-				astar.InitializeNode(this);
+				astar.InitializeNode (this);
 			} else {
-				throw new System.Exception("No active AstarPath object to bind to");
+				throw new System.Exception ("No active AstarPath object to bind to");
 			}
 		}
 
@@ -64,28 +58,19 @@ namespace Pathfinding {
 			}
 		}
 
-		/** Internal unique index.
-		 * Every node will get a unique index.
-		 * This index is not necessarily correlated with e.g the position of the node in the graph.
-		 */
-		public int NodeIndex { get { return nodeIndex; } }
+		public int NodeIndex { get {return nodeIndex;}}
 
-		/** Position of the node in world space.
-		 * \note The position is stored as an Int3, not a Vector3.
-		 * You can convert an Int3 to a Vector3 using an explicit conversion.
-		 * \code var v3 = (Vector3)node.position; \endcode
-		 */
 		public Int3 position;
 
-		#region Constants
+#region Constants
 		/** Position of the walkable bit. \see Walkable */
 		const int FlagsWalkableOffset = 0;
 		/** Mask of the walkable bit. \see Walkable */
 		const uint FlagsWalkableMask = 1 << FlagsWalkableOffset;
 
-		/** Start of area bits. \see Area */
+		/** Start of region bits. \see Area */
 		const int FlagsAreaOffset = 1;
-		/** Mask of area bits. \see Area */
+		/** Mask of region bits. \see Area */
 		const uint FlagsAreaMask = (131072-1) << FlagsAreaOffset;
 
 		/** Start of graph index bits. \see GraphIndex */
@@ -102,10 +87,10 @@ namespace Pathfinding {
 		/** Mask of tag bits. \see Tag */
 		const uint FlagsTagMask = (32-1) << FlagsTagOffset;
 
-		#endregion
+#endregion
 
 
-		#region Properties
+#region Properties
 
 		/** Holds various bitpacked variables.
 		 */
@@ -120,16 +105,21 @@ namespace Pathfinding {
 
 		/** Penalty cost for walking on this node. This can be used to make it harder/slower to walk over certain areas. */
 		public uint Penalty {
+#if !ASTAR_NO_PENALTY
 			get {
 				return penalty;
 			}
 			set {
 				if (value > 0xFFFFFF)
-					Debug.LogWarning("Very high penalty applied. Are you sure negative values haven't underflowed?\n" +
+					Debug.LogWarning ("Very high penalty applied. Are you sure negative values haven't underflowed?\n" +
 						"Penalty values this high could with long paths cause overflows and in some cases infinity loops because of that.\n" +
 						"Penalty value applied: "+value);
 				penalty = value;
 			}
+#else
+			get { return 0U; }
+			set {}
+#endif
 		}
 
 		/** True if the node is traversable */
@@ -169,35 +159,35 @@ namespace Pathfinding {
 			}
 		}
 
-		#endregion
+#endregion
 
 		public void UpdateG (Path path, PathNode pathNode) {
-#if ASTAR_NO_TRAVERSAL_COST
-			pathNode.G = pathNode.parent.G + pathNode.cost;
-#else
+#if ASTAR_CONSTANT_PENALTY
 			pathNode.G = pathNode.parent.G + pathNode.cost + path.GetTraversalCost(this);
+#else
+			pathNode.G = pathNode.parent.G + pathNode.cost;
 #endif
 		}
 
 		public virtual void UpdateRecursiveG (Path path, PathNode pathNode, PathHandler handler) {
 			//Simple but slow default implementation
-			UpdateG(path, pathNode);
+			UpdateG (path,pathNode);
 
-			handler.PushNode(pathNode);
+			handler.PushNode (pathNode);
 
-			GetConnections(delegate(GraphNode other) {
-				PathNode otherPN = handler.GetPathNode(other);
-				if (otherPN.parent == pathNode && otherPN.pathID == handler.PathID) other.UpdateRecursiveG(path, otherPN, handler);
+			GetConnections (delegate (GraphNode other) {
+				PathNode otherPN = handler.GetPathNode (other);
+				if (otherPN.parent == pathNode && otherPN.pathID == handler.PathID) other.UpdateRecursiveG (path, otherPN,handler);
 			});
 		}
 
 		public virtual void FloodFill (Stack<GraphNode> stack, uint region) {
 			//Simple but slow default implementation
 
-			GetConnections(delegate(GraphNode other) {
+			GetConnections (delegate (GraphNode other) {
 				if (other.Area != region) {
 					other.Area = region;
-					stack.Push(other);
+					stack.Push (other);
 				}
 			});
 		}
@@ -209,17 +199,16 @@ namespace Pathfinding {
 		public abstract void RemoveConnection (GraphNode node);
 
 		/** Remove all connections from this node.
-		 * \param alsoReverse if true, neighbours will be requested to remove connections to this node.
-		 */
+		  * \param alsoReverse if true, neighbours will be requested to remove connections to this node.
+		  */
 		public abstract void ClearConnections (bool alsoReverse);
 
 		/** Checks if this node has a connection to the specified node */
 		public virtual bool ContainsConnection (GraphNode node) {
-			// Simple but slow default implementation
+			//Simple but slow default implementation
 			bool contains = false;
-
-			GetConnections(neighbour => {
-				contains |= neighbour == node;
+			GetConnections (delegate (GraphNode n) {
+				if (n == node) contains = true;
 			});
 			return contains;
 		}
@@ -263,8 +252,8 @@ namespace Pathfinding {
 
 		public virtual void SerializeNode (GraphSerializationContext ctx) {
 			//Write basic node data.
-			ctx.writer.Write(Penalty);
-			ctx.writer.Write(Flags);
+			ctx.writer.Write (Penalty);
+			ctx.writer.Write (Flags);
 		}
 
 		public virtual void DeserializeNode (GraphSerializationContext ctx) {
@@ -272,7 +261,7 @@ namespace Pathfinding {
 			Flags = ctx.reader.ReadUInt32();
 
 			// Set the correct graph index (which might have changed, e.g if loading additively)
-			GraphIndex = ctx.graphIndex;
+			GraphIndex = (uint)ctx.graphIndex;
 		}
 
 		/** Used to serialize references to other nodes e.g connections.
@@ -301,7 +290,8 @@ namespace Pathfinding {
 	}
 
 	public abstract class MeshNode : GraphNode {
-		protected MeshNode (AstarPath astar) : base(astar) {
+
+		protected MeshNode (AstarPath astar) : base (astar) {
 		}
 
 		public GraphNode[] connections;
@@ -315,8 +305,8 @@ namespace Pathfinding {
 		public override void ClearConnections (bool alsoReverse) {
 			// Remove all connections to this node from our neighbours
 			if (alsoReverse && connections != null) {
-				for (int i = 0; i < connections.Length; i++) {
-					connections[i].RemoveConnection(this);
+				for (int i=0;i<connections.Length;i++) {
+					connections[i].RemoveConnection (this);
 				}
 			}
 
@@ -326,7 +316,7 @@ namespace Pathfinding {
 
 		public override void GetConnections (GraphNodeDelegate del) {
 			if (connections == null) return;
-			for (int i = 0; i < connections.Length; i++) del(connections[i]);
+			for (int i=0;i<connections.Length;i++) del (connections[i]);
 		}
 
 		public override void FloodFill (Stack<GraphNode> stack, uint region) {
@@ -335,30 +325,30 @@ namespace Pathfinding {
 
 			// Iterate through all connections, set the area and push the neighbour to the stack
 			// This is a simple DFS (https://en.wikipedia.org/wiki/Depth-first_search)
-			for (int i = 0; i < connections.Length; i++) {
+			for (int i=0;i<connections.Length;i++) {
 				GraphNode other = connections[i];
 				if (other.Area != region) {
 					other.Area = region;
-					stack.Push(other);
+					stack.Push (other);
 				}
 			}
 		}
 
 		public override bool ContainsConnection (GraphNode node) {
-			for (int i = 0; i < connections.Length; i++) if (connections[i] == node) return true;
+			for (int i=0;i<connections.Length;i++) if (connections[i] == node) return true;
 			return false;
 		}
 
 		public override void UpdateRecursiveG (Path path, PathNode pathNode, PathHandler handler) {
-			UpdateG(path, pathNode);
+			UpdateG (path,pathNode);
 
-			handler.PushNode(pathNode);
+			handler.PushNode (pathNode);
 
-			for (int i = 0; i < connections.Length; i++) {
+			for (int i=0;i<connections.Length;i++) {
 				GraphNode other = connections[i];
-				PathNode otherPN = handler.GetPathNode(other);
+				PathNode otherPN = handler.GetPathNode (other);
 				if (otherPN.parent == pathNode && otherPN.pathID == handler.PathID) {
-					other.UpdateRecursiveG(path, otherPN, handler);
+					other.UpdateRecursiveG (path, otherPN,handler);
 				}
 			}
 		}
@@ -371,9 +361,10 @@ namespace Pathfinding {
 		 * to get a two-way connection.
 		 */
 		public override void AddConnection (GraphNode node, uint cost) {
+
 			// Check if we already have a connection to the node
 			if (connections != null) {
-				for (int i = 0; i < connections.Length; i++) {
+				for (int i=0;i<connections.Length;i++) {
 					if (connections[i] == node) {
 						// Just update the cost for the existing connection
 						connectionCosts[i] = cost;
@@ -387,7 +378,7 @@ namespace Pathfinding {
 
 			var newconns = new GraphNode[connLength+1];
 			var newconncosts = new uint[connLength+1];
-			for (int i = 0; i < connLength; i++) {
+			for (int i=0;i<connLength;i++) {
 				newconns[i] = connections[i];
 				newconncosts[i] = connectionCosts[i];
 			}
@@ -407,21 +398,23 @@ namespace Pathfinding {
 		 * to this node.
 		 */
 		public override void RemoveConnection (GraphNode node) {
+
 			if (connections == null) return;
 
 			// Iterate through all connections and check if there are any to the node
-			for (int i = 0; i < connections.Length; i++) {
+			for (int i=0;i<connections.Length;i++) {
 				if (connections[i] == node) {
+
 					// Create new arrays which have the specified node removed
 					int connLength = connections.Length;
 
 					var newconns = new GraphNode[connLength-1];
 					var newconncosts = new uint[connLength-1];
-					for (int j = 0; j < i; j++) {
+					for (int j=0;j<i;j++) {
 						newconns[j] = connections[j];
 						newconncosts[j] = connectionCosts[j];
 					}
-					for (int j = i+1; j < connLength; j++) {
+					for (int j=i+1;j<connLength;j++) {
 						newconns[j-1] = connections[j];
 						newconncosts[j-1] = connectionCosts[j];
 					}
@@ -444,11 +437,10 @@ namespace Pathfinding {
 			bool inside = false;
 
 			int count = GetVertexCount();
-
-			for (int i = 0, j = count-1; i < count; j = i++) {
-				if (((GetVertex(i).z <= p.z && p.z < GetVertex(j).z) || (GetVertex(j).z <= p.z && p.z < GetVertex(i).z)) &&
-					(p.x < (GetVertex(j).x - GetVertex(i).x) * (p.z - GetVertex(i).z) / (GetVertex(j).z - GetVertex(i).z) + GetVertex(i).x))
-					inside = !inside;
+			for (int i = 0, j=count-1; i < count; j = i++) {
+			  if ( ((GetVertex(i).z <= p.z && p.z < GetVertex(j).z) || (GetVertex(j).z <= p.z && p.z < GetVertex(i).z)) &&
+			     (p.x < (GetVertex(j).x - GetVertex(i).x) * (p.z - GetVertex(i).z) / (GetVertex(j).z - GetVertex(i).z) + GetVertex(i).x))
+			     inside = !inside;
 			}
 			return inside;
 		}
@@ -457,17 +449,16 @@ namespace Pathfinding {
 			if (connections == null) {
 				ctx.writer.Write(-1);
 			} else {
-				ctx.writer.Write(connections.Length);
-				for (int i = 0; i < connections.Length; i++) {
-					ctx.writer.Write(ctx.GetNodeIdentifier(connections[i]));
-					ctx.writer.Write(connectionCosts[i]);
+				ctx.writer.Write (connections.Length);
+				for (int i=0;i<connections.Length;i++) {
+					ctx.writer.Write (ctx.GetNodeIdentifier (connections[i]));
+					ctx.writer.Write (connectionCosts[i]);
 				}
 			}
 		}
 
 		public override void DeserializeReferences (GraphSerializationContext ctx) {
 			int count = ctx.reader.ReadInt32();
-
 			if (count == -1) {
 				connections = null;
 				connectionCosts = null;
@@ -475,11 +466,12 @@ namespace Pathfinding {
 				connections = new GraphNode[count];
 				connectionCosts = new uint[count];
 
-				for (int i = 0; i < count; i++) {
-					connections[i] = ctx.GetNodeFromIdentifier(ctx.reader.ReadInt32());
+				for (int i=0;i<count;i++) {
+					connections[i] = ctx.GetNodeFromIdentifier (ctx.reader.ReadInt32());
 					connectionCosts[i] = ctx.reader.ReadUInt32();
 				}
 			}
 		}
 	}
+
 }

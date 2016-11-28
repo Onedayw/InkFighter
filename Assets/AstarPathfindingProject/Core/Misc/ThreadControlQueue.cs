@@ -1,8 +1,10 @@
 using System.Threading;
+using Pathfinding;
 
 namespace Pathfinding {
 	/** Queue of paths to be processed by the system */
 	public class ThreadControlQueue {
+
 		public class QueueTerminationException : System.Exception {
 		}
 
@@ -74,7 +76,7 @@ namespace Pathfinding {
 		}
 
 		/** Aquires a lock on this queue.
-		 * Must be paired with a call to #Unlock */
+		  * Must be paired with a call to #Unlock */
 		public void Lock () {
 			Monitor.Enter(lockObj);
 		}
@@ -153,13 +155,14 @@ namespace Pathfinding {
 		}
 
 		/** Pops the next item off the queue.
-		 * This call will block if there are no items in the queue or if the queue is currently blocked.
-		 *
-		 * \returns A Path object, guaranteed to be not null.
-		 * \throws QueueTerminationException if #TerminateReceivers has been called.
-		 * \throws System.InvalidOperationException if more receivers get blocked than the fixed count sent to the constructor
-		 */
+		  * This call will block if there are no items in the queue or if the queue is currently blocked.
+		  *
+		  * \returns A Path object, guaranteed to be not null.
+		  * \throws QueueTerminationException if #TerminateReceivers has been called.
+		  * \throws System.InvalidOperationException if more receivers get blocked than the fixed count sent to the constructor
+		  */
 		public Path Pop () {
+
 			Monitor.Enter(lockObj);
 			try {
 				if (terminate) {
@@ -168,7 +171,7 @@ namespace Pathfinding {
 				}
 
 				if (head == null) {
-					Starving();
+					Starving ();
 				}
 
 				while (blocked || starving) {
@@ -176,15 +179,16 @@ namespace Pathfinding {
 
 					if (blockedReceivers == numReceivers) {
 						//Last alive
+
 					} else if (blockedReceivers > numReceivers) {
-						throw new System.InvalidOperationException("More receivers are blocked than specified in constructor ("+blockedReceivers + " > " + numReceivers+")");
+						throw new System.InvalidOperationException ("More receivers are blocked than specified in constructor ("+blockedReceivers + " > " + numReceivers+")");
 					}
 
-					Monitor.Exit(lockObj);
+					Monitor.Exit (lockObj);
 
 					block.WaitOne();
 
-					Monitor.Enter(lockObj);
+					Monitor.Enter (lockObj);
 
 					if (terminate) {
 						throw new QueueTerminationException();
@@ -193,7 +197,7 @@ namespace Pathfinding {
 					blockedReceivers--;
 
 					if (head == null) {
-						Starving();
+						Starving ();
 					}
 				}
 				Path p = head;
@@ -215,7 +219,7 @@ namespace Pathfinding {
 		public void ReceiverTerminated () {
 			Monitor.Enter(lockObj);
 			blockedReceivers++;
-			Monitor.Exit(lockObj);
+			Monitor.Exit (lockObj);
 		}
 
 		/** Pops the next item off the queue, this call will not block.
@@ -228,6 +232,7 @@ namespace Pathfinding {
 		 * \throws System.InvalidOperationException if more receivers get blocked than the fixed count sent to the constructor
 		 */
 		public Path PopNoBlock (bool blockedBefore) {
+
 			Monitor.Enter(lockObj);
 			try {
 				if (terminate) {
@@ -236,7 +241,7 @@ namespace Pathfinding {
 				}
 
 				if (head == null) {
-					Starving();
+					Starving ();
 				}
 				if (blocked || starving) {
 					if (!blockedBefore) {
@@ -247,7 +252,7 @@ namespace Pathfinding {
 						if (blockedReceivers == numReceivers) {
 							//Last alive
 						} else if (blockedReceivers > numReceivers) {
-							throw new System.InvalidOperationException("More receivers are blocked than specified in constructor ("+blockedReceivers + " > " + numReceivers+")");
+							throw new System.InvalidOperationException ("More receivers are blocked than specified in constructor ("+blockedReceivers + " > " + numReceivers+")");
 						}
 					}
 					return null;
@@ -264,7 +269,7 @@ namespace Pathfinding {
 				head = head.next;
 				return p;
 			} finally {
-				Monitor.Exit(lockObj);
+				Monitor.Exit (lockObj);
 			}
 		}
 	}

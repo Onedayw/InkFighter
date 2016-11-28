@@ -7,11 +7,13 @@ public class ShortRangeMove : MonoBehaviour {
 	private Rigidbody2D rb2d;
 	private ShortRangeAttack s_Attack;
 	private bool faceRight = false;
+	private Animator anim;
 
 	// Use this for initialization
 	void Start () {
 		thisEnemy = GetComponent<Enemy> ();
 		s_Attack = this.GetComponent<ShortRangeAttack>();
+		anim = GetComponent<Animator> ();
 	}
 
 	// Update is called once per frame
@@ -20,7 +22,9 @@ public class ShortRangeMove : MonoBehaviour {
 		if (thisEnemy.getSeenTarget ()) {
 			if (distance.magnitude > s_Attack.meleeRange) {
 				move ();
-
+				anim.SetBool ("isAttacking", false);
+				anim.SetBool ("isRunning", true);
+				anim.SetBool ("isIdle", false);
 			}
 		} else if (distance.magnitude < thisEnemy.vision) {
 			thisEnemy.setSeenTarget ();

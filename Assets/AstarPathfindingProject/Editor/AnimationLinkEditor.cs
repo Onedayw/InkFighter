@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using Pathfinding;
 
 namespace Pathfinding {
 	[CustomEditor(typeof(AnimationLink))]
 	public class AnimationLinkEditor : Editor {
+
 		public override void OnInspectorGUI () {
 			DrawDefaultInspector();
 

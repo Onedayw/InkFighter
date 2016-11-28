@@ -2,28 +2,52 @@
 
 using UnityEngine;
 using System.Collections;
+using Pathfinding;
 using System.Collections.Generic;
 
 namespace Pathfinding {
 	/** Base class for all path types */
 	public abstract class Path {
+
+#if ASTAR_POOL_DEBUG
+		private string pathTraceInfo = "";
+		private List<string> claimInfo = new List<string>();
+		~Path() {
+			Debug.Log ("Destroying " + GetType().Name + " instance");
+			if (claimed.Count > 0) {
+				Debug.LogWarning ("Pool Is Leaking. See list of claims:\n" +
+					"Each message below will list what objects are currently claiming the path." +
+					" These objects have removed their reference to the path object but has not called .Release on it (which is bad).\n" + pathTraceInfo+"\n");
+				for (int i=0;i<claimed.Count;i++) {
+					Debug.LogWarning ("- Claim "+ (i+1) + " is by a " + claimed[i].GetType().Name + "\n"+claimInfo[i]);
+				}
+			} else {
+				Debug.Log ("Some scripts are not using pooling.\n" + pathTraceInfo + "\n");
+			}
+		}
+#endif
+
 		/** Data for the thread calculating this path */
-		public PathHandler pathHandler { get; private set; }
+		public PathHandler pathHandler {get; private set;}
 
 		/** Callback to call when the path is complete.
 		 * This is usually sent to the Seeker component which post processes the path and then calls a callback to the script which requested the path
-		 */
+		*/
 		public OnPathDelegate callback;
 
 		/** Immediate callback to call when the path is complete.
 		 * \warning This may be called from a separate thread. Usually you do not want to use this one.
 		 *
 		 * \see callback
-		 */
+		*/
 		public OnPathDelegate immediateCallback;
 
+#if !ASTAR_LOCK_FREE_PATH_STATE
 		PathState state;
 		System.Object stateLock = new object();
+#else
+		int state;
+#endif
 
 		/** Current state of the path.
 		 * \see #CompleteState
@@ -39,7 +63,7 @@ namespace Pathfinding {
 		/** If the path failed, this is true.
 		 * \see #errorLog
 		 */
-		public bool error { get { return CompleteState == PathCompleteState.Error; } }
+		public bool error { get { return CompleteState == PathCompleteState.Error; }}
 
 		/** Additional info on what went wrong.
 		 * \see #error
@@ -56,7 +80,7 @@ namespace Pathfinding {
 		 */
 		public List<GraphNode> path;
 
-		/** Holds the (perhaps post processed) path as a Vector3 list */
+		/** Holds the (perhaps post processed) path as a Vector3 array */
 		public List<Vector3> vectorPath;
 
 		/** The max number of milliseconds per iteration (frame, in case of non-multithreading) */
@@ -78,26 +102,15 @@ namespace Pathfinding {
 		public int searchedNodes;
 
 		/** When the call was made to start the pathfinding for this path */
-		public System.DateTime callTime { get; private set; }
-
-		/** True if the path is currently pooled.
-		 * Do not set this value. Only read. It is used internally.
-		 *
-		 * \see PathPool
-		 * \version Was named 'recycled' in 3.7.5 and earlier.
-		 */
-		internal bool pooled;
+		public System.DateTime callTime {get; private set;}
 
 		/** True if the path is currently recycled (i.e in the path pool).
 		 * Do not set this value. Only read. It is used internally.
-		 *
-		 * \deprecated Has been renamed to 'pooled' to use more widely underestood terminology
 		 */
-		[System.Obsolete("Has been renamed to 'pooled' to use more widely underestood terminology")]
-		internal bool recycled { get { return pooled; } set { pooled = value; } }
+		internal bool recycled;
 
 		/** True if the Reset function has been called.
-		 * Used to alert users when they are doing something wrong.
+		 * Used to allert users when they are doing something wrong.
 		 */
 		protected bool hasBeenReset;
 
@@ -116,7 +129,7 @@ namespace Pathfinding {
 		public float heuristicScale = 1F;
 
 		/** ID of this path. Used to distinguish between different paths */
-		public ushort pathID { get; private set; }
+		public ushort pathID {get; private set;}
 
 		/** Target to use for H score calculation. Used alongside #hTarget. */
 		protected GraphNode hTargetNode;
@@ -196,20 +209,20 @@ namespace Pathfinding {
 		public float GetTotalLength () {
 			if (vectorPath == null) return float.PositiveInfinity;
 			float tot = 0;
-			for (int i = 0; i < vectorPath.Count-1; i++) tot += Vector3.Distance(vectorPath[i], vectorPath[i+1]);
+			for (int i=0;i<vectorPath.Count-1;i++) tot += Vector3.Distance (vectorPath[i],vectorPath[i+1]);
 			return tot;
 		}
 
 		/** Waits until this path has been calculated and returned.
 		 * Allows for very easy scripting.
-		 * \code
-		 * //In an IEnumerator function
-		 *
-		 * Path p = Seeker.StartPath (transform.position, transform.position + Vector3.forward * 10);
-		 * yield return StartCoroutine (p.WaitForPath ());
-		 *
-		 * //The path is calculated at this stage
-		 * \endcode
+\code
+//In an IEnumerator function
+
+Path p = Seeker.StartPath (transform.position, transform.position + Vector3.forward * 10);
+yield return StartCoroutine (p.WaitForPath ());
+
+//The path is calculated at this stage
+\endcode
 		 * \note Do not confuse this with AstarPath.WaitForPath. This one will wait using yield until it has been calculated
 		 * while AstarPath.WaitForPath will halt all operations until the path has been calculated.
 		 *
@@ -218,34 +231,34 @@ namespace Pathfinding {
 		 * \see AstarPath.WaitForPath
 		 */
 		public IEnumerator WaitForPath () {
-			if (GetState() == PathState.Created) throw new System.InvalidOperationException("This path has not been started yet");
+			if (GetState () == PathState.Created) throw new System.InvalidOperationException ("This path has not been started yet");
 
-			while (GetState() != PathState.Returned) yield return null;
+			while (GetState () != PathState.Returned) yield return null;
 		}
 
-		/** Estimated cost from the specified node to the target.
-		 * \see https://en.wikipedia.org/wiki/A*_search_algorithm
-		 */
 		public uint CalculateHScore (GraphNode node) {
-			uint h;
-
+			uint v1;
+			uint v2;
 			switch (heuristic) {
 			case Heuristic.Euclidean:
-				h = (uint)(((GetHTarget() - node.position).costMagnitude)*heuristicScale);
-				return h;
+				v1 = (uint)(((GetHTarget () - node.position).costMagnitude)*heuristicScale);
+				v2 = hTargetNode != null ? AstarPath.active.euclideanEmbedding.GetHeuristic ( node.NodeIndex, hTargetNode.NodeIndex ) : 0;
+				return System.Math.Max (v1,v2);
 			case Heuristic.Manhattan:
 				Int3 p2 = node.position;
-				h = (uint)((System.Math.Abs(hTarget.x-p2.x) + System.Math.Abs(hTarget.y-p2.y) + System.Math.Abs(hTarget.z-p2.z))*heuristicScale);
-				return h;
+				v1 = (uint)((System.Math.Abs (hTarget.x-p2.x) + System.Math.Abs (hTarget.y-p2.y) + System.Math.Abs (hTarget.z-p2.z))*heuristicScale);
+				v2 = hTargetNode != null ? AstarPath.active.euclideanEmbedding.GetHeuristic ( node.NodeIndex, hTargetNode.NodeIndex ) : 0;
+				return System.Math.Max (v1,v2);
 			case Heuristic.DiagonalManhattan:
-				Int3 p = GetHTarget() - node.position;
-				p.x = System.Math.Abs(p.x);
-				p.y = System.Math.Abs(p.y);
-				p.z = System.Math.Abs(p.z);
-				int diag = System.Math.Min(p.x, p.z);
-				int diag2 = System.Math.Max(p.x, p.z);
-				h = (uint)((((14*diag)/10) + (diag2-diag) + p.y) * heuristicScale);
-				return h;
+				Int3 p = GetHTarget () - node.position;
+				p.x = System.Math.Abs (p.x);
+				p.y = System.Math.Abs (p.y);
+				p.z = System.Math.Abs (p.z);
+				int diag = System.Math.Min (p.x,p.z);
+				int diag2 = System.Math.Max (p.x,p.z);
+				v1 = (uint)((((14*diag)/10) + (diag2-diag) + p.y) * heuristicScale);
+				v2 = hTargetNode != null ? AstarPath.active.euclideanEmbedding.GetHeuristic ( node.NodeIndex, hTargetNode.NodeIndex ) : 0;
+				return System.Math.Max (v1,v2);
 			}
 			return 0U;
 		}
@@ -262,17 +275,13 @@ namespace Pathfinding {
 		}
 
 		/** Returns if the node can be traversed.
-		 * This per default equals to if the node is walkable and if the node's tag is included in #enabledTags */
+		  * This per default equals to if the node is walkable and if the node's tag is included in #enabledTags */
 		public bool CanTraverse (GraphNode node) {
 			unchecked { return node.Walkable && (enabledTags >> (int)node.Tag & 0x1) != 0; }
 		}
 
 		public uint GetTraversalCost (GraphNode node) {
-#if ASTAR_NO_TRAVERSAL_COST
-			return 0;
-#else
-			unchecked { return GetTagPenalty((int)node.Tag) + node.Penalty; }
-#endif
+			unchecked { return GetTagPenalty ((int)node.Tag ) + node.Penalty ; }
 		}
 
 		/** May be called by graph nodes to get a special cost for some connections.
@@ -310,11 +319,18 @@ namespace Pathfinding {
 		}
 
 		/** Threadsafe increment of the state */
+#if !ASTAR_LOCK_FREE_PATH_STATE
 		public void AdvanceState (PathState s) {
+
 			lock (stateLock) {
-				state = (PathState)System.Math.Max((int)state, (int)s);
+				state = (PathState)System.Math.Max ((int)state, (int)s);
 			}
 		}
+#else
+		public void AdvanceState () {
+			System.Threading.Interlocked.Increment (ref state);
+		}
+#endif
 
 		/** Returns the state of the path in the pathfinding pipeline */
 		public PathState GetState () {
@@ -329,6 +345,9 @@ namespace Pathfinding {
 // What it does is that it disables the LogError function if ASTAR_NO_LOGGING is enabled
 // since the DISABLED define will never be enabled
 // Ugly way of writing Conditional("!ASTAR_NO_LOGGING")
+#if ASTAR_NO_LOGGING
+		[System.Diagnostics.Conditional("DISABLED")]
+#endif
 		public void LogError (string msg) {
 			// Optimize for release builds
 			if (!(!AstarPath.isEditor && AstarPath.active.logPathResults == PathLog.None)) {
@@ -336,7 +355,7 @@ namespace Pathfinding {
 			}
 
 			if (AstarPath.active.logPathResults != PathLog.None && AstarPath.active.logPathResults != PathLog.InGame) {
-				Debug.LogWarning(msg);
+				Debug.LogWarning (msg);
 			}
 		}
 
@@ -345,15 +364,17 @@ namespace Pathfinding {
 		 */
 		public void ForceLogError (string msg) {
 			Error();
+
 			_errorLog += msg;
-			Debug.LogError(msg);
+
+			Debug.LogError (msg);
 		}
 
 		/** Appends a message to the #errorLog.
-		 * Nothing is logged to the console.
-		 *
-		 * \note If AstarPath.logPathResults is PathLog.None and this is a standalone player, nothing will be logged as an optimization.
-		 */
+		  * Nothing is logged to the console.
+		  *
+		  * \note If AstarPath.logPathResults is PathLog.None and this is a standalone player, nothing will be logged as an optimization.
+		  */
 		public void Log (string msg) {
 			// Optimize for release builds
 			if (!(!AstarPath.isEditor && AstarPath.active.logPathResults == PathLog.None)) {
@@ -376,10 +397,10 @@ namespace Pathfinding {
 		 * \throws An exception if any errors are found
 		 */
 		private void ErrorCheck () {
-			if (!hasBeenReset) throw new System.Exception("The path has never been reset. Use pooling API or call Reset() after creating the path with the default constructor.");
-			if (pooled) throw new System.Exception("The path is currently in a path pool. Are you sending the path for calculation twice?");
-			if (pathHandler == null) throw new System.Exception("Field pathHandler is not set. Please report this bug.");
-			if (GetState() > PathState.Processing) throw new System.Exception("This path has already been processed. Do not request a path with the same path object twice.");
+			if (!hasBeenReset) throw new System.Exception ("The path has never been reset. Use pooling API or call Reset() after creating the path with the default constructor.");
+			if (recycled) throw new System.Exception ("The path is currently in a path pool. Are you sending the path for calculation twice?");
+			if (pathHandler == null) throw new System.Exception ("Field pathHandler is not set. Please report this bug.");
+			if (GetState() > PathState.Processing) throw new System.Exception ("This path has already been processed. Do not request a path with the same path object twice.");
 		}
 
 		/** Called when the path enters the pool.
@@ -389,8 +410,8 @@ namespace Pathfinding {
 		 * \warning Do not call this function manually.
 		 */
 		public virtual void OnEnterPool () {
-			if (vectorPath != null) Pathfinding.Util.ListPool<Vector3>.Release(vectorPath);
-			if (path != null) Pathfinding.Util.ListPool<GraphNode>.Release(path);
+			if (vectorPath != null) Pathfinding.Util.ListPool<Vector3>.Release (vectorPath);
+			if (path != null) Pathfinding.Util.ListPool<GraphNode>.Release (path);
 			vectorPath = null;
 			path = null;
 		}
@@ -404,10 +425,15 @@ namespace Pathfinding {
 		 * call this base function in inheriting types with base.Reset ().
 		 *
 		 * \warning This function should not be called manually.
-		 */
+		  */
 		public virtual void Reset () {
-			if (System.Object.ReferenceEquals(AstarPath.active, null))
-				throw new System.NullReferenceException("No AstarPath object found in the scene. " +
+#if ASTAR_POOL_DEBUG
+			pathTraceInfo = "This path was got from the pool or created from here (stacktrace):\n";
+			pathTraceInfo += System.Environment.StackTrace;
+#endif
+
+			if (System.Object.ReferenceEquals (AstarPath.active, null))
+				throw new System.NullReferenceException ("No AstarPath object found in the scene. " +
 					"Make sure there is one or do not create paths in Awake");
 
 			hasBeenReset = true;
@@ -439,7 +465,7 @@ namespace Pathfinding {
 			tagPenalties = null;
 
 			callTime = System.DateTime.UtcNow;
-			pathID = AstarPath.active.GetNextPathID();
+			pathID = AstarPath.active.GetNextPathID ();
 
 			hTarget = Int3.zero;
 			hTargetNode = null;
@@ -449,92 +475,118 @@ namespace Pathfinding {
 			return System.DateTime.UtcNow.Ticks >= targetTime;
 		}
 
+		/** Internal method to recycle the path.
+		 * Calling this means that the path and any variables on it are not needed anymore and the path can be pooled.
+		 * All path data will be reset.
+		 * Implement this in inheriting path types to support recycling of paths.
+\code
+public override void Recycle () {
+	//Recycle the Path (<Path> should be replaced by the path type it is implemented in)
+	PathPool<Path>.Recycle (this);
+}
+\endcode
+		 *
+		 * \warning Do not call this function directly, instead use the #Claim and #Release functions.
+		 * \see Pathfinding.PathPool
+		 * \see Reset
+		 * \see Claim
+		 * \see Release
+		 */
+		protected abstract void Recycle ();
+
 		/** List of claims on this path with reference objects */
 		private List<System.Object> claimed = new List<System.Object>();
 
 		/** True if the path has been released with a non-silent call yet.
 		 *
 		 * \see Release
+		 * \see ReleaseSilent
 		 * \see Claim
 		 */
 		private bool releasedNotSilent;
 
-		/** Claim this path (pooling).
-		 * A claim on a path will ensure that it is not pooled.
+		/** Claim this path.
+		 * A claim on a path will ensure that it is not recycled.
 		 * If you are using a path, you will want to claim it when you first get it and then release it when you will not
-		 * use it anymore. When there are no claims on the path, it will be reset and put in a pool.
-		 *
-		 * This is essentially just reference counting.
-		 *
-		 * The object passed to this method is merely used as a way to more easily detect when pooling is not done correctly.
-		 * It can be any object, when used from a movement script you can just pass "this". This class will throw an exception
-		 * if you try to call Claim on the same path twice with the same object (which is usually not what you want) or
-		 * if you try to call Release with an object that has not been used in a Claim call for that path.
-		 * The object passed to the Claim method needs to be the same as the one you pass to this method.
+		 * use it anymore. When there are no claims on the path, it will be recycled and put in a pool.
 		 *
 		 * \see Release
-		 * \see Pool
-		 * \see \ref pooling
+		 * \see Recycle
 		 */
 		public void Claim (System.Object o) {
-			if (System.Object.ReferenceEquals(o, null)) throw new System.ArgumentNullException("o");
+			if (System.Object.ReferenceEquals (o, null)) throw new System.ArgumentNullException ("o");
 
-			for (int i = 0; i < claimed.Count; i++) {
+			for ( int i = 0; i < claimed.Count; i++ ) {
 				// Need to use ReferenceEquals because it might be called from another thread
-				if (System.Object.ReferenceEquals(claimed[i], o))
-					throw new System.ArgumentException("You have already claimed the path with that object ("+o+"). Are you claiming the path with the same object twice?");
+				if ( System.Object.ReferenceEquals (claimed[i], o) )
+					throw new System.ArgumentException ("You have already claimed the path with that object ("+o+"). Are you claiming the path with the same object twice?");
 			}
 
-			claimed.Add(o);
+			claimed.Add (o);
+#if ASTAR_POOL_DEBUG
+			claimInfo.Add (o.ToString () + "\n\nClaimed from:\n" + System.Environment.StackTrace);
+#endif
 		}
 
-		/** Releases the path silently (pooling).
-		 * \deprecated Use Release(o, true) instead
+		/** Releases the path silently.
+		 * This will remove the claim by the specified object, but the path will not be recycled if the claim count reches zero unless a Release call (not silent) has been made earlier.
+		 * This is used by the internal pathfinding components such as Seeker and AstarPath so that they will not recycle paths.
+		 * This enables users to skip the claim/release calls if they want without the path being recycled by the Seeker or AstarPath.
 		 */
-		[System.Obsolete("Use Release(o, true) instead")]
 		public void ReleaseSilent (System.Object o) {
-			Release(o, true);
-		}
 
-		/** Releases a path claim (pooling).
-		 * Removes the claim of the path by the specified object.
-		 * When the claim count reaches zero, the path will be pooled, all variables will be cleared and the path will be put in a pool to be used again.
-		 * This is great for memory since less allocations are made.
-		 *
-		 * If the silent parameter is true, this method will remove the claim by the specified object
-		 * but the path will not be pooled if the claim count reches zero unless a Release call (not silent) has been made earlier.
-		 * This is used by the internal pathfinding components such as Seeker and AstarPath so that they will not cause paths to be pooled.
-		 * This enables users to skip the claim/release calls if they want without the path being pooled by the Seeker or AstarPath and
-		 * thus causing strange bugs.
-		 *
-		 * \see Claim
-		 * \see PathPool
-		 */
-		public void Release (System.Object o, bool silent = false) {
-			if (o == null) throw new System.ArgumentNullException("o");
+			if (o == null) throw new System.ArgumentNullException ("o");
 
-			for (int i = 0; i < claimed.Count; i++) {
+			for (int i=0;i<claimed.Count;i++) {
 				// Need to use ReferenceEquals because it might be called from another thread
-				if (System.Object.ReferenceEquals(claimed[i], o)) {
-					claimed.RemoveAt(i);
-					if (!silent) {
-						releasedNotSilent = true;
-					}
-
-					if (claimed.Count == 0 && releasedNotSilent) {
-						PathPool.Pool(this);
+				if (System.Object.ReferenceEquals (claimed[i], o)) {
+					claimed.RemoveAt (i);
+#if ASTAR_POOL_DEBUG
+					claimInfo.RemoveAt (i);
+#endif
+					if (releasedNotSilent && claimed.Count == 0) {
+						Recycle ();
 					}
 					return;
 				}
 			}
 			if (claimed.Count == 0) {
-				throw new System.ArgumentException("You are releasing a path which is not claimed at all (most likely it has been pooled already). " +
-					"Are you releasing the path with the same object ("+o+") twice?" +
-					"\nCheck out the documentation on path pooling for help.");
+				throw new System.ArgumentException ("You are releasing a path which is not claimed at all (most likely it has been pooled already). " +
+					"Are you releasing the path with the same object ("+o+") twice?");
 			}
-			throw new System.ArgumentException("You are releasing a path which has not been claimed with this object ("+o+"). " +
-				"Are you releasing the path with the same object twice?\n" +
-				"Check out the documentation on path pooling for help.");
+			throw new System.ArgumentException ("You are releasing a path which has not been claimed with this object ("+o+"). " +
+				"Are you releasing the path with the same object twice?");
+		}
+
+		/** Releases a path claim.
+		 * Removes the claim of the path by the specified object.
+		 * When the claim count reaches zero, the path will be recycled, all variables will be cleared and the path will be put in a pool to be used again.
+		 * This is great for memory since less allocations are made.
+		 * \see Claim
+		 */
+		public void Release (System.Object o) {
+			if (o == null) throw new System.ArgumentNullException ("o");
+
+			for (int i=0;i<claimed.Count;i++) {
+				// Need to use ReferenceEquals because it might be called from another thread
+				if (System.Object.ReferenceEquals (claimed[i], o)) {
+					claimed.RemoveAt (i);
+#if ASTAR_POOL_DEBUG
+					claimInfo.RemoveAt (i);
+#endif
+					releasedNotSilent = true;
+					if (claimed.Count == 0) {
+						Recycle ();
+					}
+					return;
+				}
+			}
+			if (claimed.Count == 0) {
+				throw new System.ArgumentException ("You are releasing a path which is not claimed at all (most likely it has been pooled already). " +
+					"Are you releasing the path with the same object ("+o+") twice?");
+			}
+			throw new System.ArgumentException ("You are releasing a path which has not been claimed with this object ("+o+"). " +
+				"Are you releasing the path with the same object twice?");
 		}
 
 		/** Traces the calculated path from the end node to the start.
@@ -542,90 +594,50 @@ namespace Pathfinding {
 		 * Assumes the #vectorPath and #path are empty and not null (which will be the case for a correctly initialized path).
 		 */
 		protected virtual void Trace (PathNode from) {
-			// Current node we are processing
-			PathNode c = from;
+
 			int count = 0;
 
+			PathNode c = from;
 			while (c != null) {
 				c = c.parent;
 				count++;
-				if (count > 2048) {
-					Debug.LogWarning("Infinite loop? >2048 node path. Remove this message if you really have that long paths (Path.cs, Trace method)");
+				if (count > 1024) {
+					Debug.LogWarning ("Inifinity loop? >1024 node path. Remove this message if you really have that long paths (Path.cs, Trace function)");
 					break;
 				}
 			}
 
-			// Ensure capacities for lists
-			AstarProfiler.StartProfile("Check List Capacities");
+			//Ensure capacities for lists
+			AstarProfiler.StartProfile ("Check List Capacities");
 
 			if (path.Capacity < count) path.Capacity = count;
 			if (vectorPath.Capacity < count) vectorPath.Capacity = count;
 
-			AstarProfiler.EndProfile();
+			AstarProfiler.EndProfile ();
 
 			c = from;
 
-			for (int i = 0; i < count; i++) {
-				path.Add(c.node);
+			for (int i = 0;i<count;i++) {
+				path.Add (c.node);
 				c = c.parent;
 			}
 
-			// Reverse
 			int half = count/2;
-			for (int i = 0; i < half; i++) {
-				var tmp = path[i];
+			for (int i=0;i<half;i++) {
+				GraphNode tmp = path[i];
 				path[i] = path[count-i-1];
 				path[count - i - 1] = tmp;
 			}
 
-			for (int i = 0; i < count; i++) {
-				vectorPath.Add((Vector3)path[i].position);
+			for (int i=0;i<count;i++) {
+				vectorPath.Add ((Vector3)path[i].position);
 			}
 		}
 
-		/** Writes text shared for all overrides of DebugString to the string builder.
-		 * \see DebugString
-		 */
-		protected void DebugStringPrefix (PathLog logMode, System.Text.StringBuilder text) {
-			text.Append(error ? "Path Failed : " : "Path Completed : ");
-			text.Append("Computation Time ");
-			text.Append(duration.ToString(logMode == PathLog.Heavy ? "0.000 ms " : "0.00 ms "));
-
-			text.Append("Searched Nodes ").Append(searchedNodes);
-
-			if (!error) {
-				text.Append(" Path Length ");
-				text.Append(path == null ? "Null" : path.Count.ToString());
-
-				if (logMode == PathLog.Heavy) {
-					text.Append("\nSearch Iterations ").Append(searchIterations);
-				}
-			}
-		}
-
-		/** Writes text shared for all overrides of DebugString to the string builder.
-		 * \see DebugString
-		 */
-		protected void DebugStringSuffix (PathLog logMode, System.Text.StringBuilder text) {
-			if (error) {
-				text.Append("\nError: ").Append(errorLog);
-			}
-
-			if (logMode == PathLog.Heavy && !AstarPath.IsUsingMultithreading) {
-				text.Append("\nCallback references ");
-				if (callback != null) text.Append(callback.Target.GetType().FullName).AppendLine();
-				else text.AppendLine("NULL");
-			}
-
-			text.Append("\nPath Number ").Append(pathID).Append(" (unique id)");
-		}
-
-		/** Returns a string with information about it.
-		 * More information is emitted when logMode == Heavy.
-		 * An empty string is returned if logMode == None
-		 * or logMode == OnlyErrors and this path did not fail.
+		/** Returns a debug string for this path.
 		 */
 		public virtual string DebugString (PathLog logMode) {
+
 			if (logMode == PathLog.None || (!error && logMode == PathLog.OnlyErrors)) {
 				return "";
 			}
@@ -634,43 +646,71 @@ namespace Pathfinding {
 			System.Text.StringBuilder text = pathHandler.DebugStringBuilder;
 			text.Length = 0;
 
-			DebugStringPrefix(logMode, text);
-			DebugStringSuffix(logMode, text);
+			text.Append (error ? "Path Failed : " : "Path Completed : ");
+			text.Append ("Computation Time ");
 
-			return text.ToString();
+			text.Append ((duration).ToString (logMode == PathLog.Heavy ? "0.000 ms " : "0.00 ms "));
+			text.Append ("Searched Nodes ");
+			text.Append (searchedNodes);
+
+			if (!error) {
+				text.Append (" Path Length ");
+				text.Append (path == null ? "Null" : path.Count.ToString ());
+
+				if (logMode == PathLog.Heavy) {
+					text.Append ("\nSearch Iterations "+searchIterations);
+				}
+			}
+
+			if (error) {
+				text.Append ("\nError: ");
+				text.Append (errorLog);
+			}
+
+			if (logMode == PathLog.Heavy && !AstarPath.IsUsingMultithreading ) {
+				text.Append ("\nCallback references ");
+				if (callback != null) text.Append(callback.Target.GetType().FullName).AppendLine();
+				else text.AppendLine ("NULL");
+			}
+
+			text.Append ("\nPath Number ");
+			text.Append (pathID);
+
+			return text.ToString ();
 		}
 
 		/** Calls callback to return the calculated path. \see #callback */
 		public virtual void ReturnPath () {
 			if (callback != null) {
-				callback(this);
+				callback (this);
 			}
 		}
 
 		/** Prepares low level path variables for calculation.
-		 * Called before a path search will take place.
-		 * Always called before the Prepare, Initialize and CalculateStep functions
-		 */
-		internal void PrepareBase (PathHandler pathHandler) {
+		  * Called before a path search will take place.
+		  * Always called before the Prepare, Initialize and CalculateStep functions
+		  */
+		public void PrepareBase (PathHandler pathHandler) {
+
 			//Path IDs have overflowed 65K, cleanup is needed
 			//Since pathIDs are handed out sequentially, we can do this
 			if (pathHandler.PathID > pathID) {
-				pathHandler.ClearPathIDs();
+				pathHandler.ClearPathIDs ();
 			}
 
 			//Make sure the path has a reference to the pathHandler
 			this.pathHandler = pathHandler;
 			//Assign relevant path data to the pathHandler
-			pathHandler.InitializeForPath(this);
+			pathHandler.InitializeForPath (this);
 
 			// Make sure that internalTagPenalties is an array which has the length 32
 			if (internalTagPenalties == null || internalTagPenalties.Length != 32)
 				internalTagPenalties = ZeroTagPenalties;
 
 			try {
-				ErrorCheck();
+				ErrorCheck ();
 			} catch (System.Exception e) {
-				ForceLogError("Exception in path "+pathID+"\n"+e);
+				ForceLogError ("Exception in path "+pathID+"\n"+e);
 			}
 		}
 
