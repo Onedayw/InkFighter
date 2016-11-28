@@ -18,7 +18,6 @@ public class Mover : MonoBehaviour {
 		rb2d = GetComponent<Rigidbody2D> (); 
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
-		this.tag = "EnemyMover";
 		anim = GetComponent<Animator> ();
 
 		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
