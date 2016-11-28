@@ -12,7 +12,6 @@ public class Boss_level1 : MonoBehaviour {
 	public bool isdash = false;
 	public bool isstun = false;
     public Rigidbody2D rb;
-	Random random = new Random();
     float stunTime = 0.0f;
 
 	private bool faceRight = false;
@@ -52,6 +51,7 @@ public class Boss_level1 : MonoBehaviour {
                 if (((Vector2)distance).magnitude < meleeRange) {
                     if (!isdash && !isstun) {
                         float r = Random.value;
+
                         if (r < 0.999) {
                             Debug.Log("attacking");
                             attack();

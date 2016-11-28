@@ -15,7 +15,7 @@ public class Level1Boss_enter : MonoBehaviour {
     //private float gatex;
 	// Use this for initialization
 	void Start () {		
-
+		player = GameObject.FindGameObjectWithTag ("Player");
     }
 	
     void OnTriggerEnter2D(Collider2D other) {

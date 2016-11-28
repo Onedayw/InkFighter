@@ -326,7 +326,9 @@ namespace Pathfinding {
 
 			GUILayout.BeginHorizontal ();
 
-			EditorGUIUtility.LookLikeControls();
+			//EditorGUIUtility.LookLikeControls();
+			EditorGUIUtility.fieldWidth = 0f;
+			EditorGUIUtility.labelWidth = 0f;
 			EditorGUILayout.PrefixLabel (label,EditorStyles.layerMaskField);
 
 			string text;

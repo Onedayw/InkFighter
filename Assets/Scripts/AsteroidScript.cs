@@ -319,75 +319,6 @@ public class AsteroidScript : MonoBehaviour {
 		return false;
 	}
 
-	private bool detectLightning () {
-		int size = centerPositions.Count, count = 0;
-		Vector3 ptr = centerPositions.First.Value;
-		LinkedListNode<Vector3> iter, copy = centerPositions.First;
-		if (size > 10) {
-			for (iter = centerPositions.First; iter != null; iter = iter.Next) {
-				if (++count == size / 3) {
-					count = 0;
-					ptr = iter.Value;
-					iter = centerPositions.First;
-					break;
-				}
-			}
-			double range = iter.Value.y - ptr.y;
-			double k = range / (iter.Value.x - ptr.x);
-			//Debug.Log (k);
-			if (k > 3 || k < 0.33) {
-				return false;
-			}
-			double c = ptr.y - k * ptr.x;
-			double diff, error = 0;
-			for (iter = centerPositions.First; iter != null; iter = iter.Next) {
-				if (++count == size / 3) {
-					copy = iter;
-					break;
-				}
-				diff = (iter.Value.y - (k * iter.Value.x + c)) / range;
-				error += diff * diff;
-			}
-			error /= (size / 3);
-			//Debug.Log (error);
-			if (error > 1) 
-				return false;
-
-			for (; iter != null; iter = iter.Next) {
-				if (++count == size / 3) {
-					count = 0;
-					break;
-				}
-			}
-			range = (ptr.y + iter.Value.y) / 2;
-			error = 0;
-			for (iter = copy; iter != null; iter = iter.Next) {
-				if (++count == size / 3) 
-					break;
-				diff = (iter.Value.y - range);
-				error += diff * diff;
-			}
-			error /= (size / 3);
-			Debug.Log (error);
-			if (error > 1)
-				return false;
-
-			range = iter.Value.y - centerPositions.Last.Value.y;
-			k = range / (iter.Value.x - centerPositions.Last.Value.x);
-			if (k > 1.732 || k < 0.577) {
-				return false;
-			}
-			c = centerPositions.Last.Value.y - k * centerPositions.Last.Value.x;
-			error = 0;
-			for (; iter != null; iter = iter.Next) {
-				diff = (iter.Value.y - (k * iter.Value.x + c)) / range;
-				error += diff * diff;
-			}
-			error /= (size / 3);
-			return error < 1;
-		}
-		return false;
-	}
 
 	//************
 	//
@@ -430,7 +361,6 @@ public class AsteroidScript : MonoBehaviour {
 
 
 	int circleCount = 0;
-	int lightningtCount = 0;
 
 	//Iphone version!
 	/*
