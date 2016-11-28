@@ -29,7 +29,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Transform trans;                        //transform of the object this script is attached to                    
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
-	private float inkRange = 3.0f;
+	private float inkRange = 3.0f;                   // the range that player can attack 1:100px
 	private bool flag = true;
 	private PlayerController playerController;
 
@@ -279,6 +279,10 @@ public class AsteroidScript : MonoBehaviour {
 		} else {
 			return false;
 		}
+	}
+
+	public float getInkRange() {
+		return inkRange;
 	}
 
 	private bool detectCircle () {
