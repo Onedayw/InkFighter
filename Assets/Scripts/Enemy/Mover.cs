@@ -43,7 +43,7 @@ public class Mover : MonoBehaviour {
 		if (this.CompareTag ("EnemyMover")) {
 			if (otherObject.CompareTag ("Player") || otherObject.CompareTag ("Edge")) {
 				rb2d.velocity = new Vector3 (0, 0, 0);
-				anim.SetBool ("exploded", true);
+				if (anim != null) anim.SetBool ("exploded", true);
 				Destroy(gameObject, arrowExplodeDelay);
 			}
 			if (otherObject.CompareTag ("Player")) {
