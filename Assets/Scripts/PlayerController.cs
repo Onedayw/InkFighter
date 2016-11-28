@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour {
 	private bool faceRight;
 	private int money;
 	private float inkRange;
+	private int selfHealingRate;
 
 
 	void Start () {
@@ -39,8 +40,8 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 		inBossArea = false;
 		money = 0;
-
 		inkRange = finger.GetComponent<AsteroidScript> ().getInkRange();
+		selfHealingRate = 1;
 	}
 
 	void Update () {
@@ -72,11 +73,11 @@ public class PlayerController : MonoBehaviour {
 		updateHealth ();
 		SelfHealing ();
 		updateMoney ();
-	//check if player is in boss's area
-	Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
-	inBossArea=bossArea.bounds.Contains(this.transform.position);
-	//		Debug.Log (this.transform.position);
-	Debug.Log (inBossArea);
+		//check if player is in boss's area
+		//Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
+		inBossArea=bossArea.bounds.Contains(this.transform.position);
+		//		Debug.Log (this.transform.position);
+		//Debug.Log (inBossArea);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -88,9 +89,9 @@ public class PlayerController : MonoBehaviour {
 
 	void updateMoney () {
 		MoneyText.text = "Ink: " + money.ToString();
-	//	if (count >= 12) {
-	//		WinText.text = "You Win!";
-	//	}
+		//	if (count >= 12) {
+		//		WinText.text = "You Win!";
+		//	}
 	}
 
 	void setMoveAnimation(float x, float y) {
@@ -147,14 +148,34 @@ public class PlayerController : MonoBehaviour {
 		this.money += money;
 	}
 
+	public void deductMoney(int money) {
+		this.money -= money;
+	}
+
+	public int getMoney() {
+		return this.money;
+	}
+
 	void SelfHealing() {
 		if (currentHealth < startingHealth && Time.time > damageTakenTime + (healingInterval)) {
-			currentHealth += 1;
+			currentHealth += selfHealingRate;
 		}
+	}
+
+	public void boostSelfHealingRate () {
+		selfHealingRate = selfHealingRate * 2;
+	}
+
+	public void boostAttack () {
+		attack = attack * 2;
 	}
 
 	public int getAttack() {
 		return attack;
+	}
+
+	public void boostSpeed () {
+		speed = speed * 2;
 	}
 
 	void faceMovingDirection(float moveHorizontal) 
