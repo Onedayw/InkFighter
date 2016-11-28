@@ -10,13 +10,14 @@ public class PlayerController : MonoBehaviour {
 	public Text WinText;
 	public VitualJoystick moveJoystick;
 	public MenuScript menuScript;
-	public Slider healthSlider;
 	public Image fullHealth;
 	public Image damagedHealth;
 	public Image BGflash;
 	public bool inBossArea;
 	public Collider2D bossArea;
 	public GameObject circleMover;
+	public GameObject shadow;
+	public GameObject finger;
 
 	private Animator anim;
 	private int currentHealth;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour {
 	private bool isHurt;
 	private bool faceRight;
 	private int money;
+	private float inkRange;
 
 
 	void Start () {
@@ -37,10 +39,15 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 		inBossArea = false;
 		money = 0;
+
+		inkRange = finger.GetComponent<AsteroidScript> ().getInkRange();
 	}
 
 	void Update () {
 		// Handle player position change
+		inkRange = finger.GetComponent<AsteroidScript> ().getInkRange();
+		float scale = inkRange * 100 / 50;
+		shadow.transform.localScale = new Vector3 (scale, scale, scale);
 	}
 
 	void FixedUpdate () {
