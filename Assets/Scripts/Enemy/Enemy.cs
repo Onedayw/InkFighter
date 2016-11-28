@@ -62,7 +62,7 @@ public class Enemy : MonoBehaviour {
 			if (gameObject.tag == "Enemy") {
 				updatecolor ();
 			}
-			if (health <= 0f) {
+			if (health <= 0.0f) {
 				die ();
 			}
 			damageTakenTime = Time.time;

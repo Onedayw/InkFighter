@@ -1,9 +1,20 @@
 fileFormatVersion: 2
 guid: 2495b742606ae4d4597b82c62d8f5ef5
-timeCreated: 1480243385
+timeCreated: 1480326570
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: "006Boss 2096_1\u2006572_0"
+    21300002: "006Boss 2096_1\u2006572_1"
+    21300004: "006Boss 2096_1\u2006572_2"
+    21300006: "006Boss 2096_1\u2006572_3"
+    21300008: "006Boss 2096_1\u2006572_4"
+    21300010: "006Boss 2096_1\u2006572_5"
+    21300012: "006Boss 2096_1\u2006572_6"
+    21300014: "006Boss 2096_1\u2006572_7"
+    21300016: "006Boss 2096_1\u2006572_8"
+    21300018: "006Boss 2096_1\u2006572_9"
+    21300020: "006Boss 2096_1\u2006572_10"
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -30,7 +41,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -38,7 +49,7 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -51,7 +62,137 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_0"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1060
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_1"
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1060
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_2"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 548
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_3"
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 548
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_4"
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 548
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_5"
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 548
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_6"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 36
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_7"
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 36
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_8"
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 36
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: "006Boss 2096_1\u2006572_9"
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 36
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
     outline: []
   spritePackingTag: 
   userData: 

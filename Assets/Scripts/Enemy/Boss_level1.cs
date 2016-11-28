@@ -14,6 +14,10 @@ public class Boss_level1 : MonoBehaviour {
     public Rigidbody2D rb;
 	Random random = new Random();
     float stunTime = 0.0f;
+
+	private bool faceRight = false;
+
+	private Animator anim;
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
@@ -22,6 +26,7 @@ public class Boss_level1 : MonoBehaviour {
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
 		thisEnemy = this.GetComponent<Enemy> ();
+		anim = GetComponent<Animator> ();
 	}
 
 	// Update is called once per frame
@@ -30,10 +35,15 @@ public class Boss_level1 : MonoBehaviour {
 		Vector3 distance = transform.position - target.transform.position;
 		if (thisEnemy.getSeenTarget ()) {
             if (isdash) {
-
                 dash();
+				anim.SetBool ("bossIdle", false);
+				anim.SetBool ("isRunning", true);
+				anim.SetBool ("isAttacking", false);
             }
             else if (isstun) {
+				anim.SetBool ("bossIdle", true);
+				anim.SetBool ("isRunning", false);
+				anim.SetBool ("isAttacking", false);
                 if(Time.time>stunTime + 2f) {
                     isstun = false;
                 }
@@ -45,6 +55,9 @@ public class Boss_level1 : MonoBehaviour {
                         if (r < 0.999) {
                             Debug.Log("attacking");
                             attack();
+							anim.SetBool ("bossIdle", false);
+							anim.SetBool ("isRunning", false);
+							anim.SetBool ("isAttacking", true);
                         }
                         else {
                             Debug.Log("dashing");
@@ -57,7 +70,10 @@ public class Boss_level1 : MonoBehaviour {
                     if (!isdash && !isstun) {
                         float r = Random.value;
                         if (r < 0.995) {
-                            move();
+							move();
+							anim.SetBool ("bossIdle", false);
+							anim.SetBool ("isRunning", true);
+							anim.SetBool ("isAttacking", false);
                         }
                         else {
                             Debug.Log("dashing");
@@ -77,6 +93,7 @@ public class Boss_level1 : MonoBehaviour {
         Debug.Log("moving");
         thisEnemy.transform.position = Vector3.MoveTowards (thisEnemy.transform.position, 
 			target.transform.position, thisEnemy.speed * Time.deltaTime);
+		faceMovingDirection (thisEnemy.getTarget().transform.position.x - thisEnemy.transform.position.x);
 	}
 
 
@@ -90,7 +107,7 @@ public class Boss_level1 : MonoBehaviour {
 
 	public void dash(){
         
-        thisEnemy.transform.position += dashDirection * thisEnemy.speed*2 * Time.deltaTime;
+        thisEnemy.transform.position += dashDirection * thisEnemy.speed * 2 * Time.deltaTime;
     }
 
 	void OnTriggerEnter2D(Collider2D other){
@@ -104,4 +121,23 @@ public class Boss_level1 : MonoBehaviour {
             attack();
         }
     }
+
+	void faceMovingDirection(float moveHorizontal) 
+	{
+		if (moveHorizontal > 0 && !faceRight) {
+			Flip ();
+		}
+		else if (moveHorizontal < 0 && faceRight) {
+			Flip ();
+		}
+	}
+
+	void Flip ()
+	{
+		faceRight = !faceRight;
+
+		Vector3 theScale = transform.localScale;
+		theScale.x *= -1;
+		transform.localScale = theScale;
+	}
 }
