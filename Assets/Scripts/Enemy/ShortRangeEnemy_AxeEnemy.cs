@@ -86,7 +86,8 @@ public class ShortRangeEnemy_AxeEnemy : MonoBehaviour {
                     currentWaypoint++;
                     Vector3 dir = (path.vectorPath[currentWaypoint] - transform.position).normalized;
                     dir *= thisEnemy.speed * Time.fixedDeltaTime;
-                    this.gameObject.transform.Translate(dir);
+					faceMovingDirection (dir.x);
+					this.gameObject.transform.Translate(dir, Space.World);
                     anim.SetBool("isAttacking", false);
                     anim.SetBool("isRunning", true);
                     anim.SetBool("isIdle", false);

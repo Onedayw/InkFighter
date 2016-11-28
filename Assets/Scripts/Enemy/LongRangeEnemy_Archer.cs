@@ -90,7 +90,7 @@ public class LongRangeEnemy_Archer : MonoBehaviour {
                     currentWaypoint++;
                     Vector3 dir = (path.vectorPath[currentWaypoint] - transform.position).normalized;
                     dir *= thisEnemy.speed * Time.fixedDeltaTime;
-                    this.gameObject.transform.Translate(dir);
+					this.gameObject.transform.Translate(dir, Space.World);
                     //anim.SetBool("isAttacking", false);
                     //anim.SetBool("isRunning", true);
                     //anim.SetBool("isIdle", false);
@@ -100,8 +100,8 @@ public class LongRangeEnemy_Archer : MonoBehaviour {
             else if (distance.magnitude < thisEnemy.vision) { //not seen yet, check if this see the target now
                 thisEnemy.setSeenTarget();
             }
-
         }
+		faceMovingDirection (thisEnemy.getTarget().transform.position.x - thisEnemy.transform.position.x);
 
         return;
     }
