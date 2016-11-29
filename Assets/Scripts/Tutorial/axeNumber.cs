@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour {
+public class axeNumber : MonoBehaviour {
+
 	private const float hurtTime = 0f;
 
 
@@ -21,6 +22,9 @@ public class Enemy : MonoBehaviour {
 
 	private static float enemyDeadTime = 0.4f;
 
+	private Level0Event level0;
+	public GameObject EventSystem;
+
 	// Use this for initialization
 	void Start () {
 		health = fullHealth;
@@ -28,6 +32,7 @@ public class Enemy : MonoBehaviour {
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
 		animator = GetComponent<Animator> ();
+		level0 = EventSystem.GetComponent<Level0Event>();
 	}
 
 	// Update is called once per frame
@@ -81,6 +86,7 @@ public class Enemy : MonoBehaviour {
 		animator.SetBool ("isDead", true);
 		Destroy(this.gameObject, enemyDeadTime);
 		playerController.addMoney (money);
+		level0.setAxeNumber ();
 	}
 
 	void OnTriggerEnter2D(Collider2D other) 
