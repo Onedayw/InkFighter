@@ -18,8 +18,8 @@ public class fingercontrol : MonoBehaviour {
 				if (Input.GetTouch (i).phase == TouchPhase.Began) {
 					Vector2 mouse = Input.GetTouch (i).position;
 					if (mouse.x > 220 || mouse.y > 220) {
-						Vector3 objPos = Camera.main.ScreenToWorldPoint (new Vector3(mouse.x,mouse.y,2));
-						GameObject obj=Instantiate(Square, objPos, Quaternion.identity)as GameObject;
+						Vector3 objPos = Camera.main.ScreenToWorldPoint (new Vector3(mouse.x, mouse.y, 2));
+						Instantiate(Square);
 						//Debug.Log ("inputN:"+i);
 						//obj.SendMessage ("insi", i);
 						//AsteroidScript p = obj.GetComponent<AsteroidScript> ();
