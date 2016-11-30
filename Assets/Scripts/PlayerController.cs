@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
 	public Image damagedHealth;
 	public Image BGflash;
 	public bool inBossArea;
-	public Collider2D bossArea;
+	//public Collider2D bossArea;
 	public GameObject circleMover;
 	public GameObject shadow;
 	public GameObject finger;
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour {
 		updateMoney ();
 		//check if player is in boss's area
 		//Debug.Log(bossArea.bounds.extents.x+" "+bossArea.bounds.extents.y+" "+bossArea.bounds.extents.z);
-		inBossArea=bossArea.bounds.Contains(this.transform.position);
+		//inBossArea=bossArea.bounds.Contains(this.transform.position);
 		//		Debug.Log (this.transform.position);
 		//Debug.Log (inBossArea);
 	}
