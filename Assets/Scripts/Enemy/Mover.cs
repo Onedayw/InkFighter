@@ -49,7 +49,7 @@ public class Mover : MonoBehaviour {
 				makeDamage (attack);
 			}
 			if (otherObject.CompareTag ("Trail")) {
-				rb2d.velocity = -(rb2d.velocity);
+				if (rb2d != null) rb2d.velocity = -(rb2d.velocity);
 				this.tag = "PlayerMover";
 				this.transform.localScale *= -1;
 			}

@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject finger;
 
 	private Animator anim;
+	private Rigidbody2D rg2d;
 	private int currentHealth;
 	private float damageTakenTime;
 	private float healingInterval = 1.0f;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour {
 	private float inkRange;
 	private int selfHealingRate;
 	private bool hasCircleSkill = true;
-
+	private bool beenDashed = false;
 
 	void Start () {
 		anim = GetComponent <Animator> ();
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour {
 		money = 0;
 		inkRange = finger.GetComponent<AsteroidScript> ().getInkRange();
 		selfHealingRate = 1;
+		rg2d = GetComponent <Rigidbody2D> ();
 	}
 
 	void Update () {
@@ -69,6 +71,10 @@ public class PlayerController : MonoBehaviour {
 			if (Time.time > damageTakenTime + hurtTime) {
 				isHurt = false;
 			}
+		}
+
+		if (beenDashed) {
+			rg2d.AddForce (transform.right * 2);
 		}
 
 		updateHealth ();
@@ -221,5 +227,9 @@ public class PlayerController : MonoBehaviour {
 				obj.GetComponent<Rigidbody2D> ().velocity = new Vector2 (dirs [i, 0], dirs [i, 1]);
 			}
 		}
+	}
+
+	public void beHit () {
+		beenDashed = true;
 	}
 }
