@@ -446,7 +446,7 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 	public void boostInkRange () {
-		inkRange = inkRange * 1.25f;
+		inkRange = inkRange + 0.5f;
 	}
 		
 }

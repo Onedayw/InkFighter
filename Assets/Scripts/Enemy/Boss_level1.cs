@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class Boss_level1 : MonoBehaviour {
+	public int dashingMultiplier;
 	public float meleeRate;
 	private float nextShot;
 	public GameObject target;
@@ -36,13 +37,15 @@ public class Boss_level1 : MonoBehaviour {
             if (isdash) {
                 dash();
 				anim.SetBool ("bossIdle", false);
-				anim.SetBool ("isRunning", true);
+				anim.SetBool ("isRunning", false);
 				anim.SetBool ("isAttacking", false);
+				anim.SetBool ("isDashing", true);
             }
             else if (isstun) {
 				anim.SetBool ("bossIdle", true);
 				anim.SetBool ("isRunning", false);
 				anim.SetBool ("isAttacking", false);
+				anim.SetBool ("isDashing", false);
                 if(Time.time>stunTime + 2f) {
                     isstun = false;
                 }
@@ -58,6 +61,7 @@ public class Boss_level1 : MonoBehaviour {
 							anim.SetBool ("bossIdle", false);
 							anim.SetBool ("isRunning", false);
 							anim.SetBool ("isAttacking", true);
+							anim.SetBool ("isDashing", false);
                         }
                         else {
                             //Debug.Log("dashing");
@@ -74,6 +78,7 @@ public class Boss_level1 : MonoBehaviour {
 							anim.SetBool ("bossIdle", false);
 							anim.SetBool ("isRunning", true);
 							anim.SetBool ("isAttacking", false);
+							anim.SetBool ("isDashing", false);
                         }
                         else {
                             //Debug.Log("dashing");
@@ -107,7 +112,7 @@ public class Boss_level1 : MonoBehaviour {
 
 	public void dash(){
         
-        thisEnemy.transform.position += dashDirection * thisEnemy.speed * 2 * Time.deltaTime;
+		thisEnemy.transform.position += dashDirection * thisEnemy.speed * dashingMultiplier * Time.deltaTime;
     }
 
 	void OnTriggerEnter2D(Collider2D other){

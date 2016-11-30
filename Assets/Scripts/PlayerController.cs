@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject finger;
 
 	private Animator anim;
+	private Rigidbody2D rg2d;
 	private int currentHealth;
 	private float damageTakenTime;
 	private float healingInterval = 1.0f;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour {
 	private float inkRange;
 	private int selfHealingRate;
 	private bool hasCircleSkill = true;
-
+	private bool beenDashed = false;
 
 	void Start () {
 		anim = GetComponent <Animator> ();
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour {
 		money = 0;
 		inkRange = finger.GetComponent<AsteroidScript> ().getInkRange();
 		selfHealingRate = 1;
+		rg2d = GetComponent <Rigidbody2D> ();
 	}
 
 	void Update () {
@@ -164,11 +166,11 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void boostSelfHealingRate () {
-		selfHealingRate = selfHealingRate * 2;
+		selfHealingRate = selfHealingRate + 1;
 	}
 
 	public void boostAttack () {
-		attack = attack * 2;
+		attack = attack + 5;
 	}
 
 	public int getAttack() {
@@ -176,7 +178,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void boostSpeed () {
-		speed = speed * 2;
+		speed = speed + 3;
 	}
 
 	void faceMovingDirection(float moveHorizontal) 
