@@ -8,7 +8,7 @@ public class ShortRangeMove : MonoBehaviour {
 	private ShortRangeAttack s_Attack;
 	private bool faceRight = false;
 	private Animator anim;
-
+	public float speedMultiplier = 1f;
 	// Use this for initialization
 	void Start () {
 		thisEnemy = GetComponent<Enemy> ();
@@ -33,7 +33,7 @@ public class ShortRangeMove : MonoBehaviour {
 
 	public void move () {
 		thisEnemy.transform.position = Vector3.MoveTowards (thisEnemy.transform.position, 
-			thisEnemy.getTarget().transform.position, thisEnemy.speed * Time.deltaTime);
+			thisEnemy.getTarget().transform.position, thisEnemy.speed * speedMultiplier * Time.deltaTime);
 		faceMovingDirection (thisEnemy.getTarget().transform.position.x - thisEnemy.transform.position.x);
 	}
 

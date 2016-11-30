@@ -18,7 +18,7 @@ public class SkillArea : MonoBehaviour {
 	public GameObject target7;
 	public GameObject target8;
 	public Image circle;
-
+	public Camera cam;
 
 	void Start () {
 		level0 = EventSystem.GetComponent<Level0Event>();
@@ -47,7 +47,14 @@ public class SkillArea : MonoBehaviour {
 			target7.SetActive (true);
 			target8.SetActive (true);
 			level0.setSkillOn ();
+			//Time.timeScale = 0.6f;
 			Destroy(gameObject);
+			//Debug.Log (cam.transform.position);
+			//Debug.Log (other.transform.position);
+			cam.transform.position = new Vector3(other.transform.position.x,other.gameObject.transform.position.y,cam.transform.position.z);
+			//Debug.Log (cam.transform.position);
+			cam.orthographicSize = 4.3f;
+			other.gameObject.transform.position = this.transform.position;
 		}
 	}
 

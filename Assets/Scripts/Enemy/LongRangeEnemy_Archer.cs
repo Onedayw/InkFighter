@@ -29,7 +29,7 @@ public class LongRangeEnemy_Archer : MonoBehaviour {
 
     public float shotRate;// attack rate
     public float shotRange;// attack range
-    private float nextShot = 2;// next attackable time
+    public float nextShot = 2;// next attackable time
     private GameObject player;
     private Enemy thisEnemy;
     private Animator anim;

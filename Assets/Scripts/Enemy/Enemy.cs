@@ -9,10 +9,8 @@ public class Enemy : MonoBehaviour {
 	public bool isInBossArea;
 	public int fullHealth, attack, speed, vision, money;
 	public int health;
-
 	private float damageTakenTime;
 	private bool isHurt, seenTarget;
-
 	// private EnemyManager enemyManager;
 	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
 	private GameObject target;                           //Transform to attempt to move toward each turn.
