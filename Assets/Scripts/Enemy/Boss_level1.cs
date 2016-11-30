@@ -73,7 +73,7 @@ public class Boss_level1 : MonoBehaviour {
                 if (((Vector2)distance).magnitude > meleeRange) {
                     if (!isdash && !isstun) {
                         float r = Random.value;
-                        if (r < 0.995) {
+                        if (r < 0.989) {
 							move();
 							anim.SetBool ("bossIdle", false);
 							anim.SetBool ("isRunning", true);
