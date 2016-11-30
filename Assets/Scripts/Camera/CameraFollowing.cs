@@ -73,7 +73,7 @@ public class CameraFollowing : MonoBehaviour {
     public void ChangetoBossBounds() {
         _min = bossBounds.bounds.min;
         _max = bossBounds.bounds.max;
-        Debug.Log("using boss bound");
+        //Debug.Log("using boss bound");
         //bossBounds.GetComponent<Collider2D>().enabled;
     }
 }

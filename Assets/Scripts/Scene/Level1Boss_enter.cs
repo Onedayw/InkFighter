@@ -25,7 +25,7 @@ public class Level1Boss_enter : MonoBehaviour {
             GameObject bossGate = Instantiate(bossgate) as GameObject;
             mainCamera = Camera.main;
             camerafollowing = mainCamera.GetComponent<CameraFollowing>();
-            Debug.Log("boss!");
+            //Debug.Log("boss!");
 			Destroy(this.GetComponent<BoxCollider2D>());
 			BossHealthContainer.enabled = true;
 			BossDamagedHealth.enabled = true;

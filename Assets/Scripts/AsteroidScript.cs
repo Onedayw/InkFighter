@@ -432,7 +432,7 @@ public class AsteroidScript : MonoBehaviour {
 				SetMesh ();
 				if (Time.time > patternDetectTime + patternDetectInterval) {
 					if (detectCircle ()) {
-						Debug.Log ("circle detected" + circleCount++.ToString ());
+						//Debug.Log ("circle detected" + circleCount++.ToString ());
 						patternDetectTime = Time.time;
 						playerController.circleSkill ();
 					}

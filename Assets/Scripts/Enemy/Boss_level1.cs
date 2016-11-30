@@ -53,14 +53,14 @@ public class Boss_level1 : MonoBehaviour {
                         float r = Random.value;
 
                         if (r < 0.999) {
-                            Debug.Log("attacking");
+                            //Debug.Log("attacking");
                             attack();
 							anim.SetBool ("bossIdle", false);
 							anim.SetBool ("isRunning", false);
 							anim.SetBool ("isAttacking", true);
                         }
                         else {
-                            Debug.Log("dashing");
+                            //Debug.Log("dashing");
                             isdash = true;
                             dashDirection = (target.transform.position - thisEnemy.transform.position).normalized;
                         }
@@ -76,7 +76,7 @@ public class Boss_level1 : MonoBehaviour {
 							anim.SetBool ("isAttacking", false);
                         }
                         else {
-                            Debug.Log("dashing");
+                            //Debug.Log("dashing");
                             isdash = true;
                             dashDirection = (target.transform.position - thisEnemy.transform.position).normalized;
                         }
@@ -90,7 +90,7 @@ public class Boss_level1 : MonoBehaviour {
 	}
 
 	public void move () {
-        Debug.Log("moving");
+        //Debug.Log("moving");
         thisEnemy.transform.position = Vector3.MoveTowards (thisEnemy.transform.position, 
 			target.transform.position, thisEnemy.speed * Time.deltaTime);
 		faceMovingDirection (thisEnemy.getTarget().transform.position.x - thisEnemy.transform.position.x);
@@ -112,7 +112,7 @@ public class Boss_level1 : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other){
 		if (other.gameObject.CompareTag("BossArea")){
-            Debug.Log("hit");
+            //Debug.Log("hit");
             isdash = false;
             isstun = true;
             stunTime = Time.time;

@@ -20,7 +20,7 @@ public class fingercontrol : MonoBehaviour {
 					if (mouse.x > 220 || mouse.y > 220) {
 						Vector3 objPos = Camera.main.ScreenToWorldPoint (new Vector3(mouse.x,mouse.y,2));
 						GameObject obj=Instantiate(Square, objPos, Quaternion.identity)as GameObject;
-						Debug.Log ("inputN:"+i);
+						//Debug.Log ("inputN:"+i);
 						obj.SendMessage ("insi", i);
 						//AsteroidScript p = obj.GetComponent<AsteroidScript> ();
 						//p.inputNum = i;

@@ -59,13 +59,13 @@ public class MenuScript : MonoBehaviour {
     }
     public void onStartGame()
 	{
-		Debug.Log ("start");
+		//Debug.Log ("start");
 		SceneManager.LoadScene ("Level 1");
 	}
 
 	public void reStartGame()
 	{
-		Debug.Log ("restart");
+		//Debug.Log ("restart");
 		SceneManager.LoadScene ("Level 1");
 	}
 

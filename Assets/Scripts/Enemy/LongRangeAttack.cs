@@ -34,7 +34,7 @@ public class LongRangeAttack : MonoBehaviour {
 	{
 		if (other.CompareTag ("Trail")) {
             //Destroy(gameObject);
-            Debug.Log("1");
+            //Debug.Log("1");
 		}
 	}
 }
