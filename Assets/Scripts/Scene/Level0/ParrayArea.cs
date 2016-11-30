@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class ParrayArea : MonoBehaviour {
 
 	public GameObject player;
 	private PlayerController playerController;
 	private int parryNumber;
+	public Image counter;
 
 	void Start () {		
 		parryNumber = GameObject.FindGameObjectsWithTag ("parry").Length;
@@ -16,6 +18,7 @@ public class ParrayArea : MonoBehaviour {
 	void Update () {
 		parryNumber = GameObject.FindGameObjectsWithTag ("parry").Length;
 		if (parryNumber == 0) {
+			counter.enabled = false;
 			playerController.speed = 5;
 			Destroy (gameObject);
 		}
@@ -26,6 +29,7 @@ public class ParrayArea : MonoBehaviour {
 		if (otherObject.CompareTag("Player")) {
 			playerController.speed = 0;
 			Handheld.PlayFullScreenMovie ("Parry.mp4", Color.black, FullScreenMovieControlMode.Hidden);
+			counter.enabled = true;
 			Destroy(this.GetComponent<BoxCollider2D>());
 		}
 

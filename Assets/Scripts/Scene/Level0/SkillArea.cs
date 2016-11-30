@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class SkillArea : MonoBehaviour {
 
@@ -16,6 +17,7 @@ public class SkillArea : MonoBehaviour {
 	public GameObject target6;
 	public GameObject target7;
 	public GameObject target8;
+	public Image circle;
 
 
 	void Start () {
@@ -35,6 +37,7 @@ public class SkillArea : MonoBehaviour {
 		if (other.CompareTag ("Player")) {			
 			playerController.setHasCircleSkill (true);
 			playerController.speed = 0;
+			circle.enabled = true;
 			target1.SetActive (true);
 			target2.SetActive (true);
 			target3.SetActive (true);
