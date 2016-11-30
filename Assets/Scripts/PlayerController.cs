@@ -73,10 +73,6 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
-		if (beenDashed) {
-			rg2d.AddForce (transform.right * 2);
-		}
-
 		updateHealth ();
 		SelfHealing ();
 		updateMoney ();
@@ -170,11 +166,11 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void boostSelfHealingRate () {
-		selfHealingRate = selfHealingRate * 2;
+		selfHealingRate = selfHealingRate + 1;
 	}
 
 	public void boostAttack () {
-		attack = attack * 2;
+		attack = attack + 5;
 	}
 
 	public int getAttack() {
@@ -182,7 +178,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void boostSpeed () {
-		speed = speed * 2;
+		speed = speed + 3;
 	}
 
 	void faceMovingDirection(float moveHorizontal) 
@@ -227,9 +223,5 @@ public class PlayerController : MonoBehaviour {
 				obj.GetComponent<Rigidbody2D> ().velocity = new Vector2 (dirs [i, 0], dirs [i, 1]);
 			}
 		}
-	}
-
-	public void beHit () {
-		beenDashed = true;
 	}
 }
