@@ -19,7 +19,7 @@ public class BossHealthBar : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		bossHealth = boss.health;
+		bossHealth = boss.health >= 0 ? boss.health : 0;
 		damagedHealth.transform.localScale = new Vector3 ((float) bossHealth / bossFullHealth, 1, 1);
 	}
 }
