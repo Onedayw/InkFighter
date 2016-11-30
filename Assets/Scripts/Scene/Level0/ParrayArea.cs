@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -10,13 +10,13 @@ public class ParrayArea : MonoBehaviour {
 	public Image counter;
 
 	void Start () {		
-		parryNumber = GameObject.FindGameObjectsWithTag ("parry").Length;
+		parryNumber = GameObject.FindGameObjectsWithTag ("Enemy").Length;
 		playerController = player.GetComponent<PlayerController> ();
 	}
 	
 
 	void Update () {
-		parryNumber = GameObject.FindGameObjectsWithTag ("parry").Length;
+		parryNumber = GameObject.FindGameObjectsWithTag ("Enemy").Length;
 		if (parryNumber == 0) {
 			counter.enabled = false;
 			playerController.speed = 5;

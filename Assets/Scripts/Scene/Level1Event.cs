@@ -9,15 +9,15 @@ public class Level1Event : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		enemyNumber = GameObject.FindGameObjectsWithTag ("Enemy").Length;
+		//enemyNumber = GameObject.FindGameObjectsWithTag ("Enemy").Length;
 		bossNumber = GameObject.FindGameObjectsWithTag ("Boss").Length;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		enemyNumber = GameObject.FindGameObjectsWithTag ("Enemy").Length;
+		//enemyNumber = GameObject.FindGameObjectsWithTag ("Enemy").Length;
 		bossNumber = GameObject.FindGameObjectsWithTag ("Boss").Length;
-		if (enemyNumber == 0 && bossNumber == 0) {
+		if (bossNumber == 0) {
 			SceneManager.LoadScene ("openning");
 		}
 	}
