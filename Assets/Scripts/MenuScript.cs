@@ -75,7 +75,7 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void doTutorial() {
-		SceneManager.LoadScene ("tutorial_movement");
+		SceneManager.LoadScene ("Level 0");
 	}
     public void pause() {
         onPause = true;
