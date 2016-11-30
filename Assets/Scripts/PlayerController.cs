@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour {
 	private int money;
 	private float inkRange;
 	private int selfHealingRate;
+	private bool hasCircleSkill = true;
 
 
 	void Start () {
@@ -202,8 +203,16 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 	}
 
+	public bool getHasCircleSkill () {
+		return this.hasCircleSkill;
+	}
+
+	public void setHasCircleSkill (bool hasCircleSkill) {
+		this.hasCircleSkill = hasCircleSkill;
+	}
+
 	public void circleSkill () {
-		if (removeHealth (100)) {
+		if (removeHealth (100) && hasCircleSkill) {
 			int v = 10;
 			int[,] dirs = { { 0, v }, { v, v }, { v, 0 }, { v, -v }, { 0, -v }, { -v, -v }, { -v, 0 }, { -v, v } };
 			for (int i = 0; i < 8; i++) {
