@@ -17,6 +17,7 @@ public class ParrayArea : MonoBehaviour {
 		parryNumber = GameObject.FindGameObjectsWithTag ("parry").Length;
 		if (parryNumber == 0) {
 			playerController.speed = 5;
+			Destroy (gameObject);
 		}
 	}
 

@@ -16,7 +16,7 @@ public class ink_spot : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) 
-	{
+	{		
 		if (other.CompareTag ("Player")) {
 			Destroy(gameObject);
 			level0.setInkNumber ();
