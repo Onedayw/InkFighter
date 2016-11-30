@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 1712cddc21f9c8045a0c6ca563221591
-timeCreated: 1480243710
+timeCreated: 1480514621
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -61,12 +61,12 @@ TextureImporter:
       name: 005EnemyDie 985_197_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 197
-        height: 197
+        x: 4
+        y: 9
+        width: 186
+        height: 179
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -74,10 +74,10 @@ TextureImporter:
       name: 005EnemyDie 985_197_1
       rect:
         serializedVersion: 2
-        x: 197
-        y: 0
-        width: 197
-        height: 197
+        x: 201
+        y: 9
+        width: 186
+        height: 179
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -87,10 +87,10 @@ TextureImporter:
       name: 005EnemyDie 985_197_2
       rect:
         serializedVersion: 2
-        x: 394
-        y: 0
-        width: 197
-        height: 197
+        x: 399
+        y: 9
+        width: 185
+        height: 179
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -100,10 +100,10 @@ TextureImporter:
       name: 005EnemyDie 985_197_3
       rect:
         serializedVersion: 2
-        x: 591
-        y: 0
-        width: 197
-        height: 197
+        x: 596
+        y: 9
+        width: 185
+        height: 179
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -113,10 +113,10 @@ TextureImporter:
       name: 005EnemyDie 985_197_4
       rect:
         serializedVersion: 2
-        x: 788
-        y: 0
-        width: 197
-        height: 197
+        x: 793
+        y: 9
+        width: 185
+        height: 179
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
