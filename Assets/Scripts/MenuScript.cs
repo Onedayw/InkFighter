@@ -28,7 +28,7 @@ public class MenuScript : MonoBehaviour {
 	private Rect perksWindow = new Rect(perksMenuStart, 0, perksMenuWidth, perksMenuHeight);
 	private Rect perksConfirm = new Rect(perksMenuStart * 2.75f, perksItemHeight, perksMenuWidth / 2, perksMenuHeight / 2);
 	private Rect noEnoughWindow = new Rect(perksMenuStart * 2.75f, perksItemHeight, perksMenuWidth / 2, perksMenuHeight / 2);
-	private static string healthBoost = "Health Boost - 50 Ink";
+	private static string healthBoost = "Heal Rate Boost - 50 Ink";
 	private static string speedBoost = "Speed Boost - 50 Ink";
 	private static string attackBoost = "Attack Boost - 50 Ink";
 	private static string rangeBoost = "Range Boost - 50 Ink";
@@ -112,28 +112,44 @@ public class MenuScript : MonoBehaviour {
 
 	public void perksMenu(int windowID) {
 		Time.timeScale = 0;
-		if (GUI.Button(new Rect(perksItemStart, perksItemHeight, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), healthBoost)) {
-			onConfirm = true;
-			perksName = healthBoost;
-			purchasedHealthBoost = true;
-		}
-		if (GUI.Button(new Rect(perksItemStart * 3, perksItemHeight, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), speedBoost)) {
-			onConfirm = true;
-			perksName = speedBoost;
-			purchasedSpeedBoost = true;
-		}
-		if (GUI.Button(new Rect(perksItemStart, perksItemHeight * 2, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), attackBoost)) {
-			onConfirm = true;
-			perksName = attackBoost;
-			purchasedAttackBoost = true;
-		}
-		if (GUI.Button(new Rect(perksItemStart * 3, perksItemHeight * 2, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), rangeBoost)) {
-			onConfirm = true;
-			perksName = rangeBoost;
-			purchasedRangeBoost = true;
-		}
+        //if (GUI.Button(new Rect(perksItemStart, perksItemHeight, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), healthBoost)) {
+        //    onConfirm = true;
+        //    perksName = healthBoost;
+        //    purchasedHealthBoost = true;
+        //}
+        //if (GUI.Button(new Rect(perksItemStart * 3, perksItemHeight, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), speedBoost)) {
+        //    onConfirm = true;
+        //    perksName = speedBoost;
+        //    purchasedSpeedBoost = true;
+        //}
+        //if (GUI.Button(new Rect(perksItemStart, perksItemHeight * 2, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), attackBoost)) {
+        //    onConfirm = true;
+        //    perksName = attackBoost;
+        //    purchasedAttackBoost = true;
+        //}
+        //if (GUI.Button(new Rect(perksItemStart * 3, perksItemHeight * 2, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), rangeBoost)) {
+        //    onConfirm = true;
+        //    perksName = rangeBoost;
+        //    purchasedRangeBoost = true;
+        //}
+        if (GUI.Button(new Rect(perksItemStart*2, perksItemHeight, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), healthBoost)) {
+            onConfirm = true;
+            perksName = healthBoost;
+            purchasedHealthBoost = true;
+        }
+        if (GUI.Button(new Rect(perksItemStart * 2, perksItemHeight*1.9f, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), speedBoost)) {
+            onConfirm = true;
+            perksName = speedBoost;
+            purchasedSpeedBoost = true;
+        }
+        if (GUI.Button(new Rect(perksItemStart*2, perksItemHeight * 2.8f, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), attackBoost)) {
+            onConfirm = true;
+            perksName = attackBoost;
+            purchasedAttackBoost = true;
+        }
 
-		if (GUI.Button(new Rect(pauseMenuWidth / 2, pauseMenuHeight / 1.5f, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), backToPause)) {
+
+        if (GUI.Button(new Rect(pauseMenuWidth / 2, pauseMenuHeight / 1.5f, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), backToPause)) {
 			pause ();
 		}
 	}

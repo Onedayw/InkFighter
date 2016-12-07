@@ -23,11 +23,11 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody2D rg2d;
 	private int currentHealth;
 	private float damageTakenTime;
-	private float healingInterval = 1.0f;
+	private float healingInterval = 2.0f;
 	private const float hurtTime = 0.1f;
 	private bool isHurt;
 	private bool faceRight;
-	private int money;
+	public int money;
 	private float inkRange;
 	private int selfHealingRate;
 	private bool hasCircleSkill = true;
