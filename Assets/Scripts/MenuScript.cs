@@ -35,6 +35,7 @@ public class MenuScript : MonoBehaviour {
 	private static string backToPause = "Back To Pause Menu";
 	private static string yesText = "Yes";
 	private static string noText = "No";
+	private GUIStyle guiStyle;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
@@ -42,8 +43,11 @@ public class MenuScript : MonoBehaviour {
 		finger = GameObject.FindGameObjectsWithTag ("Ink");
 		trail = finger[0].GetComponent<AsteroidScript> ();
 		perksName = "";
+		guiStyle = new GUIStyle ();
+		guiStyle.fontSize = 1;
 	}
     void OnGUI () {
+		GUI.skin.font.fontSize = 50;
 		if (onPause) {
 			pauseWindow = GUI.Window (0, pauseWindow, popPauseMenu, "Pause");
 		} 
@@ -91,7 +95,7 @@ public class MenuScript : MonoBehaviour {
 
     public void popPauseMenu(int windowID) {
         Time.timeScale = 0;
-        if (GUI.Button(new Rect(pauseMenuWidth / 4, pauseMenuHeight / 6, pauseMenuWidth / 2, pauseMenuHeight*0.05f), "Resume")) {
+		if (GUI.Button(new Rect(pauseMenuWidth / 4, pauseMenuHeight / 6, pauseMenuWidth / 2, pauseMenuHeight*0.05f), "Resume", guiStyle)) {
             Time.timeScale = 1;
             this.resumeGame();
 
