@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour {
 	public MenuScript menuScript;
 	public Image fullHealth;
 	public Image damagedHealth;
-	public Image BGflash;
+//	public Image BGflash;
 	public bool inBossArea;
 	//public Collider2D bossArea;
 	public GameObject circleMover;
@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour {
 		currentHealth = startingHealth;
 		isHurt = false;
 		faceRight = false;
-		BGflash.enabled = false;
+//		BGflash.enabled = false;
 		inBossArea = false;
 		money = 0;
 		inkRange = 3.0f;
@@ -119,7 +119,7 @@ public class PlayerController : MonoBehaviour {
 	public void loseHealth(int damage){
 		if (!isHurt) {
 			if (currentHealth > damage) {
-				StartCoroutine(BGflashing());
+	//			StartCoroutine(BGflashing());
 				currentHealth -= damage;
 				damageTakenTime = Time.time;
 				isHurt = true;
@@ -198,11 +198,11 @@ public class PlayerController : MonoBehaviour {
 		transform.localScale = theScale;
 	}
 
-	IEnumerator BGflashing() {
-		BGflash.enabled = true;
-		yield return new WaitForSeconds(0.05f);
-		BGflash.enabled = false;
-	}
+//	IEnumerator BGflashing() {
+//		BGflash.enabled = true;
+//		yield return new WaitForSeconds(0.05f);
+//		BGflash.enabled = false;
+//	}
 
 	public bool getHasCircleSkill () {
 		return this.hasCircleSkill;
