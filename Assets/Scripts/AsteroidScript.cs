@@ -410,6 +410,12 @@ public class AsteroidScript : MonoBehaviour {
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
 		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
 		if (!pausing) {
+			if (playerController.isInRange (rb2d)) {
+				//trailMaterial.color.a = 0.1f;
+			}
+			else {
+				//trailMaterial.color.a = 1f;
+			}
 			//set the mesh and adjust widths if vertices were added or removed
 			if (TryAddVertices () | TryRemoveVertices ()) {
 				if (widthStart != widthEnd) {
