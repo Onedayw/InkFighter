@@ -414,7 +414,7 @@ public class AsteroidScript : MonoBehaviour {
 				trailMaterial.color = new Color (0, 0, 0, 1);
 			}
 			else {
-				trailMaterial.color = new Color (0, 0, 0, 0.1f);
+				trailMaterial.color = new Color (0, 0, 0, 0.2f);
 			}
 			//set the mesh and adjust widths if vertices were added or removed
 			if (TryAddVertices () | TryRemoveVertices ()) {
