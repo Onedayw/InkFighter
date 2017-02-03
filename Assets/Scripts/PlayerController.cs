@@ -42,14 +42,13 @@ public class PlayerController : MonoBehaviour {
 		BGflash.enabled = false;
 		inBossArea = false;
 		money = 0;
-		inkRange = finger.GetComponent<AsteroidScript> ().getInkRange();
+		inkRange = 3.0f;
 		selfHealingRate = 1;
 		rg2d = GetComponent <Rigidbody2D> ();
 	}
 
 	void Update () {
 		// Handle player position change
-		inkRange = finger.GetComponent<AsteroidScript> ().getInkRange();
 		float scale = inkRange * 100 / 50;
 		shadow.transform.localScale = new Vector3 (scale, scale, scale);
 	}
@@ -223,5 +222,22 @@ public class PlayerController : MonoBehaviour {
 				obj.GetComponent<Rigidbody2D> ().velocity = new Vector2 (dirs [i, 0], dirs [i, 1]);
 			}
 		}
+	}
+
+	public void boostInkRange () {
+		inkRange = inkRange + 0.5f;
+	}
+
+	public bool isInRange(Rigidbody2D rb2d) {
+		Vector3 dist = rb2d.transform.position - this.transform.position;
+		if (dist.magnitude <= inkRange) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public float getInkRange() {
+		return inkRange;
 	}
 }

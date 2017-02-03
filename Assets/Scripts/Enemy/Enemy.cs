@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour {
 	private GameObject target;                           //Transform to attempt to move toward each turn.
 	private PlayerController playerController;
 	private float alphaLevel;
+	private Rigidbody2D rb2d;
 
 	private static float enemyDeadTime = 0.4f;
 
@@ -26,6 +27,7 @@ public class Enemy : MonoBehaviour {
 		target = GameObject.FindGameObjectWithTag ("Player");
 		playerController = target.GetComponent<PlayerController> ();
 		animator = GetComponent<Animator> ();
+		rb2d = gameObject.GetComponent<Rigidbody2D> ();
 	}
 
 	// Update is called once per frame
@@ -83,7 +85,7 @@ public class Enemy : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) 
 	{
-		if (other.CompareTag ("Trail")) {
+		if (other.CompareTag ("Trail") && playerController.isInRange(rb2d)) {
 			takeDamage (playerController.getAttack ());
 			//Debug.Log(playerController.getAttack());
 		}

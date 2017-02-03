@@ -6,11 +6,11 @@ using System.Collections.Generic;
 public class AsteroidScript : MonoBehaviour {
 	public Camera cam;
 
-		//************
-		//
-		// Fields
-		//  
-		//************
+	//************
+	//
+	// Fields
+	//  
+	//************
 
 	public Material trailMaterial;                  //the material of the trail.  Changing this during runtime will have no effect.
 	private float lifeTime = 0.8f;                   //the amount of time in seconds that the trail lasts
@@ -102,7 +102,7 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 	private void Update() {
-		
+
 	}
 
 	//************
@@ -119,7 +119,7 @@ public class AsteroidScript : MonoBehaviour {
 		bool vertsAdded = false;
 
 		//check if the current position is far enough away (> 'vertexDistanceMin') from the most recent position where two vertices were added
-		if ((centerPositions.First.Value - trans.position).sqrMagnitude > vertexDistanceMin * vertexDistanceMin && isInRange ()) {
+		if ((centerPositions.First.Value - trans.position).sqrMagnitude > vertexDistanceMin * vertexDistanceMin) {
 			//calculate the normalized direction from the 1) most recent position of vertex creation to the 2) current position
 			Vector3 dirToCurrentPos = (trans.position - centerPositions.First.Value).normalized; 
 
@@ -272,18 +272,6 @@ public class AsteroidScript : MonoBehaviour {
 		}
 	}
 		
-	private bool isInRange() {
-		Vector3 dist = this.transform.position - player.transform.position;
-		if (dist.magnitude <= inkRange) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public float getInkRange() {
-		return inkRange;
-	}
 
 	private bool detectCircle () {
 		int size = centerPositions.Count; 
@@ -363,6 +351,7 @@ public class AsteroidScript : MonoBehaviour {
 	int circleCount = 0;
 
 	//Iphone version!
+	/*
 	void FixedUpdate () {
 		if (!pausing) {
 			if (flag) {
@@ -409,9 +398,9 @@ public class AsteroidScript : MonoBehaviour {
 			}
 		}
 	}
+*/
 
 
-	/*
 	// computer version!
 	void FixedUpdate () {   
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
@@ -429,18 +418,15 @@ public class AsteroidScript : MonoBehaviour {
 						patternDetectTime = Time.time;
 						playerController.circleSkill ();
 					}
-//					if (detectLightning ()) {
-//						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
-//						patternDetectTime = Time.time;
-//					}
+					//					if (detectLightning ()) {
+					//						Debug.Log ("lightning detected" + lightningtCount++.ToString ());
+					//						patternDetectTime = Time.time;
+					//					}
 				}
 			}
 		}
 	}
-	*/
 
-	public void boostInkRange () {
-		inkRange = inkRange + 0.5f;
-	}
-		
+
+
 }

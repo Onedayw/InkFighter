@@ -177,7 +177,7 @@ public class MenuScript : MonoBehaviour {
 					playerController.boostAttack ();
 					purchasedAttackBoost = false;
 				} else if (purchasedRangeBoost) {
-					trail.boostInkRange ();
+					playerController.boostInkRange ();
 					purchasedRangeBoost = false;
 				}
 			}
