@@ -47,7 +47,6 @@ public class MenuScript : MonoBehaviour {
 		guiStyle.fontSize = 1;
 	}
     void OnGUI () {
-		GUI.skin.font.fontSize = 50;
 		if (onPause) {
 			pauseWindow = GUI.Window (0, pauseWindow, popPauseMenu, "Pause");
 		} 
