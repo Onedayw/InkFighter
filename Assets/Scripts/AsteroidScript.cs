@@ -32,6 +32,7 @@ public class AsteroidScript : MonoBehaviour {
 	private float inkRange = 3.0f;                   // the range that player can attack 1:100px
 	private bool flag = true;
 	private PlayerController playerController;
+	private Rigidbody2D rb2d;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -130,15 +131,15 @@ public class AsteroidScript : MonoBehaviour {
 
 			//trace can be added, see if player has enough health to add it
 			PlayerController control = player.GetComponent<PlayerController> ();
-			vertsAdded = control.removeHealth (1);
-			if (vertsAdded) {			
-				//create two new vertices at the calculated positions
-				leftVertices.AddFirst(new Vertex(leftPos, trans.position, (leftPos - trans.position).normalized) );
-				rightVertices.AddFirst(new Vertex(rightPos, trans.position, (rightPos - trans.position).normalized) );
-
-				//add the current position as the most recent center position
-				centerPositions.AddFirst(trans.position);
+			if (playerController.isInRange(rb2d)) {
+				vertsAdded = control.removeHealth (1);
 			}
+			//create two new vertices at the calculated positions
+			leftVertices.AddFirst(new Vertex(leftPos, trans.position, (leftPos - trans.position).normalized) );
+			rightVertices.AddFirst(new Vertex(rightPos, trans.position, (rightPos - trans.position).normalized) );
+
+			//add the current position as the most recent center position
+			centerPositions.AddFirst(trans.position);
 
 			//vertsAdded = true;
 
@@ -345,6 +346,7 @@ public class AsteroidScript : MonoBehaviour {
 		}
 		player = GameObject.FindGameObjectWithTag ("Player");
 		playerController = player.GetComponent<PlayerController> ();
+		rb2d = gameObject.GetComponent<Rigidbody2D> ();
 	}
 
 
@@ -368,9 +370,11 @@ public class AsteroidScript : MonoBehaviour {
 									}
 									SetMesh ();
 
-									if (Time.time > patternDetectTime + patternDetectInterval && detectCircle ()) {
-										patternDetectTime = Time.time;
-										playerController.circleSkill ();
+									if (Time.time > patternDetectTime + patternDetectInterval) {
+										if (playerController.isInRange(rb2d) && detectCircle ()) {
+											patternDetectTime = Time.time;
+											playerController.circleSkill ();
+										}
 									}
 								}
 							} else if (Input.GetTouch (i).phase == TouchPhase.Ended) {
@@ -413,7 +417,7 @@ public class AsteroidScript : MonoBehaviour {
 				}
 				SetMesh ();
 				if (Time.time > patternDetectTime + patternDetectInterval) {
-					if (detectCircle ()) {
+					if (playerController.isInRange(rb2d) && detectCircle ()) {
 						//Debug.Log ("circle detected" + circleCount++.ToString ());
 						patternDetectTime = Time.time;
 						playerController.circleSkill ();
