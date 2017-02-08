@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour {
 	private bool hasCircleSkill = true;
 	private bool beenDashed = false;
 
+    private bool hasCheckPos;
+    private Vector3 CheckPos;
+
 	void Start () {
 		anim = GetComponent <Animator> ();
 		attack = 10;
@@ -44,6 +47,7 @@ public class PlayerController : MonoBehaviour {
 		inkRange = 3.0f;
 		selfHealingRate = 1;
 		rg2d = GetComponent <Rigidbody2D> ();
+        hasCheckPos = false;
 	}
 
 	void Update () {
@@ -120,8 +124,16 @@ public class PlayerController : MonoBehaviour {
 			}
 			else {
 				currentHealth = 0;
-				SceneManager.LoadScene("GameOver");
-			}
+                if (hasCheckPos)
+                {
+                    currentHealth = startingHealth;
+                    transform.position = CheckPos;
+                }
+                else
+                {
+                    SceneManager.LoadScene("GameOver");
+                }
+            }
 		}
 
 	}
@@ -234,4 +246,14 @@ public class PlayerController : MonoBehaviour {
 	public float getInkRange() {
 		return inkRange;
 	}
+
+    public void setCheckPos(Vector3 Pos)
+    {
+        CheckPos = Pos;
+    }
+
+    public void setHasCheckPos(bool flag)
+    {
+        hasCheckPos = flag;
+    }
 }
