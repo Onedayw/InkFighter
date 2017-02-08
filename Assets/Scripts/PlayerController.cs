@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour {
 	public VitualJoystick moveJoystick;
 	public MenuScript menuScript;
 	public Image fullHealth;
-	public Image damagedHealth;
 //	public Image BGflash;
 	public bool inBossArea;
 	//public Collider2D bossArea;
@@ -105,14 +104,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void updateHealth() {
-		if (currentHealth >= startingHealth) {
-			fullHealth.enabled = true;
-			damagedHealth.enabled = false;
-		} else {
-			fullHealth.enabled = false;
-			damagedHealth.enabled = true;
-			damagedHealth.transform.localScale = new Vector3 ((float) currentHealth / startingHealth, 1, 1);
-		}
+		Vector3 healthImageMove = new Vector3 (((float)startingHealth - currentHealth) / startingHealth * -628 + 667, (float)67.5, 0);
+		fullHealth.transform.position = healthImageMove;
+		//fullHealth.transform.Translate(healthImageMove, Space.World);
 	}
 
 	// Health decrease caused by attach from enemies or traps
