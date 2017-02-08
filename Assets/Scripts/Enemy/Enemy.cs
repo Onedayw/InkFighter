@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Enemy : MonoBehaviour {
-	private const float hurtTime = 0f;
+	private const float hurtTime = 1f;
 
 
 	//public int health, attack, speed, vision, money;
@@ -83,7 +83,7 @@ public class Enemy : MonoBehaviour {
 		playerController.addMoney (money);
 	}
 
-	void OnTriggerEnter2D(Collider2D other) 
+	void OnTriggerStay2D(Collider2D other) 
 	{
 		if (other.CompareTag ("Trail") && playerController.isInRange(rb2d)) {
 			takeDamage (playerController.getAttack ());
