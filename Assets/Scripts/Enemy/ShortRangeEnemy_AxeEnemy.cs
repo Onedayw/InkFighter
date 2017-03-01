@@ -27,11 +27,13 @@ public class ShortRangeEnemy_AxeEnemy : MonoBehaviour {
 
     public float meleeRate;// attack rate
     public float meleeRange;// attack range
-    private float nextShot = 2;// next attackable time
+    private float nextShot;// next attackable time
     private GameObject player;
     private PlayerController playerController;
     private Enemy thisEnemy;
     private Animator anim;
+
+    private bool bIsAttack;
 
     /*short range movement*/
     private Rigidbody2D rb2d;
@@ -44,6 +46,10 @@ public class ShortRangeEnemy_AxeEnemy : MonoBehaviour {
         playerController = player.GetComponent<PlayerController>();
         thisEnemy = this.GetComponent<Enemy>();
         anim = GetComponent<Animator>();
+
+        bIsAttack = false;
+        
+        nextShot = meleeRate;
     }
 
     public void OnPathComplete(Path p) {
@@ -56,56 +62,84 @@ public class ShortRangeEnemy_AxeEnemy : MonoBehaviour {
     }
 
     public void FixedUpdate() {
-        
-        //get distance between this and target(player)
-        Vector3 distance = transform.position - thisEnemy.getTarget().transform.position;
 
-        if (((Vector2)distance).magnitude < meleeRange) { //attack if in range
-            attack();
-            anim.SetBool("isAttacking", true);
-            anim.SetBool("isRunning", false);
-            anim.SetBool("isIdle", false);
-        }
-        else { //move if not in range, check seen target first
-            if (thisEnemy.getSeenTarget()) {
-                //Start a new path to the targetPosition, return the result to the OnPathComplete function
-                seeker.StartPath(transform.position, target.position, OnPathComplete);
+        if (!bIsAttack)
+        { 
+            //get distance between this and target(player)
+            Vector3 distance = transform.position - thisEnemy.getTarget().transform.position;
 
-
-                if (path == null) {
-                    //We have no path to move after yet
-                    return;
-                }
-
-                if (currentWaypoint >= path.vectorPath.Count) {
-                    //Debug.Log("End Of Path Reached");
-                    return;
-                }
-
-                if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < nextWaypointDistance) {
-                    currentWaypoint++;
-                    Vector3 dir = (path.vectorPath[currentWaypoint] - transform.position).normalized;
-                    dir *= thisEnemy.speed * Time.fixedDeltaTime;
-					faceMovingDirection (dir.x);
-					this.gameObject.transform.Translate(dir, Space.World);
-                    anim.SetBool("isAttacking", false);
-                    anim.SetBool("isRunning", true);
+            if (((Vector2)distance).magnitude < meleeRange) { //attack if in range
+                if (Time.time > nextShot)
+                {
+                    anim.SetBool("isAttacking", true);
+                    anim.SetBool("isRunning", false);
                     anim.SetBool("isIdle", false);
-                    return;
+
+                    StartCoroutine(setIsAttack());
+
+                    nextShot = Time.time + meleeRate;
+                }
+                else
+                {
+                    anim.SetBool("isAttacking", false);
+                    anim.SetBool("isRunning", false);
+                    anim.SetBool("isIdle", true);
                 }
             }
-            else if (distance.magnitude < thisEnemy.vision) { //not seen yet, check if this see the target now
-                thisEnemy.setSeenTarget();
-            }
+            else { //move if not in range, check seen target first
+                if (thisEnemy.getSeenTarget()) {
+                    //Start a new path to the targetPosition, return the result to the OnPathComplete function
+                    seeker.StartPath(transform.position, target.position, OnPathComplete);
 
+
+                    if (path == null) {
+                        //We have no path to move after yet
+                        return;
+                    }
+
+                    if (currentWaypoint >= path.vectorPath.Count) {
+                        //Debug.Log("End Of Path Reached");
+                        return;
+                    }
+
+                    if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < nextWaypointDistance) {
+                        currentWaypoint++;
+                        Vector3 dir = (path.vectorPath[currentWaypoint] - transform.position).normalized;
+                        dir *= thisEnemy.speed * Time.fixedDeltaTime;
+                        faceMovingDirection(dir.x);
+                        this.gameObject.transform.Translate(dir, Space.World);
+                        anim.SetBool("isAttacking", false);
+                        anim.SetBool("isRunning", true);
+                        anim.SetBool("isIdle", false);
+
+                        return;
+                    }
+                }
+                else if (distance.magnitude < thisEnemy.vision) { //not seen yet, check if this see the target now
+                    thisEnemy.setSeenTarget();
+                }
+
+            }
         }
 
         return;
     }
 
+    IEnumerator setIsAttack()
+    {
+        bIsAttack = true;
+
+        yield return new WaitForSeconds(1);
+
+        bIsAttack = false;
+    }
+
     public void attack() {
-        if (Time.time > nextShot) {
-            nextShot = Time.time + meleeRate;
+
+        Vector3 distance = transform.position - thisEnemy.getTarget().transform.position;
+
+        if (((Vector2)distance).magnitude < meleeRange)
+        {
             playerController.loseHealth(thisEnemy.attack);
         }
     }
