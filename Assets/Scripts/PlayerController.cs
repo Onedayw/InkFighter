@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour {
 	private bool faceRight;
 	public int money;
 	private float inkRange;
+	private float reflectDegreeError = 10.0f;
 	private int selfHealingRate;
 	private bool hasCircleSkill = true;
 	private bool beenDashed = false;
@@ -248,6 +249,10 @@ public class PlayerController : MonoBehaviour {
 
 	public float getInkRange() {
 		return inkRange;
+	}
+
+	public float getReflectDegreeError() {
+		return reflectDegreeError;
 	}
 
     public void setCheckPos(Vector3 Pos)

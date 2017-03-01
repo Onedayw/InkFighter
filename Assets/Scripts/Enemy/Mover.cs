@@ -7,6 +7,7 @@ public class Mover : MonoBehaviour {
 	private PlayerController playerController;
 	private Rigidbody2D rb2d;
 	public int speed, attack;
+	public float degreeError;
 	public bool rotating;
 	private Animator anim;
 
@@ -21,8 +22,8 @@ public class Mover : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 
 		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
-		float degreeError = Random.Range (-10.0f, 10.0f);
-		rb2d.velocity = Quaternion.Euler (0, 0, degreeError) * rb2d.velocity;
+		float error = Random.Range (-degreeError, degreeError);
+		rb2d.velocity = Quaternion.Euler (0, 0, error) * rb2d.velocity;
 
 		if (rotating) {
 			rb2d.AddTorque (-450);
@@ -53,8 +54,9 @@ public class Mover : MonoBehaviour {
 			}
 			if (otherObject.CompareTag ("Trail")) {
 				if (rb2d != null) rb2d.velocity = -(rb2d.velocity);
-				float degreeError = Random.Range (-10.0f, 10.0f);
-				rb2d.velocity = Quaternion.Euler (0, 0, degreeError) * rb2d.velocity;
+				float reflectDegreeError = playerController.getReflectDegreeError();
+				float error = Random.Range (-reflectDegreeError, reflectDegreeError);
+				rb2d.velocity = Quaternion.Euler (0, 0, error) * rb2d.velocity;
 				this.tag = "PlayerMover";
 				this.transform.localScale *= -1;
 			}
