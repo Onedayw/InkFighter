@@ -21,6 +21,9 @@ public class Mover : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 
 		rb2d.velocity = (target.transform.position - rb2d.transform.position).normalized * speed;
+		float degreeError = Random.Range (-10.0f, 10.0f);
+		rb2d.velocity = Quaternion.Euler (0, 0, degreeError) * rb2d.velocity;
+
 		if (rotating) {
 			rb2d.AddTorque (-450);
 		} else {
@@ -50,8 +53,8 @@ public class Mover : MonoBehaviour {
 			}
 			if (otherObject.CompareTag ("Trail")) {
 				if (rb2d != null) rb2d.velocity = -(rb2d.velocity);
-				float degree = Random.Range (-10.0f, 10.0f);
-				rb2d.velocity = Quaternion.Euler (0, 0, degree) * rb2d.velocity;
+				float degreeError = Random.Range (-10.0f, 10.0f);
+				rb2d.velocity = Quaternion.Euler (0, 0, degreeError) * rb2d.velocity;
 				this.tag = "PlayerMover";
 				this.transform.localScale *= -1;
 			}
