@@ -59,9 +59,9 @@ public class Enemy : MonoBehaviour {
 	public int takeDamage(int damage) {
 		if (!isHurt) {
 			health -= damage;
-			if (gameObject.tag == "Enemy") {
-				updatecolor ();
-			}
+			//if (gameObject.tag == "Enemy") {
+			//	updatecolor ();
+			//}
 			if (health <= 0.0f) {
 				die ();
 			}
@@ -72,8 +72,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	public void updatecolor () {
-		alphaLevel = (float) (0.4 + ((float)health / (float)fullHealth) * 0.5);
-		// Debug.Log(alphaLevel);
+		alphaLevel = (float) (0.4 + ((float)health / (float)fullHealth) * 0.5);		
 		GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, alphaLevel);
 	}
 
