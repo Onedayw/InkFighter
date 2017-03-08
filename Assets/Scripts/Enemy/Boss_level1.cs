@@ -145,4 +145,8 @@ public class Boss_level1 : MonoBehaviour {
 		theScale.x *= -1;
 		transform.localScale = theScale;
 	}
+
+	public bool getFaceRight() {
+		return faceRight;
+	}
 }

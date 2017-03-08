@@ -161,4 +161,8 @@ public class ShortRangeEnemy_AxeEnemy : MonoBehaviour {
         theScale.x *= -1;
         transform.localScale = theScale;
     }
+
+	public bool getFaceRight() {
+		return faceRight;
+	}
 }

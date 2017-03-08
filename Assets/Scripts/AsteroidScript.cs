@@ -30,6 +30,7 @@ public class AsteroidScript : MonoBehaviour {
 	private Mesh mesh;                              
 	private new PolygonCollider2D collider;
 	private float inkRange = 3.0f;                   // the range that player can attack 1:100px
+	private bool isInRange = true;
 	private bool flag = true;
 	private PlayerController playerController;
 	private Rigidbody2D rb2d;
@@ -58,6 +59,10 @@ public class AsteroidScript : MonoBehaviour {
 	public void ChangeColliderTrigger(bool isTrigger) {
 		colliderIsTrigger = isTrigger;
 		collider.isTrigger = isTrigger;
+	}
+
+	public void changeIsInRange(bool isInRange) {
+		this.isInRange = isInRange;
 	}
 
 	/// <summary>
@@ -112,34 +117,39 @@ public class AsteroidScript : MonoBehaviour {
 	//
 	//************
 
+
+	Ray ray;
+	RaycastHit hit;
+
 	/// <summary>
 	///     /// Adds new vertices if the object has moved more than 'vertexDistanceMin' from the most recent center position.
 	/// If a pair of vertices has been added, this method returns true.
 	/// </summary>
 	private bool TryAddVertices() {
 		bool vertsAdded = false;
+		Vector3 pos = trans.position;
 
 		//check if the current position is far enough away (> 'vertexDistanceMin') from the most recent position where two vertices were added
-		if ((centerPositions.First.Value - trans.position).sqrMagnitude > vertexDistanceMin * vertexDistanceMin) {
+		if ((centerPositions.First.Value - pos).sqrMagnitude > vertexDistanceMin * vertexDistanceMin) {
 			//calculate the normalized direction from the 1) most recent position of vertex creation to the 2) current position
-			Vector3 dirToCurrentPos = (trans.position - centerPositions.First.Value).normalized; 
+			Vector3 dirToCurrentPos = (pos - centerPositions.First.Value).normalized; 
 
 			//calculate the positions of the left and right vertices --> they are perpendicular to 'dirToCurrentPos' and 'renderDirection'
 			Vector3 cross = Vector3.Cross(renderDirection, dirToCurrentPos);
-			Vector3 leftPos = trans.position + (cross * -widthStart * 0.5f);
-			Vector3 rightPos = trans.position + (cross * widthStart * 0.5f);
+			Vector3 leftPos = pos + (cross * -widthStart * 0.5f);
+			Vector3 rightPos = pos + (cross * widthStart * 0.5f);
 
 			//trace can be added, see if player has enough health to add it
 			PlayerController control = player.GetComponent<PlayerController> ();
-			if (playerController.isInRange(rb2d)) {
+			if (this.isInRange && playerController.isInRange(rb2d)) {
 				vertsAdded = control.removeHealth (1);
 			}
 			//create two new vertices at the calculated positions
-			leftVertices.AddFirst(new Vertex(leftPos, trans.position, (leftPos - trans.position).normalized) );
-			rightVertices.AddFirst(new Vertex(rightPos, trans.position, (rightPos - trans.position).normalized) );
+			leftVertices.AddFirst(new Vertex(leftPos, pos, (leftPos - pos).normalized) );
+			rightVertices.AddFirst(new Vertex(rightPos, pos, (rightPos - pos).normalized) );
 
 			//add the current position as the most recent center position
-			centerPositions.AddFirst(trans.position);
+			centerPositions.AddFirst(pos);
 
 			//vertsAdded = true;
 
@@ -350,6 +360,18 @@ public class AsteroidScript : MonoBehaviour {
 	}
 
 
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.CompareTag ("EnemyShield")) {
+			changeIsInRange (false);
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D other) {
+		if (other.CompareTag ("EnemyShield")) {
+			changeIsInRange (true);
+		}
+	}
+
 	int circleCount = 0;
 
 	//Iphone version!
@@ -364,6 +386,12 @@ public class AsteroidScript : MonoBehaviour {
 							if (Input.GetTouch (i).phase == TouchPhase.Began || Input.GetTouch (i).phase == TouchPhase.Moved) {
 								Vector2 rawPosition = Camera.main.ScreenToWorldPoint (mouse); //Input.GetTouch(0).position
 								GetComponent<Rigidbody2D> ().MovePosition (rawPosition);	
+								if (this.isInRange && playerController.isInRange (rb2d)) {
+									trailMaterial.color = new Color (0, 0, 0, 1);
+								}
+								else {
+									trailMaterial.color = new Color (0, 0, 0, 0.2f);
+								}
 								if (TryAddVertices () | TryRemoveVertices ()) {
 									if (widthStart != widthEnd) {
 										SetVertexWidths ();
@@ -371,7 +399,7 @@ public class AsteroidScript : MonoBehaviour {
 									SetMesh ();
 
 									if (Time.time > patternDetectTime + patternDetectInterval) {
-										if (playerController.isInRange(rb2d) && detectCircle ()) {
+										if (this.isInRange && playerController.isInRange(rb2d) && detectCircle ()) {
 											patternDetectTime = Time.time;
 											playerController.circleSkill ();
 										}
@@ -402,15 +430,17 @@ public class AsteroidScript : MonoBehaviour {
 			}
 		}
 	}
-*/
+	*/
+
 
 
 	// computer version!
+
 	void FixedUpdate () {   
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
 		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
 		if (!pausing) {
-			if (playerController.isInRange (rb2d)) {
+			if (this.isInRange && playerController.isInRange (rb2d)) {
 				trailMaterial.color = new Color (0, 0, 0, 1);
 			}
 			else {
@@ -423,7 +453,7 @@ public class AsteroidScript : MonoBehaviour {
 				}
 				SetMesh ();
 				if (Time.time > patternDetectTime + patternDetectInterval) {
-					if (playerController.isInRange(rb2d) && detectCircle ()) {
+					if (this.isInRange && playerController.isInRange(rb2d) && detectCircle ()) {
 						//Debug.Log ("circle detected" + circleCount++.ToString ());
 						patternDetectTime = Time.time;
 						playerController.circleSkill ();
