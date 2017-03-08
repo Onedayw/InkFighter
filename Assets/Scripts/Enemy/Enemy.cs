@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour {
 	private const float hurtTime = 1f;
@@ -9,8 +10,12 @@ public class Enemy : MonoBehaviour {
 	public bool isInBossArea;
 	public int fullHealth, attack, speed, vision, money;
 	public int health;
+
 	private float damageTakenTime;
 	private bool isHurt, seenTarget;
+	public Image healthBar;
+	private Vector3 healthBarPostion;
+	private float healthBarWidth;
 	// private EnemyManager enemyManager;
 	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
 	private GameObject target;                           //Transform to attempt to move toward each turn.
@@ -28,6 +33,8 @@ public class Enemy : MonoBehaviour {
 		playerController = target.GetComponent<PlayerController> ();
 		animator = GetComponent<Animator> ();
 		rb2d = gameObject.GetComponent<Rigidbody2D> ();
+		healthBarPostion = healthBar.transform.position;
+		healthBarWidth = healthBar.rectTransform.rect.width;
 	}
 
 	// Update is called once per frame
@@ -37,6 +44,10 @@ public class Enemy : MonoBehaviour {
 				isHurt = false;
 			}
 		}
+	}
+
+	void FixedUpdate () {
+		updateHealth ();
 	}
 
 	public bool setSeenTarget() {
@@ -74,6 +85,12 @@ public class Enemy : MonoBehaviour {
 	public void updatecolor () {
 		alphaLevel = (float) (0.4 + ((float)health / (float)fullHealth) * 0.5);		
 		GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, alphaLevel);
+	}
+
+	// let enemy healthbar move left out to the mask
+	void updateHealth() {
+		Vector3 healthImageMove = new Vector3 (healthBarPostion.x - ((float)fullHealth - health) / fullHealth * healthBarWidth, healthBarPostion.y, 0);
+		healthBar.transform.position = healthImageMove;
 	}
 
 	public void die() {
