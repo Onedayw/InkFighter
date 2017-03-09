@@ -14,8 +14,6 @@ public class Enemy : MonoBehaviour {
 	private float damageTakenTime;
 	private bool isHurt, seenTarget;
 	public Image healthBar;
-	private Vector3 healthBarPostion;
-	private float healthBarWidth;
 	// private EnemyManager enemyManager;
 	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
 	private GameObject target;                           //Transform to attempt to move toward each turn.
@@ -33,8 +31,6 @@ public class Enemy : MonoBehaviour {
 		playerController = target.GetComponent<PlayerController> ();
 		animator = GetComponent<Animator> ();
 		rb2d = gameObject.GetComponent<Rigidbody2D> ();
-		healthBarPostion = healthBar.transform.position;
-		healthBarWidth = healthBar.rectTransform.rect.width;
 	}
 
 	// Update is called once per frame
@@ -44,10 +40,6 @@ public class Enemy : MonoBehaviour {
 				isHurt = false;
 			}
 		}
-	}
-
-	void FixedUpdate () {
-		updateHealth ();
 	}
 
 	public bool setSeenTarget() {
@@ -70,9 +62,10 @@ public class Enemy : MonoBehaviour {
 	public int takeDamage(int damage) {
 		if (!isHurt) {
 			health -= damage;
-			//if (gameObject.tag == "Enemy") {
-			//	updatecolor ();
-			//}
+			if (gameObject.tag == "Enemy") {
+				//updatecolor ();
+				updateHealth ();
+			}
 			if (health <= 0.0f) {
 				die ();
 			}
@@ -88,9 +81,8 @@ public class Enemy : MonoBehaviour {
 	}
 
 	// let enemy healthbar move left out to the mask
-	void updateHealth() {
-		Vector3 healthImageMove = new Vector3 (healthBarPostion.x - ((float)fullHealth - health) / fullHealth * healthBarWidth, healthBarPostion.y, 0);
-		healthBar.transform.position = healthImageMove;
+	void updateHealth() {		
+		healthBar.fillAmount = (float)health / (float)fullHealth;
 	}
 
 	public void die() {
