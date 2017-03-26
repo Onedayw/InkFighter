@@ -6,8 +6,7 @@ public class BossHealthBar : MonoBehaviour {
 
 
 	private int bossFullHealth, bossHealth;
-	public Image fullHealth;
-	public Image damagedHealth;
+	public Image healthBar;
 	private GameObject bossObject;
 	private Enemy boss;
 	// Use this for initialization
@@ -20,6 +19,6 @@ public class BossHealthBar : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		bossHealth = boss.health >= 0 ? boss.health : 0;
-		damagedHealth.transform.localScale = new Vector3 ((float) bossHealth / bossFullHealth, 1, 1);
+		healthBar.fillAmount = (float)bossHealth / (float)bossFullHealth;
 	}
 }

@@ -9,7 +9,6 @@ public class Level1Boss_enter : MonoBehaviour {
     public CameraFollowing camerafollowing;
 	public Image BossHealthContainer;
 	public Image BossFullHealth;
-	public Image BossDamagedHealth;
     private PlayerController playerController;
     //private bool enter = false;
     //private float gatex;
@@ -28,7 +27,7 @@ public class Level1Boss_enter : MonoBehaviour {
             //Debug.Log("boss!");
 			Destroy(this.GetComponent<BoxCollider2D>());
 			BossHealthContainer.enabled = true;
-			BossDamagedHealth.enabled = true;
+			BossFullHealth.enabled = true;
             playerController.inBossArea = true;
         }
     }
