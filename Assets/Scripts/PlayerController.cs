@@ -38,7 +38,12 @@ public class PlayerController : MonoBehaviour {
     private bool hasCheckPos;
     private Vector3 CheckPos;
 
-	void Start () {
+    // for dashing 
+    private bool isDashing = false;
+    private float startTime, journeyLength;
+    public float dashRange = 3;
+    Vector3 direction, dashTo;
+    void Start () {
 		anim = GetComponent <Animator> ();
 		attack = 10;
 		currentHealth = startingHealth;
@@ -72,7 +77,19 @@ public class PlayerController : MonoBehaviour {
 		setMoveAnimation (movement.x, movement.y);
 
 		faceMovingDirection (movement.x);
-		transform.Translate(movement * speed * Time.deltaTime, Space.World);
+        if (!isDashing) {
+            transform.Translate(movement * speed * Time.deltaTime, Space.World);
+        }
+        else {
+            dash();
+        }
+		if (Input.GetKeyDown(KeyCode.Space)){
+            startTime = Time.time;
+            direction = movement.normalized;
+            dashTo = this.transform.position + direction * dashRange;
+            journeyLength = Vector3.Distance(this.transform.position, dashTo);
+            isDashing = true;
+        }
 
 		if (isHurt) {
 			if (Time.time > damageTakenTime + hurtTime) {
@@ -247,6 +264,16 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+    private void dash() {
+        float distcovered = (Time.time - startTime) * this.speed *3;
+        float fracjourney = distcovered / journeyLength;
+        this.transform.position = Vector3.MoveTowards(this.transform.position,
+        dashTo, this.speed * Time.deltaTime * 3);
+        if (fracjourney >= 1) {
+            isDashing = false;
+        }
+    }
+    //getters and setters
 	public float getInkRange() {
 		return inkRange;
 	}

@@ -62,7 +62,9 @@ public class LancerEnemy : MonoBehaviour {
         nextAttack = Time.time + attackRate;
         float distcovered = (Time.time - startTime) * dashSpeed;
         float fracjourney = distcovered / journeyLength;
-        transform.position = Vector3.Lerp(currentPosition, dashTo, fracjourney);
+        //transform.position = Vector3.Lerp(currentPosition, dashTo, fracjourney);
+        thisEnemy.transform.position = Vector3.MoveTowards(thisEnemy.transform.position,
+        dashTo, thisEnemy.speed * Time.deltaTime*3);
         if (fracjourney >= 1) {
             isDashing = false;
         }
