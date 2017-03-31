@@ -342,7 +342,7 @@ public class AsteroidScript : MonoBehaviour {
 		playerController = player.GetComponent<PlayerController> ();
 		rb2d = gameObject.GetComponent<Rigidbody2D> ();
 
-		trailObject = GameObject.Find ("Trail");
+		trailObject = GameObject.Find ("Trail2");
 		mesh = trailObject.GetComponent<MeshFilter>().mesh = new Mesh();
 		trailObject.GetComponent<Renderer>().material = trailMaterial;
 		trailObject.GetComponent<Renderer>().sortingLayerName = "Player";
