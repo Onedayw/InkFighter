@@ -13,7 +13,7 @@ public class AsteroidScript : MonoBehaviour {
 	//************
 
 	public Material trailMaterial;                  //the material of the trail.  Changing this during runtime will have no effect.
-	private float lifeTime = 0.8f;                   //the amount of time in seconds that the trail lasts
+	private float lifeTime = 3.8f;                   //the amount of time in seconds that the trail lasts
 	private float changeTime = 0.5f;                 //time point when the trail begins changing its width (if widthStart != widthEnd)
 	private float widthStart = 0.5f;                 //the starting width of the trail
 	private float widthEnd = 0.15f;                   //the ending width of the trail
@@ -34,6 +34,7 @@ public class AsteroidScript : MonoBehaviour {
 	private bool flag = true;
 	private PlayerController playerController;
 	private Rigidbody2D rb2d;
+	private GameObject trailObject;
 
 	private LinkedList<Vector3> centerPositions;    //the previous positions of the object this script is attached to
 	private LinkedList<Vertex> leftVertices;        //the left vertices derived from the center positions
@@ -86,25 +87,8 @@ public class AsteroidScript : MonoBehaviour {
 
 		GameObject trail = new GameObject("Trail", new[] { typeof(MeshRenderer), typeof(MeshFilter), typeof(PolygonCollider2D) } );
 		trail.tag = "Trail";
-		mesh = trail.GetComponent<MeshFilter>().mesh = new Mesh();
-		trail.GetComponent<Renderer>().material = trailMaterial;
-		trail.GetComponent<Renderer>().sortingLayerName = "Player";
-		trail.GetComponent<Renderer>().sortingOrder = 0;
 
-		//get and set the polygon collider on this trail.
-		collider = trail.GetComponent<PolygonCollider2D>();
-		collider.isTrigger = colliderIsTrigger;
-		collider.SetPath(0, null);
 
-		//get the transform of the object this script is attatched to
-		trans = base.transform;
-
-		//set the first center position as the current position
-		centerPositions = new LinkedList<Vector3>();
-		centerPositions.AddFirst(trans.position);
-
-		leftVertices = new LinkedList<Vertex>();
-		rightVertices = new LinkedList<Vertex>();
 	}
 
 	private void Update() {
@@ -357,6 +341,27 @@ public class AsteroidScript : MonoBehaviour {
 		player = GameObject.FindGameObjectWithTag ("Player");
 		playerController = player.GetComponent<PlayerController> ();
 		rb2d = gameObject.GetComponent<Rigidbody2D> ();
+
+		trailObject = GameObject.Find ("Trail");
+		mesh = trailObject.GetComponent<MeshFilter>().mesh = new Mesh();
+		trailObject.GetComponent<Renderer>().material = trailMaterial;
+		trailObject.GetComponent<Renderer>().sortingLayerName = "Player";
+		trailObject.GetComponent<Renderer>().sortingOrder = 0;
+
+		//get and set the polygon collider on this trail.
+		collider = trailObject.GetComponent<PolygonCollider2D>();
+		collider.isTrigger = colliderIsTrigger;
+		collider.SetPath(0, null);
+
+		//get the transform of the object this script is attatched to
+		trans = base.transform;
+
+		//set the first center position as the current position
+		centerPositions = new LinkedList<Vector3>();
+		centerPositions.AddFirst(trans.position);
+
+		leftVertices = new LinkedList<Vertex>();
+		rightVertices = new LinkedList<Vertex>();
 	}
 
 
@@ -440,12 +445,12 @@ public class AsteroidScript : MonoBehaviour {
 		Vector3 rawPosition = cam.ScreenToWorldPoint (Input.mousePosition);
 		GetComponent<Rigidbody2D>().MovePosition (rawPosition);
 		if (!pausing) {
-			if (this.isInRange && playerController.isInRange (rb2d)) {
-				trailMaterial.color = new Color (0, 0, 0, 1);
-			}
-			else {
-				trailMaterial.color = new Color (0, 0, 0, 0.2f);
-			}
+//			if (this.isInRange && playerController.isInRange (rb2d)) {
+//				trailMaterial.color = new Color (0, 0, 0, 1);
+//			}
+//			else {
+//				trailMaterial.color = new Color (0, 0, 0, 0.2f);
+//			}
 			//set the mesh and adjust widths if vertices were added or removed
 			if (TryAddVertices () | TryRemoveVertices ()) {
 				if (widthStart != widthEnd) {
