@@ -65,6 +65,7 @@ public class Enemy : MonoBehaviour {
 			if (gameObject.tag == "Enemy") {
 				//updatecolor ();
 				updateHealth ();
+				healthBar.enabled = true;
 			}
 			if (health <= 0.0f) {
 				die ();
