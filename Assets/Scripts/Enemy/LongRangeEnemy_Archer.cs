@@ -29,7 +29,6 @@ public class LongRangeEnemy_Archer : MonoBehaviour {
 
     public float shotRate;// attack rate
     public float shotRange;// attack range
-    public float nextShot = 2;// next attackable time
     private GameObject player;
     private Enemy thisEnemy;
     private Animator anim;
@@ -61,7 +60,7 @@ public class LongRangeEnemy_Archer : MonoBehaviour {
         //get distance between this and target(player)
         Vector3 distance = transform.position - thisEnemy.getTarget().transform.position;
         if (((Vector2)distance).magnitude < shotRange) { //attack if in range
-            attack();
+            //attack();
             //anim.SetBool("isAttacking", true);
             //anim.SetBool("isRunning", false);
             //anim.SetBool("isIdle", false);
@@ -107,10 +106,7 @@ public class LongRangeEnemy_Archer : MonoBehaviour {
     }
 
     public void attack() {
-        if (Time.time > nextShot) {
-            nextShot = Time.time + shotRate;
-            Instantiate(mover, shotSpawn.position, shotSpawn.rotation);
-        }
+        Instantiate(mover, shotSpawn.position, shotSpawn.rotation);
     }
 
     public void move() {

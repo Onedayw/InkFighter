@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuScript : MonoBehaviour {
 	public GameObject player;
+    public Transform PauseUI;
 	private PlayerController playerController;
 	public GameObject[] finger; 
 	private AsteroidScript trail;
@@ -45,10 +46,14 @@ public class MenuScript : MonoBehaviour {
 		perksName = "";
 		guiStyle = new GUIStyle ();
 		guiStyle.fontSize = 1;
-	}
+
+        PauseUI.gameObject.SetActive(false);
+    }
     void OnGUI () {
 		if (onPause) {
-			pauseWindow = GUI.Window (0, pauseWindow, popPauseMenu, "Pause");
+            PauseUI.gameObject.SetActive(true);
+            Time.timeScale = 0;
+			//pauseWindow = GUI.Window (0, pauseWindow, popPauseMenu, "Pause");
 		} 
 		if (onPerks) {
 			perksWindow = GUI.Window(1, perksWindow, perksMenu, "Perks");
@@ -98,6 +103,7 @@ public class MenuScript : MonoBehaviour {
             Time.timeScale = 1;
             this.resumeGame();
 
+            PauseUI.gameObject.SetActive(false);
         }
         if (GUI.Button(new Rect(pauseMenuWidth / 4, pauseMenuHeight / 3, pauseMenuWidth / 2, pauseMenuHeight * 0.05f), "Perks")) {
 			onPause = false;
