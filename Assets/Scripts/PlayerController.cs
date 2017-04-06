@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour {
     private Vector3 CheckPos;
 
     // for dashing 
-    private bool isDashing = false;
+    public bool isDashing = false;
     private float startTime, journeyLength;
     public float dashRange = 3;
     Vector3 direction, dashTo;
