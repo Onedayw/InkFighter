@@ -88,7 +88,13 @@ public class Enemy : MonoBehaviour {
 
 	public void die() {
 		animator.SetBool ("isDead", true);
-		Destroy(this.gameObject, enemyDeadTime);
+        for (int i = 0; i < EnemyLoadManager.s_enemyManager.Enemy.Length; i++)
+            if (this.name == EnemyLoadManager.s_enemyManager.Enemy[i].name)
+            {
+                EnemyLoadManager.s_enemyManager.flag[i] = 2;
+                break;
+            }
+        Destroy(this.gameObject, enemyDeadTime);
 		playerController.addMoney (money);
 	}
 

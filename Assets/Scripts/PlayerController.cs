@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -35,8 +36,8 @@ public class PlayerController : MonoBehaviour {
 	private bool hasCircleSkill = true;
 	private bool beenDashed = false;
 
-    private bool hasCheckPos;
     private Vector3 CheckPos;
+    private List<int> enemyList;
 
     // for dashing 
     public bool isDashing = false;
@@ -57,8 +58,9 @@ public class PlayerController : MonoBehaviour {
 		inkRange = 3.0f;
 		selfHealingRate = 1;
 		rg2d = GetComponent <Rigidbody2D> ();
-        hasCheckPos = false;
-	}
+
+        enemyList = new List<int>();
+    }
 
 	void Update () {
 		// Handle player position change
@@ -145,15 +147,19 @@ public class PlayerController : MonoBehaviour {
 			}
 			else {
 				currentHealth = 0;
-                if (hasCheckPos)
-                {
-                    currentHealth = startingHealth;
-                    transform.position = CheckPos;
-                }
-                else
-                {
-                    SceneManager.LoadScene("GameOver");
-                }
+
+                SaveLoad.s_SaveLoad.level = SceneManager.GetActiveScene().buildIndex;
+                for (int i = 0; i < EnemyLoadManager.s_enemyManager.flag.Length; i++)
+                    if (EnemyLoadManager.s_enemyManager.flag[i] == 0)
+                        enemyList.Add(0);
+                    else
+                        enemyList.Add(1);
+                SaveLoad.s_SaveLoad.enemyList = enemyList;
+                SaveLoad.s_SaveLoad.playerPosition = CheckPos;
+
+                SaveLoad.s_SaveLoad.Save();
+
+                SceneManager.LoadScene("GameOver");
             }
 		}
 
@@ -285,10 +291,5 @@ public class PlayerController : MonoBehaviour {
     public void setCheckPos(Vector3 Pos)
     {
         CheckPos = Pos;
-    }
-
-    public void setHasCheckPos(bool flag)
-    {
-        hasCheckPos = flag;
     }
 }
