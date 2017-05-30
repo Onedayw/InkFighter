@@ -13,7 +13,7 @@ public class AsteroidScript : MonoBehaviour {
 	//************
 
 	public Material trailMaterial;                  //the material of the trail.  Changing this during runtime will have no effect.
-	private float lifeTime = 3.8f;                   //the amount of time in seconds that the trail lasts
+	private float lifeTime = 0.8f;                   //the amount of time in seconds that the trail lasts
 	private float changeTime = 0.5f;                 //time point when the trail begins changing its width (if widthStart != widthEnd)
 	private float widthStart = 0.5f;                 //the starting width of the trail
 	private float widthEnd = 0.15f;                   //the ending width of the trail
