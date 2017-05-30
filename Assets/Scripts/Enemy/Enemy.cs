@@ -98,6 +98,7 @@ public class Enemy : MonoBehaviour {
                 break;
             }
         }
+
         Destroy(this.gameObject, enemyDeadTime);
 		playerController.addMoney (money);
 	}
